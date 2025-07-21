@@ -1,6 +1,7 @@
 package com.me.book_management.service.impl;
 
 import com.me.book_management.constant.Constants;
+import com.me.book_management.dto.request.ForgotPasswordRequest;
 import com.me.book_management.dto.request.SignInRequest;
 import com.me.book_management.dto.request.SignUpRequest;
 import com.me.book_management.dto.response.AccountResponse;
@@ -59,6 +60,20 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomException("Invalid password");
         }
         return account;
+    }
+
+    @Override
+    public void resetPassword(ForgotPasswordRequest request) {
+        log.info("(resetPassword) request: {}", request);
+        Account account = accountRepository.findByEmail(request.getEmail());
+        if (account == null) {
+            throw new CustomException("Email not found");
+        }
+        if (!account.getUsername().equals(request.getUsername())) {
+            throw new CustomException("Username not found for this email");
+        }
+        account.setPassword(passwordEncoder.encode(request.getPassword()));
+        accountRepository.save(account);
     }
 
     private boolean existedByEmail(String email) {

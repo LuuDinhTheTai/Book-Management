@@ -27,10 +27,12 @@ public class SecurityConfiguration {
                         // PUBLIC ENDPOINTS
                         .requestMatchers(HttpMethod.GET,
                                 "/auth/signup",
-                                "/auth/signin").permitAll()
+                                "/auth/signin",
+                                "/auth/forgot-password").permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/auth/signup",
-                                "/auth/signin").permitAll()
+                                "/auth/signin",
+                                "/auth/forgot-password").permitAll()
                         .anyRequest().authenticated()
         );
         http.oauth2ResourceServer(
