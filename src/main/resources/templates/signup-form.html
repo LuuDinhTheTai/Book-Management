@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Sign up</title>
@@ -9,19 +9,28 @@
 <div th:if="${errorMessage}">
     <p th:text="${errorMessage}"></p>
 </div>
-<form action="/auth/signup" method="post">
-    <label>Username: </label>
-    <input type="text" name="username">
-    <br>
-    <label>Email: </label>
-    <input type="email" name="email">
-    <br>
-    <label>Password: </label>
-    <input type="password" name="password">
-    <br>
-    <label>Confirm Password: </label>
-    <input type="password" name="confirmPassword">
-    <br>
+<form th:action="@{/auth/signup}" th:object="${signUpRequest}" method="post">
+
+    <div>
+        <label>Username: </label>
+        <input th:field="*{username}" type="text"/>
+    </div>
+
+    <div>
+        <label>Email: </label>
+        <input th:field="*{email}" type="email"/>
+    </div>
+
+    <div>
+        <label>Password: </label>
+        <input th:field="*{password}" type="password"/>
+    </div>
+
+    <div>
+        <label>Confirm Password: </label>
+        <input type="password"/>
+    </div>
+
     <button type="submit">Sign Up</button>
 </form>
 </body>

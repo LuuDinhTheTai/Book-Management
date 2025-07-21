@@ -1,5 +1,6 @@
 package com.me.book_management.dto.request;
 
+import com.me.book_management.exception.CustomException;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -19,6 +20,6 @@ public class SignUpRequest {
     private String password;
 
     public void validate() {
-
+        throw new CustomException("Meo Meo");
     }
 }

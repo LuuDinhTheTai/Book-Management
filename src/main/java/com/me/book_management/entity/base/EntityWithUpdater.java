@@ -1,5 +1,6 @@
 package com.me.book_management.entity.base;
 
+import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter
 @Setter
+@MappedSuperclass
 public class EntityWithUpdater {
 
     private Date createdAt;
