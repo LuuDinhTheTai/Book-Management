@@ -20,6 +20,6 @@ public class SignUpRequest {
     private String password;
 
     public void validate() {
-        throw new CustomException("Meo Meo");
+
     }
 }

@@ -25,7 +25,6 @@ public class SignUpController {
 
     @PostMapping("signup")
     public String signUp(@Valid @ModelAttribute("signUpRequest") SignUpRequest request,
-                         BindingResult result,
                          Model model) {
         try {
             request.validate();

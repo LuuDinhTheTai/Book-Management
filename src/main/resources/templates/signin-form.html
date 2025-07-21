@@ -6,7 +6,9 @@
 </head>
 <body>
 <h1>Sign In</h1>
-<div></div>
+<div th:if="${errorMessage}">
+    <p th:text="${errorMessage}"></p>
+</div>
 <form th:action="@{/auth/signin}" method="post">
     <label for="username">Username</label>
     <input id="username" type="text" name="username">

@@ -49,8 +49,16 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AccountResponse login(SignInRequest request) {
-        return null;
+    public Account signIn(SignInRequest request) {
+        log.info("(signIn) request: {}", request);
+        Account account = accountRepository.findByUsername(request.getUsername());
+        if (account == null) {
+            throw new CustomException("Account not found");
+        }
+        if (!passwordEncoder.matches(request.getPassword(), account.getPassword())) {
+            throw new CustomException("Invalid password");
+        }
+        return account;
     }
 
     private boolean existedByEmail(String email) {
