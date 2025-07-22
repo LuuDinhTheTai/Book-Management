@@ -1,0 +1,36 @@
+package com.me.book_management.service.impl;
+
+import com.me.book_management.dto.request.CreateBookRequest;
+import com.me.book_management.entity.book.Book;
+import com.me.book_management.repository.book.BookRepository;
+import com.me.book_management.service.BookService;
+import com.me.book_management.service.DetailService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class BookServiceImpl implements BookService {
+
+    private final BookRepository bookRepository;
+    private final DetailService detailService;
+
+    @PreAuthorize("hasAuthority(T(com.me.book_management.constant.Constants).Permission.CREATE_BOOK)")
+    @Override
+    public Book create(CreateBookRequest request) {
+        log.info("(create) request: {}", request);
+        Book book = new Book();
+        book.setName(request.getName());
+        book.setPrice(request.getPrice());
+        book.setQty(request.getQty());
+        book.setStatus(request.getStatus());
+        bookRepository.save(book);
+
+        CreateBookRequest.Detail detail = request.getDetail();
+        detailService.create(detail);
+        return book;
+    }
+}

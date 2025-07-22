@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Book</title>
+</head>
+<body>
+<h1>Create Book</h1>
+<div th:if="${errorMessage}">
+    <p th:text="${errorMessage}" style="color:red"></p>
+</div>
+<form th:action="@{/books/create}" th:object="${createBookRequest}" method="post">
+    <label>Name:</label>
+    <input th:field="*{name}" type="text"/><br>
+    <label>Price:</label>
+    <input th:field="*{price}" type="number"/><br>
+    <label>Quantity:</label>
+    <input th:field="*{qty}" type="number"/><br>
+    <label>Status:</label>
+    <input th:field="*{status}" type="text"/><br>
+    <fieldset>
+        <legend>Detail</legend>
+        <label>ISBN:</label>
+        <input th:field="*{detail.isbn}" type="text"/><br>
+        <label>Title:</label>
+        <input th:field="*{detail.title}" type="text"/><br>
+        <label>Subtitle:</label>
+        <input th:field="*{detail.subtitle}" type="text"/><br>
+        <label>Author:</label>
+        <input th:field="*{detail.author}" type="text"/><br>
+        <label>Publisher:</label>
+        <input th:field="*{detail.publisher}" type="text"/><br>
+        <label>Published Date:</label>
+        <input th:field="*{detail.publishedDate}" type="text"/><br>
+        <label>Description:</label>
+        <input th:field="*{detail.description}" type="text"/><br>
+        <label>Page Count:</label>
+        <input th:field="*{detail.pageCount}" type="text"/><br>
+        <label>Language:</label>
+        <input th:field="*{detail.language}" type="text"/><br>
+        <label>Format:</label>
+        <input th:field="*{detail.format}" type="text"/><br>
+    </fieldset>
+    <button type="submit">Create</button>
+</form>
+</body>
+</html>

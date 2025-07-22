@@ -1,6 +1,5 @@
 package com.me.book_management.entity.book;
 
-import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.base.EntityWithUpdater;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,5 +21,5 @@ public class Book extends EntityWithUpdater {
     private String status;
 
     @ManyToOne
-    private Details details;
+    private Detail detail;
 }

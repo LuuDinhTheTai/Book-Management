@@ -1,23 +1,28 @@
-package com.me.book_management.configuration;
+package com.me.book_management.configuration.security;
 
-import com.me.book_management.configuration.security.service.CustomUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.me.book_management.configuration.security.impl.BearerTokenResolverImpl;
+import com.me.book_management.configuration.security.impl.JwtAuthenticationConverterImpl;
+import com.me.book_management.configuration.security.impl.JwtDecoderImpl;
+import com.me.book_management.configuration.security.impl.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfiguration {
 
     @Bean
@@ -36,10 +41,13 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
         );
         http.oauth2ResourceServer(
-                oauth2 -> oauth2.jwt(
-                        jwtConfigurer -> jwtConfigurer
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
-                )
+                oauth2 -> oauth2
+                        .jwt(
+                                jwtConfigurer -> jwtConfigurer
+                                        .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                                        .decoder(jwtDecoder())
+                        )
+                        .bearerTokenResolver(bearerTokenResolver())
         );
         http.csrf(
                 c -> c.disable()
@@ -48,27 +56,23 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService());
-        provider.setPasswordEncoder(passwordEncoder());
-        return provider;
+    public BearerTokenResolver bearerTokenResolver() {
+        return new BearerTokenResolverImpl();
     }
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new CustomUserDetailsService();
+        return new UserDetailsServiceImpl();
     }
 
     @Bean
-    JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-//    jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        return new JwtAuthenticationConverterImpl();
+    }
 
-        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
-
-        return jwtAuthenticationConverter;
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        return new JwtDecoderImpl();
     }
 
     @Bean

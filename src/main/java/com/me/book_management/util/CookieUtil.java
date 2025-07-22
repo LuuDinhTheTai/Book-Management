@@ -1,4 +1,4 @@
-package com.me.book_management.configuration.security.cookie;
+package com.me.book_management.util;
 
 import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +10,7 @@ public class CookieUtil {
 
     public Cookie create(String name, String value) {
         log.info("(create) cookie: {}", name + " = " + value);
+
         Cookie cookie = new Cookie(name, value);
         cookie.setHttpOnly(true);
         cookie.setPath("/");

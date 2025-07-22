@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Details</title>
+</head>
+<body>
+<h1>Book Details</h1>
+<div th:if="${book}">
+    <p>Name: <span th:text="${book.name}"></span></p>
+    <p>Price: <span th:text="${book.price}"></span></p>
+    <p>Quantity: <span th:text="${book.qty}"></span></p>
+    <p>Status: <span th:text="${book.status}"></span></p>
+    <div th:if="${book.detail}">
+        <p>ISBN: <span th:text="${book.detail.isbn}"></span></p>
+        <p>Title: <span th:text="${book.detail.title}"></span></p>
+        <p>Subtitle: <span th:text="${book.detail.subtitle}"></span></p>
+        <p>Author: <span th:text="${book.detail.author}"></span></p>
+        <p>Publisher: <span th:text="${book.detail.publisher}"></span></p>
+        <p>Published Date: <span th:text="${book.detail.publishedDate}"></span></p>
+        <p>Description: <span th:text="${book.detail.description}"></span></p>
+        <p>Page Count: <span th:text="${book.detail.pageCount}"></span></p>
+        <p>Language: <span th:text="${book.detail.language}"></span></p>
+        <p>Format: <span th:text="${book.detail.format}"></span></p>
+    </div>
+</div>
+</body>
+</html>

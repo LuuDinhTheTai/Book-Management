@@ -1,4 +1,4 @@
-package com.me.book_management.configuration.security.jwt;
+package com.me.book_management.configuration.security.impl;
 
 import com.me.book_management.exception.CustomException;
 import jakarta.servlet.ServletException;

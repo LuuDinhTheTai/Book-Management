@@ -1,4 +1,4 @@
-package com.me.book_management.configuration.security.jwt;
+package com.me.book_management.util;
 
 import com.me.book_management.entity.account.Account;
 import com.nimbusds.jose.*;

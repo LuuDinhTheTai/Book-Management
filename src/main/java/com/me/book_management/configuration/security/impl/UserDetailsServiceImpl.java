@@ -1,4 +1,4 @@
-package com.me.book_management.configuration.security.service;
+package com.me.book_management.configuration.security.impl;
 
 import com.me.book_management.entity.account.Account;
 import com.me.book_management.exception.CustomException;
@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CustomUserDetailsService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
   
   @Autowired
   private AccountService accountService;
@@ -21,6 +21,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     if (account == null) {
       throw new CustomException("Account not found");
     }
-    return new CustomUserDetails(account);
+    return new UserDetailsImpl(account);
   }
 }

@@ -1,7 +1,8 @@
 package com.me.book_management.controller.auth;
 
-import com.me.book_management.configuration.security.cookie.CookieUtil;
-import com.me.book_management.configuration.security.jwt.JwtUtil;
+import com.me.book_management.constant.Constants;
+import com.me.book_management.util.CookieUtil;
+import com.me.book_management.util.JwtUtil;
 import com.me.book_management.dto.request.SignInRequest;
 import com.me.book_management.exception.CustomException;
 import com.me.book_management.service.AuthService;
@@ -39,10 +40,10 @@ public class SignInController {
             request.validate();
 
             String token = jwtUtil.generateToken(authService.signIn(request));
-            Cookie tokenCookie = cookieUtil.create("token", token);
+            Cookie tokenCookie = cookieUtil.create(Constants.COOKIE.ACCESS_TOKEN, token);
             response.addCookie(tokenCookie);
 
-            return "redirect:/home";
+            return "redirect:/books/create";
 
         } catch (CustomException e) {
             model.addAttribute("errorMessage", e.getMessage());

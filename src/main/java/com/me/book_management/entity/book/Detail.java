@@ -12,7 +12,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class Details {
+public class Detail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +25,6 @@ public class Details {
     private String publishedDate;
     private String description;
     private String pageCount;
-    private String categories;
-    private String thumbnailUrl;
     private String language;
-    private String previewLink;
-    private String infoLink;
     private String format;
 }
