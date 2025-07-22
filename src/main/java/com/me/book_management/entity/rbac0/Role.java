@@ -1,6 +1,5 @@
 package com.me.book_management.entity.rbac0;
 
-import com.me.book_management.entity.account.Account;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,14 +20,11 @@ public class Role {
     private String name;
     private String description;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "role_permission",
         joinColumns = @JoinColumn(name = "role_id"),
         inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
     private Set<Permission> permissions = new HashSet<>();
-
-    @ManyToMany(mappedBy = "roles")
-    private Set<Account> accounts = new HashSet<>();
 }

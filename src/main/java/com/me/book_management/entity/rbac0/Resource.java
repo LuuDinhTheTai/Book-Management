@@ -3,6 +3,8 @@ package com.me.book_management.entity.rbac0;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Set;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,6 +18,4 @@ public class Resource {
     private Long id;
     private String name;
     private String description;
-    @ManyToOne
-    private Permission permission;
 }

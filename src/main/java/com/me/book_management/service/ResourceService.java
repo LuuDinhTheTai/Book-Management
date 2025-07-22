@@ -1,0 +1,9 @@
+package com.me.book_management.service;
+
+import com.me.book_management.entity.rbac0.Resource;
+
+public interface ResourceService {
+
+    Resource createIfNotExists(Resource resource);
+    Resource findByName(String name);
+}

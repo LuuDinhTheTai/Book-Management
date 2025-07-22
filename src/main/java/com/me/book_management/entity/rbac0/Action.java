@@ -16,6 +16,4 @@ public class Action {
     private Long id;
     private String name;
     private String description;
-    @ManyToOne
-    private Permission permission;
 }

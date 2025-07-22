@@ -3,9 +3,6 @@ package com.me.book_management.entity.rbac0;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,11 +16,14 @@ public class Permission {
     private Long id;
     private String name;
     private String description;
-    @OneToMany(mappedBy = "permission")
-    private Set<Action> actions = new HashSet<>();
-    @OneToMany(mappedBy = "permission")
-    private Set<Resource> resources = new HashSet<>();
+    @ManyToOne
+    private Action action;
+    @ManyToOne
+    private Resource resource;
 
-    @ManyToMany(mappedBy = "permissions")
-    private Set<Role> roles = new HashSet<>();
+    public Permission(String name, Action action, Resource resource) {
+        this.name = name;
+        this.action = action;
+        this.resource = resource;
+    }
 }

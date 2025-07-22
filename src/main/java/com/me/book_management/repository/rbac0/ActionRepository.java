@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ActionRepository extends JpaRepository<Action,Long> {
+
+    Action findByName(String name);
 }
