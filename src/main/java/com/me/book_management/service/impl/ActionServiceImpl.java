@@ -1,6 +1,7 @@
 package com.me.book_management.service.impl;
 
 import com.me.book_management.entity.rbac0.Action;
+import com.me.book_management.exception.NotFoundException;
 import com.me.book_management.repository.rbac0.ActionRepository;
 import com.me.book_management.service.ActionService;
 import lombok.RequiredArgsConstructor;
@@ -17,16 +18,20 @@ public class ActionServiceImpl implements ActionService {
     @Override
     public Action createIfNotExists(Action action) {
         log.info("(createIfNotExists) action: {}", action);
+
         Action existingAction = findByName(action.getName());
         if (existingAction != null) {
             return existingAction;
         }
+
         return actionRepository.save(action);
     }
 
     @Override
     public Action findByName(String name) {
         log.info("(find) action: {}", name);
-        return actionRepository.findByName(name);
+
+        return actionRepository.findByName(name).
+                orElseThrow(() -> new NotFoundException("Action not found"));
     }
 }

@@ -4,8 +4,10 @@ import com.me.book_management.entity.rbac0.Permission;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface PermissionRepository extends JpaRepository<Permission,Long> {
 
-    Permission findByName(String name);
+    Optional<Permission> findByName(String name);
 }

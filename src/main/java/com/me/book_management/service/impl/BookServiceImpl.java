@@ -3,6 +3,7 @@ package com.me.book_management.service.impl;
 import com.me.book_management.dto.request.CreateBookRequest;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.entity.book.Detail;
+import com.me.book_management.exception.NotFoundException;
 import com.me.book_management.repository.book.BookRepository;
 import com.me.book_management.service.BookService;
 import com.me.book_management.service.DetailService;
@@ -25,6 +26,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book create(CreateBookRequest request) {
         log.info("(create) request: {}", request);
+
         Book book = new Book();
         book.setName(request.getName());
         book.setPrice(request.getPrice());
@@ -39,7 +41,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book find(Long id) {
-        return bookRepository.findById(id).get();
+        log.info("(find) id: {}", id);
+
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Book not found"));
     }
 
     @Override

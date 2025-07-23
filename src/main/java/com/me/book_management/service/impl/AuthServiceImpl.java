@@ -8,6 +8,8 @@ import com.me.book_management.dto.response.AccountResponse;
 import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.rbac0.Role;
 import com.me.book_management.exception.CustomException;
+import com.me.book_management.exception.InputException;
+import com.me.book_management.exception.NotFoundException;
 import com.me.book_management.repository.account.AccountRepository;
 import com.me.book_management.service.AuthService;
 import com.me.book_management.service.RoleService;
@@ -28,11 +30,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void signUp(SignUpRequest request) {
         log.info("(signUp) request: {}", request);
+
         if (existedByEmail(request.getEmail())) {
-            throw new CustomException("Email already exists");
+            throw new InputException("Email already exists");
         }
         if (existedByUsername(request.getUsername())) {
-            throw new CustomException("Username already exists");
+            throw new InputException("Username already exists");
         }
 
         Account account = new Account();
@@ -42,7 +45,7 @@ public class AuthServiceImpl implements AuthService {
         Role role = roleService.findByName(Constants.ROLE.USER);
 
         if (role == null) {
-            throw new CustomException("Role not found");
+            throw new InputException("Role not found");
         }
 
         account.getRoles().add(role);
@@ -52,26 +55,28 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Account signIn(SignInRequest request) {
         log.info("(signIn) request: {}", request);
-        Account account = accountRepository.findByUsername(request.getUsername());
-        if (account == null) {
-            throw new CustomException("Account not found");
-        }
+
+        Account account = accountRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new InputException("Username not found"));
+
         if (!passwordEncoder.matches(request.getPassword(), account.getPassword())) {
-            throw new CustomException("Invalid password");
+            throw new InputException("Invalid password");
         }
+
         return account;
     }
 
     @Override
     public void resetPassword(ForgotPasswordRequest request) {
         log.info("(resetPassword) request: {}", request);
-        Account account = accountRepository.findByEmail(request.getEmail());
-        if (account == null) {
-            throw new CustomException("Email not found");
-        }
+
+        Account account = accountRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new InputException("Email not found"));
+
         if (!account.getUsername().equals(request.getUsername())) {
-            throw new CustomException("Username not found for this email");
+            throw new InputException("Username not found for this email");
         }
+
         account.setPassword(passwordEncoder.encode(request.getPassword()));
         accountRepository.save(account);
     }

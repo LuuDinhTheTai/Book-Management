@@ -1,6 +1,7 @@
 package com.me.book_management.controller.auth;
 
 import com.me.book_management.constant.Constants;
+import com.me.book_management.exception.InputException;
 import com.me.book_management.util.CookieUtil;
 import com.me.book_management.util.JwtUtil;
 import com.me.book_management.dto.request.SignInRequest;
@@ -45,7 +46,7 @@ public class SignInController {
 
             return "redirect:/books/create";
 
-        } catch (CustomException e) {
+        } catch (InputException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "auth/signin-form";
         }

@@ -2,6 +2,7 @@ package com.me.book_management.controller.book;
 
 import com.me.book_management.dto.request.CreateBookRequest;
 import com.me.book_management.entity.book.Book;
+import com.me.book_management.exception.InputException;
 import com.me.book_management.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class BookController {
             model.addAttribute("book", book);
             return "book/detail";
 
-        } catch (Exception e) {
+        } catch (InputException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "book/creation-form";
         }

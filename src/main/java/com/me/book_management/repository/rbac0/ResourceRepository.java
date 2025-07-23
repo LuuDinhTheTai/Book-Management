@@ -4,8 +4,10 @@ import com.me.book_management.entity.rbac0.Resource;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ResourceRepository extends JpaRepository<Resource,Long> {
 
-    Resource findByName(String name);
+    Optional<Resource> findByName(String name);
 }
