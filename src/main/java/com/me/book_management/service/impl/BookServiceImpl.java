@@ -18,7 +18,7 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final DetailService detailService;
 
-    @PreAuthorize("hasAuthority(T(com.me.book_management.constant.Constants).Permission.CREATE_BOOK)")
+    @PreAuthorize("hasAuthority(T(com.me.book_management.constant.Constants.PERMISSION).CREATE_BOOK)")
     @Override
     public Book create(CreateBookRequest request) {
         log.info("(create) request: {}", request);

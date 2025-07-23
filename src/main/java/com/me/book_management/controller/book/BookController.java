@@ -27,12 +27,10 @@ public class BookController {
 
     private final BookService bookService;
 
-    @PreAuthorize("hasAuthority('CREATE_BOOK')")
     @GetMapping("create")
     public String create(Model model) {
         CreateBookRequest createBookRequest = new CreateBookRequest();
         model.addAttribute("createBookRequest", createBookRequest);
-        model.addAttribute("createBookDetailRequest", createBookRequest.getDetail());
         return "create-book-form";
     }
 
