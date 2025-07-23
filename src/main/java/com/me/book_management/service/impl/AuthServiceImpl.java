@@ -82,16 +82,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private boolean existedByEmail(String email) {
-        if (accountRepository.findByEmail(email) != null) {
-            return true;
-        }
-        return false;
+        return accountRepository.findByEmail(email).isPresent();
     }
 
     private boolean existedByUsername(String username) {
-        if (accountRepository.findByUsername(username) != null) {
-            return true;
-        }
-        return false;
+        return accountRepository.findByUsername(username).isPresent();
     }
 }

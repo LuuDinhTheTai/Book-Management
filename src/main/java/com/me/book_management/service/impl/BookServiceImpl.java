@@ -2,10 +2,12 @@ package com.me.book_management.service.impl;
 
 import com.me.book_management.dto.request.CreateBookRequest;
 import com.me.book_management.dto.request.UpdateBookRequest;
+import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.entity.book.Detail;
 import com.me.book_management.exception.NotFoundException;
 import com.me.book_management.repository.book.BookRepository;
+import com.me.book_management.service.AccountService;
 import com.me.book_management.service.BookService;
 import com.me.book_management.service.DetailService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,7 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final DetailService detailService;
+    private final AccountService accountService;
 
     @PreAuthorize("hasAuthority(T(com.me.book_management.constant.Constants.PERMISSION).CREATE_BOOK)")
     @Override
@@ -39,6 +43,10 @@ public class BookServiceImpl implements BookService {
 
         Detail detail = detailService.create(request.getDetail());
         book.setDetail(detail);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Account account = accountService.findByUsername(authentication.getName());
+        book.setAccount(account);
 
         return bookRepository.save(book);
     }

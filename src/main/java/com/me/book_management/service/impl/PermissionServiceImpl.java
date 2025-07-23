@@ -32,6 +32,6 @@ public class PermissionServiceImpl implements PermissionService {
         log.info("(find) permission: {}", name);
 
         return permissionRepository.findByName(name)
-                .orElseThrow(() -> new EntityNotFoundException("Permission not found"));
+                .orElse(null);
     }
 }

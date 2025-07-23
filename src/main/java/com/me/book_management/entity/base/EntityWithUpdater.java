@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
@@ -25,9 +27,9 @@ public class EntityWithUpdater {
     @CreatedBy
     private String createdBy;
 
-    @CreatedDate
+    @LastModifiedDate
     private Date updatedAt;
-    @CreatedBy
+    @LastModifiedBy
     private String updatedBy;
 
     private Date deletedAt;

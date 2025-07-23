@@ -32,6 +32,6 @@ public class ResourceServiceImpl implements ResourceService {
         log.info("(find) resource: {}", name);
 
         return resourceRepository.findByName(name)
-                .orElseThrow(() -> new EntityNotFoundException("Resource not found"));
+                .orElse(null);
     }
 }

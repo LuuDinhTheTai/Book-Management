@@ -32,6 +32,6 @@ public class ActionServiceImpl implements ActionService {
         log.info("(find) action: {}", name);
 
         return actionRepository.findByName(name).
-                orElseThrow(() -> new NotFoundException("Action not found"));
+                orElse(null);
     }
 }
