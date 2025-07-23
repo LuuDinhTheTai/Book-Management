@@ -33,7 +33,9 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET,
                                 "/auth/signup",
                                 "/auth/signin",
-                                "/auth/forgot-password").permitAll()
+                                "/auth/forgot-password",
+                                "/books/{id}",
+                                "/books/list").permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/auth/signup",
                                 "/auth/signin",

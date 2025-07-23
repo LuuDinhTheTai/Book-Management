@@ -8,6 +8,8 @@ import com.me.book_management.service.BookService;
 import com.me.book_management.service.DetailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -33,5 +35,15 @@ public class BookServiceImpl implements BookService {
         book.setDetail(detail);
 
         return bookRepository.save(book);
+    }
+
+    @Override
+    public Book find(Long id) {
+        return bookRepository.findById(id).get();
+    }
+
+    @Override
+    public Page<Book> list(Pageable pageable) {
+        return bookRepository.findAll(pageable);
     }
 }

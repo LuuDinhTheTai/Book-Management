@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Book List</title>
+</head>
+<body>
+<h1>Book List</h1>
+
+<table border="1">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Price</th>
+    <th>Quantity</th>
+    <th>Status</th>
+    <th>Detail</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="book : ${bookPage.content}">
+    <td th:text="${book.name}"></td>
+    <td th:text="${book.price}"></td>
+    <td th:text="${book.qty}"></td>
+    <td th:text="${book.status}"></td>
+    <td>
+      <a th:href="@{/books/{id}(id=${book.id})}">Detail</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<div>
+  <span th:text="'Page ' + ${bookPage.number + 1} + ' of ' + ${bookPage.totalPages}"></span>
+</div>
+<div>
+  <a th:if="${bookPage.hasPrevious()}" th:href="@{/books/list(page=${bookPage.number - 1},size=${bookPage.size})}">Previous</a>
+  <a th:if="${bookPage.hasNext()}" th:href="@{/books/list(page=${bookPage.number + 1},size=${bookPage.size})}">Next</a>
+</div>
+
+</body>
+</html>

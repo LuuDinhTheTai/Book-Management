@@ -1,23 +1,17 @@
 package com.me.book_management.controller.book;
 
-import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.CreateBookRequest;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.service.BookService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.net.http.HttpRequest;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/books/")
@@ -47,5 +41,23 @@ public class BookController {
             model.addAttribute("errorMessage", e.getMessage());
             return "create-book-form";
         }
+    }
+
+    @GetMapping("{id}")
+    public String find(@PathVariable Long id,
+                       Model model) {
+        Book book = bookService.find(id);
+        model.addAttribute("book", book);
+        return "book-detail";
+    }
+
+    @GetMapping("list")
+    public String listBooks(@RequestParam(defaultValue = "0") int page,
+                            @RequestParam(defaultValue = "10") int size,
+                            Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> bookPage = bookService.list(pageable);
+        model.addAttribute("bookPage", bookPage);
+        return "book-list";
     }
 }
