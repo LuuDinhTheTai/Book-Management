@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -20,7 +19,7 @@ public class SignUpController {
     @GetMapping("signup")
     public String signUp(Model model) {
         model.addAttribute("signUpRequest", new SignUpRequest());
-        return "signup-form";
+        return "auth/signup-form";
     }
 
     @PostMapping("signup")
@@ -33,7 +32,7 @@ public class SignUpController {
 
         } catch (CustomException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "signup-form";
+            return "auth/signup-form";
         }
     }
 }

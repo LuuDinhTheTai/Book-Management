@@ -29,7 +29,7 @@ public class SignInController {
     @GetMapping("signin")
     public String login(Model model) {
         model.addAttribute("signInRequest", new SignInRequest());
-        return "signin-form";
+        return "auth/signin-form";
     }
 
     @PostMapping("signin")
@@ -47,7 +47,7 @@ public class SignInController {
 
         } catch (CustomException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "signin-form";
+            return "auth/signin-form";
         }
     }
 }

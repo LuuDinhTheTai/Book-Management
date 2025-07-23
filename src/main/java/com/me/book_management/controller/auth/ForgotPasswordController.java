@@ -22,7 +22,7 @@ public class ForgotPasswordController {
     @GetMapping("forgot-password")
     public String forgotPassword(Model model) {
         model.addAttribute("forgotPasswordRequest", new ForgotPasswordRequest());
-        return "forgot-password-form";
+        return "auth/forgot-password-form";
     }
 
     @PostMapping("forgot-password")
@@ -35,7 +35,7 @@ public class ForgotPasswordController {
 
         } catch (CustomException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "forgot-password-form";
+            return "auth/forgot-password-form";
         }
     }
 }

@@ -25,7 +25,7 @@ public class BookController {
     public String create(Model model) {
         CreateBookRequest createBookRequest = new CreateBookRequest();
         model.addAttribute("createBookRequest", createBookRequest);
-        return "create-book-form";
+        return "book/creation-form";
     }
 
     @PostMapping("create")
@@ -35,11 +35,11 @@ public class BookController {
             request.validate();
             Book book = bookService.create(request);
             model.addAttribute("book", book);
-            return "book-detail";
+            return "book/detail";
 
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "create-book-form";
+            return "book/creation-form";
         }
     }
 
@@ -48,7 +48,7 @@ public class BookController {
                        Model model) {
         Book book = bookService.find(id);
         model.addAttribute("book", book);
-        return "book-detail";
+        return "book/detail";
     }
 
     @GetMapping("list")
@@ -58,6 +58,6 @@ public class BookController {
         Pageable pageable = PageRequest.of(page, size);
         Page<Book> bookPage = bookService.list(pageable);
         model.addAttribute("bookPage", bookPage);
-        return "book-list";
+        return "book/list";
     }
 }
