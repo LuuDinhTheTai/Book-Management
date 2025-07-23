@@ -2,6 +2,7 @@ package com.me.book_management.service.impl;
 
 import com.me.book_management.dto.request.CreateBookRequest;
 import com.me.book_management.entity.book.Book;
+import com.me.book_management.entity.book.Detail;
 import com.me.book_management.repository.book.BookRepository;
 import com.me.book_management.service.BookService;
 import com.me.book_management.service.DetailService;
@@ -27,10 +28,10 @@ public class BookServiceImpl implements BookService {
         book.setPrice(request.getPrice());
         book.setQty(request.getQty());
         book.setStatus(request.getStatus());
-        bookRepository.save(book);
 
-        CreateBookRequest.Detail detail = request.getDetail();
-        detailService.create(detail);
-        return book;
+        Detail detail = detailService.create(request.getDetail());
+        book.setDetail(detail);
+
+        return bookRepository.save(book);
     }
 }
