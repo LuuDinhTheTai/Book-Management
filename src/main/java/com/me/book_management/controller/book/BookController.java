@@ -1,6 +1,7 @@
 package com.me.book_management.controller.book;
 
 import com.me.book_management.dto.request.CreateBookRequest;
+import com.me.book_management.dto.request.UpdateBookRequest;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.exception.InputException;
 import com.me.book_management.service.BookService;
@@ -60,5 +61,28 @@ public class BookController {
         Page<Book> bookPage = bookService.list(pageable);
         model.addAttribute("bookPage", bookPage);
         return "book/list";
+    }
+
+    @GetMapping("update/{id}")
+    public String update(@PathVariable Long id,
+                         Model model) {
+        Book book = bookService.find(id);
+        model.addAttribute("book", book);
+        return "book/update-form";
+    }
+
+    @PostMapping("update")
+    public String update(@Valid @ModelAttribute("book") UpdateBookRequest request,
+                         Model model) {
+        try {
+            request.validate();
+            Book book = bookService.update(request);
+            model.addAttribute("book", book);
+            return "book/detail";
+
+        } catch (InputException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "book/update-form";
+        }
     }
 }

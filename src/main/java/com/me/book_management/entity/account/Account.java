@@ -33,6 +33,6 @@ public class Account extends EntityWithUpdater {
     )
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "account")
     private Set<Book> books = new HashSet<>();
 }

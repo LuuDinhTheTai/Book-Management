@@ -13,7 +13,7 @@ public class CreateBookRequest {
     private String price;
     private int qty;
     private String status;
-    private Detail detail;
+    private Detail detail = new Detail();
 
     @AllArgsConstructor
     @NoArgsConstructor
