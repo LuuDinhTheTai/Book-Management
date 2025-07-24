@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface ActionRepository extends JpaRepository<Action,Long> {
 
     Optional<Action> findByName(String name);
+    boolean existsByName(String name);
 }

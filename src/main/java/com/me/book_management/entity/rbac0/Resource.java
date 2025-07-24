@@ -18,4 +18,8 @@ public class Resource {
     private Long id;
     private String name;
     private String description;
+
+    public Resource(String name) {
+        this.name = name;
+    }
 }
