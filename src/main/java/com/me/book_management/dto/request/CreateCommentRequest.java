@@ -9,6 +9,7 @@ import lombok.*;
 @ToString
 public class CreateCommentRequest {
 
+    private Long bookId;
     private String content;
 
     public void validate() {

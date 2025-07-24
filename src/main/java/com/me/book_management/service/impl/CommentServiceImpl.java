@@ -1,10 +1,16 @@
 package com.me.book_management.service.impl;
 
+import com.me.book_management.dto.request.CreateCommentRequest;
 import com.me.book_management.entity.book.Comment;
 import com.me.book_management.repository.book.CommentRepository;
+import com.me.book_management.service.AccountService;
+import com.me.book_management.service.BookService;
 import com.me.book_management.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,18 +21,25 @@ import java.util.List;
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
+    private final BookService bookService;
+    private final AccountService accountService;
 
     @Override
-    public Comment create(Comment comment) {
-        log.info("(create) comment: {}", comment);
+    public Comment create(CreateCommentRequest request) {
+        log.info("(create) comment: {}", request);
 
-        return null;
+        Comment comment = new Comment();
+        comment.setContent(request.getContent());
+        comment.setBook(bookService.find(request.getBookId()));
+        comment.setAccount(accountService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
+
+        return commentRepository.save(comment);
     }
 
     @Override
-    public List<Comment> findByBookId(Long bookId) {
+    public Page<Comment> findByBookId(Long bookId, Pageable pageable) {
         log.info("(find) comment by book id: {}", bookId);
-        return List.of();
+        return commentRepository.findByBookId(bookId, pageable);
     }
 
     @Override

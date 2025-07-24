@@ -2,10 +2,12 @@ package com.me.book_management.controller.book;
 
 import com.me.book_management.annotation.book.UpdateRequest;
 import com.me.book_management.dto.request.CreateBookRequest;
+import com.me.book_management.dto.request.CreateCommentRequest;
 import com.me.book_management.dto.request.UpdateBookRequest;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.exception.InputException;
 import com.me.book_management.service.BookService;
+import com.me.book_management.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class BookController {
 
     private final BookService bookService;
+    private final CommentService commentService;
 
     @GetMapping("create")
     public String create(Model model) {
@@ -48,14 +51,20 @@ public class BookController {
 
     @GetMapping("{id}")
     public String find(@PathVariable Long id,
+                       @RequestParam(defaultValue = "0") int commentPage,
+                       @RequestParam(defaultValue = "5") int commentSize,
                        Model model) {
         Book book = bookService.find(id);
         model.addAttribute("book", book);
+        model.addAttribute("comments", commentService.findByBookId(id, PageRequest.of(commentPage, commentSize)));
+        CreateCommentRequest commentRequest = new CreateCommentRequest();
+        commentRequest.setBookId(id);
+        model.addAttribute("createCommentRequest", commentRequest);
         return "book/detail";
     }
 
     @GetMapping("list")
-    public String listBooks(@RequestParam(defaultValue = "0") int page,
+    public String listBooks(@RequestParam(defaultValue = "0") int page, // TODO: change to dto
                             @RequestParam(defaultValue = "10") int size,
                             Model model) {
         Pageable pageable = PageRequest.of(page, size);

@@ -123,4 +123,46 @@ button:hover {
 
 .navbar-links a:hover {
     background: #495057;
-} 
+}
+
+/* YouTube-style comment list */
+.comment-list {
+    margin-top: 24px;
+    margin-bottom: 24px;
+    padding: 0;
+}
+.comment-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid #eee;
+}
+.comment-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #fff;
+    flex-shrink: 0;
+}
+.comment-body {
+    flex: 1;
+}
+.comment-username {
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 4px;
+    font-size: 1rem;
+}
+.comment-content {
+    color: #333;
+    font-size: 1rem;
+    margin-bottom: 4px;
+    white-space: pre-line;
+}

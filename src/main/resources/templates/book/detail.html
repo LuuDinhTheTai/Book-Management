@@ -7,26 +7,65 @@
 </head>
 <body>
 <div th:replace="fragments/navbar :: navbar"></div>
+
 <div class="container">
-<h1 class="page-title">Book Details</h1>
-<div th:if="${book}" class="book-detail">
-    <p>Name: <span th:text="${book.name}"></span></p>
-    <p>Price: <span th:text="${book.price}"></span></p>
-    <p>Quantity: <span th:text="${book.qty}"></span></p>
-    <p>Status: <span th:text="${book.status}"></span></p>
-    <div th:if="${book.detail}">
-        <p>ISBN: <span th:text="${book.detail.isbn}"></span></p>
-        <p>Title: <span th:text="${book.detail.title}"></span></p>
-        <p>Subtitle: <span th:text="${book.detail.subtitle}"></span></p>
-        <p>Author: <span th:text="${book.detail.author}"></span></p>
-        <p>Publisher: <span th:text="${book.detail.publisher}"></span></p>
-        <p>Published Date: <span th:text="${book.detail.publishedDate}"></span></p>
-        <p>Description: <span th:text="${book.detail.description}"></span></p>
-        <p>Page Count: <span th:text="${book.detail.pageCount}"></span></p>
-        <p>Language: <span th:text="${book.detail.language}"></span></p>
-        <p>Format: <span th:text="${book.detail.format}"></span></p>
+    <h1 class="page-title">Book Details</h1>
+
+    <div th:if="${book}" class="book-detail">
+        <p>Name: <span th:text="${book.name}"></span></p>
+        <p>Price: <span th:text="${book.price}"></span></p>
+        <p>Quantity: <span th:text="${book.qty}"></span></p>
+        <p>Status: <span th:text="${book.status}"></span></p>
+        <div th:if="${book.detail}">
+            <p>ISBN: <span th:text="${book.detail.isbn}"></span></p>
+            <p>Title: <span th:text="${book.detail.title}"></span></p>
+            <p>Subtitle: <span th:text="${book.detail.subtitle}"></span></p>
+            <p>Author: <span th:text="${book.detail.author}"></span></p>
+            <p>Publisher: <span th:text="${book.detail.publisher}"></span></p>
+            <p>Published Date: <span th:text="${book.detail.publishedDate}"></span></p>
+            <p>Description: <span th:text="${book.detail.description}"></span></p>
+            <p>Page Count: <span th:text="${book.detail.pageCount}"></span></p>
+            <p>Language: <span th:text="${book.detail.language}"></span></p>
+            <p>Format: <span th:text="${book.detail.format}"></span></p>
+        </div>
     </div>
 </div>
+
+<div class="container">
+    <h2>Comment</h2>
+
+    <div>
+        <div class="comment-list">
+            <div class="comment-item" th:each="comment : ${comments.content}">
+                <div class="comment-avatar" th:text="${comment.account != null && comment.account.username != null ? comment.account.username.substring(0,1).toUpperCase() : 'A'}"></div>
+                <div class="comment-body">
+                    <div class="comment-username" th:text="${comment.account != null ? comment.account.username : 'Anonymous'}"></div>
+                    <div class="comment-content" th:text="${comment.content}"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pagination-info">
+            <span th:text="${comments.number + 1} + ' of ' + ${comments.totalPages}"></span>
+        </div>
+
+        <div class="pagination-nav">
+            <a th:if="${comments.hasPrevious()}"
+               th:href="@{|/books/${book.id}?commentPage=${comments.number - 1}&commentSize=${comments.size}|}"
+               class="btn-link">Previous</a>
+            <a th:if="${comments.hasNext()}"
+               th:href="@{|/books/${book.id}?commentPage=${comments.number + 1}&commentSize=${comments.size}|}"
+               class="btn-link">Next</a>
+        </div>
+
+        <div>
+            <form th:action="@{/comments/create}" method="post" th:object="${createCommentRequest}">
+                <input type="hidden" th:field="*{bookId}"/>
+                <textarea th:field="*{content}" placeholder="Write something…" required></textarea><br>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
 </div>
 </body>
 </html>
