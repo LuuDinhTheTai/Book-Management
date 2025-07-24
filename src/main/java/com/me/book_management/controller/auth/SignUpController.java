@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -24,8 +25,14 @@ public class SignUpController {
     }
 
     @PostMapping("signup")
-    public String signUp(@Valid @ModelAttribute("signUpRequest") SignUpRequest request,
+    public String signUp(@Valid
+                         @ModelAttribute("signUpRequest")
+                         SignUpRequest request,
+                         BindingResult bindingResult,
                          Model model) {
+        if (bindingResult.hasErrors()) {
+            return "auth/signup-form";
+        }
         try {
             request.validate();
             authService.signUp(request);

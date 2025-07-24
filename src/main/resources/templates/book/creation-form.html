@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Book</title>
+    <link rel="stylesheet" th:href="@{/style.css}"/>
 </head>
 <body>
-<h1>Create Book</h1>
-<div th:if="${errorMessage}">
-    <p th:text="${errorMessage}" style="color:red"></p>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="container">
+<h1 class="page-title">Create Book</h1>
+<div th:if="${errorMessage}" class="error">
+    <p th:text="${errorMessage}"></p>
 </div>
-<form th:action="@{/books/create}" th:object="${createBookRequest}" method="post">
+<form th:action="@{/books/create}" th:object="${createBookRequest}" method="post" class="form">
     <label>Name:</label>
     <input th:field="*{name}" type="text"/><br>
     <label>Price:</label>
@@ -43,5 +46,6 @@
     </fieldset>
     <button type="submit">Create</button>
 </form>
+</div>
 </body>
 </html>

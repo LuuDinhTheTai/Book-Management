@@ -3,15 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <title>Update Book</title>
+  <link rel="stylesheet" th:href="@{/style.css}"/>
 </head>
 <body>
-<h1>Update Book</h1>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="container">
+<h1 class="page-title">Update Book</h1>
 
-<div th:if="${errorMessage}">
-  <p th:text="${errorMessage}" style="color:red;"></p>
+<div th:if="${errorMessage}" class="error">
+  <p th:text="${errorMessage}"></p>
 </div>
 
-<form th:action="@{/books/update}" th:object="${book}" method="post">
+<form th:action="@{/books/update}" th:object="${book}" method="post" class="form">
   <input type="hidden" th:field="*{id}" />
 
   <label for="name">Name:</label>
@@ -34,6 +37,7 @@
   <button type="submit">Update</button>
 </form>
 
-<a th:href="@{/books/list}">Back to List</a>
+<a th:href="@{/books/list}" class="btn-link">Back to List</a>
+</div>
 </body>
 </html>

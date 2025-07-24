@@ -2,11 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <title>Book List</title>
+  <link rel="stylesheet" th:href="@{/style.css}"/>
 </head>
 <body>
-<h1>Book List</h1>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="container">
+<h1 class="page-title">Book List</h1>
 
-<table border="1">
+<table class="table">
   <thead>
   <tr>
     <th>Name</th>
@@ -23,19 +26,19 @@
     <td th:text="${book.qty}"></td>
     <td th:text="${book.status}"></td>
     <td>
-      <a th:href="@{/books/{id}(id=${book.id})}">Detail</a>
+      <a th:href="@{/books/{id}(id=${book.id})}" class="btn-link">Detail</a>
     </td>
   </tr>
   </tbody>
 </table>
 
-<div>
+<div class="pagination-info">
   <span th:text="'Page ' + ${bookPage.number + 1} + ' of ' + ${bookPage.totalPages}"></span>
 </div>
-<div>
-  <a th:if="${bookPage.hasPrevious()}" th:href="@{/books/list(page=${bookPage.number - 1},size=${bookPage.size})}">Previous</a>
-  <a th:if="${bookPage.hasNext()}" th:href="@{/books/list(page=${bookPage.number + 1},size=${bookPage.size})}">Next</a>
+<div class="pagination-nav">
+  <a th:if="${bookPage.hasPrevious()}" th:href="@{/books/list(page=${bookPage.number - 1},size=${bookPage.size})}" class="btn-link">Previous</a>
+  <a th:if="${bookPage.hasNext()}" th:href="@{/books/list(page=${bookPage.number + 1},size=${bookPage.size})}" class="btn-link">Next</a>
 </div>
-
+</div>
 </body>
 </html>

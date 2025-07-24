@@ -2,11 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Book Details</title>
+    <title>Book Detail</title>
+    <link rel="stylesheet" th:href="@{/style.css}"/>
 </head>
 <body>
-<h1>Book Details</h1>
-<div th:if="${book}">
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="container">
+<h1 class="page-title">Book Details</h1>
+<div th:if="${book}" class="book-detail">
     <p>Name: <span th:text="${book.name}"></span></p>
     <p>Price: <span th:text="${book.price}"></span></p>
     <p>Quantity: <span th:text="${book.qty}"></span></p>
@@ -23,6 +26,7 @@
         <p>Language: <span th:text="${book.detail.language}"></span></p>
         <p>Format: <span th:text="${book.detail.format}"></span></p>
     </div>
+</div>
 </div>
 </body>
 </html>
