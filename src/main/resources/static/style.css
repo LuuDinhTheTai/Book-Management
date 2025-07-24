@@ -1,0 +1,126 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 24px 32px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+h1, h2, h3 {
+    color: #333;
+    margin-bottom: 16px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+}
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    text-align: left;
+}
+table th {
+    background: #f1f1f1;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+input, select, textarea, button {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+button:hover {
+    background: #0056b3;
+}
+
+.error {
+    color: #d8000c;
+    background: #ffd2d2;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+.success {
+    color: #155724;
+    background: #d4edda;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #343a40;
+    padding: 12px 32px;
+    border-radius: 0 0 8px 8px;
+    margin-bottom: 32px;
+}
+
+.navbar-brand {
+    color: #fff;
+    font-size: 1.4rem;
+    font-weight: bold;
+    text-decoration: none;
+    margin-right: 32px;
+}
+
+.navbar-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-links li {
+    display: inline;
+}
+
+.navbar-links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 6px 14px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.navbar-links a:hover {
+    background: #495057;
+} 
