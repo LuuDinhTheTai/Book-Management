@@ -17,7 +17,7 @@ public class ActionServiceImpl implements ActionService {
 
     @Override
     public Action createIfNotExists(Action action) {
-        log.info("(createIfNotExists) action: {}", action);
+        log.info("(create) action: {}", action);
 
         Action existingAction = findByName(action.getName());
         if (existingAction != null) {

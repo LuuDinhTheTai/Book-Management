@@ -1,5 +1,6 @@
 package com.me.book_management.controller.book;
 
+import com.me.book_management.annotation.book.UpdateRequest;
 import com.me.book_management.dto.request.CreateBookRequest;
 import com.me.book_management.dto.request.UpdateBookRequest;
 import com.me.book_management.entity.book.Book;
@@ -72,7 +73,10 @@ public class BookController {
     }
 
     @PostMapping("update")
-    public String update(@Valid @ModelAttribute("book") UpdateBookRequest request,
+    public String update(@Valid
+                         @ModelAttribute("book")
+                         @UpdateRequest
+                         UpdateBookRequest request,
                          Model model) {
         try {
             request.validate();

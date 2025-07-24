@@ -31,10 +31,10 @@ public class AuthServiceImpl implements AuthService {
     public void signUp(SignUpRequest request) {
         log.info("(signUp) request: {}", request);
 
-        if (existedByEmail(request.getEmail())) {
+        if (accountRepository.existsByEmail(request.getEmail())) {
             throw new InputException("Email already exists");
         }
-        if (existedByUsername(request.getUsername())) {
+        if (accountRepository.existsByUsername(request.getUsername())) {
             throw new InputException("Username already exists");
         }
 
@@ -70,22 +70,14 @@ public class AuthServiceImpl implements AuthService {
     public void resetPassword(ForgotPasswordRequest request) {
         log.info("(resetPassword) request: {}", request);
 
-        Account account = accountRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new InputException("Email not found"));
-
-        if (!account.getUsername().equals(request.getUsername())) {
-            throw new InputException("Username not found for this email");
-        }
-
-        account.setPassword(passwordEncoder.encode(request.getPassword()));
-        accountRepository.save(account);
-    }
-
-    private boolean existedByEmail(String email) {
-        return accountRepository.findByEmail(email).isPresent();
-    }
-
-    private boolean existedByUsername(String username) {
-        return accountRepository.findByUsername(username).isPresent();
+//        Account account = accountRepository.findByEmail(request.getEmail())
+//                .orElseThrow(() -> new InputException("Email not found"));
+//
+//        if (!account.getUsername().equals(request.getUsername())) {
+//            throw new InputException("Username not found for this email");
+//        }
+//
+//        account.setPassword(passwordEncoder.encode(request.getPassword()));
+//        accountRepository.save(account);
     }
 }

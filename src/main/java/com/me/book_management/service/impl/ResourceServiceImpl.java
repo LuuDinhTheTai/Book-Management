@@ -17,7 +17,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public Resource createIfNotExists(Resource resource) {
-        log.info("(createIfNotExists) resource: {}", resource);
+        log.info("(create) resource: {}", resource);
 
         Resource existingResource = findByName(resource.getName());
         if (existingResource != null) {

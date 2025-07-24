@@ -17,7 +17,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account findByUsername(String username) {
-        log.info("(findByUsername) account: {}", username);
+        log.info("(find) account: {}", username);
 
         return accountRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("Account not found"));

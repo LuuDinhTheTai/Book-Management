@@ -19,8 +19,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -30,7 +28,6 @@ public class BookServiceImpl implements BookService {
     private final DetailService detailService;
     private final AccountService accountService;
 
-    @PreAuthorize("hasAuthority(T(com.me.book_management.constant.Constants.PERMISSION).CREATE_BOOK)")
     @Override
     public Book create(CreateBookRequest request) {
         log.info("(create) request: {}", request);
@@ -64,27 +61,23 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findAll(pageable);
     }
 
-    @PreAuthorize("hasRole(T(com.me.book_management.constant.Constants.ROLE).ADMIN) " +
-            "or " +
-            "(" +
-            "hasRole(T(com.me.book_management.constant.Constants.ROLE).USER) " +
-            "and " +
-            "hasAuthority(T(com.me.book_management.constant.Constants.PERMISSION).UPDATE_BOOK) " +
-            ")"
-    )
     @Override
     public Book update(UpdateBookRequest request) {
         log.info("(update) request: {}", request);
 
         Book book = find(request.getId());
-        if (!Objects.equals(book.getAccount().getUsername(), SecurityContextHolder.getContext().getAuthentication().getName())) {
-            throw new NotFoundException("Book not found or you do not have permission to update this book");
+
+        if (request.getName() != null) {
+            book.setName(request.getName());
+        }
+        if (request.getPrice() != null) {
+            book.setPrice(request.getPrice());
         }
 
-        book.setName(request.getName());
-        book.setPrice(request.getPrice());
         book.setQty(request.getQty());
-        book.setStatus(request.getStatus());
+        if (request.getStatus() != null) {
+            book.setStatus(request.getStatus());
+        }
         if (request.getDetail() != null) {
             Detail detail = detailService.create(request.getDetail());
             book.setDetail(detail);

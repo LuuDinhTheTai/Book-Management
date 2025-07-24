@@ -17,7 +17,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public Permission createIfNotExists(Permission permission) {
-        log.info("(createIfNotExists) permission: {}", permission);
+        log.info("(create) permission: {}", permission);
 
         Permission existingPermission = findByName(permission.getName());
         if (existingPermission != null) {

@@ -17,7 +17,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role createIfNotExists(Role role) {
-        log.info("(createIfNotExists) role: {}", role);
+        log.info("(create) role: {}", role);
 
         Role existingRole = findByName(role.getName());
         if (existingRole != null) {
@@ -29,7 +29,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role findByName(String name) {
-        log.info("(findByName) role: {}", name);
+        log.info("(find) role: {}", name);
 
         return roleRepository.findByName(name)
                 .orElse(null);
