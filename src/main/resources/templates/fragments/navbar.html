@@ -4,11 +4,12 @@
 <body>
   <div th:fragment="navbar">
     <nav class="navbar">
-      <a class="navbar-brand" th:href="@{/}">Book Management</a>
+      <a class="navbar-brand" th:href="@{/books/list}">Book Management</a>
       <ul class="navbar-links">
-        <li><a th:href="@{/books/list}">Book List</a></li>
-        <li><a th:href="@{/auth/signin}">Sign In</a></li>
-        <li><a th:href="@{/auth/signup}">Sign Up</a></li>
+        <li><a th:href="@{/books/list}">Category</a></li>
+        <li th:if="${not #authorization.expr('isAuthenticated()')}"><a th:href="@{/auth/signin}">Sign In</a></li>
+        <li th:if="${not #authorization.expr('isAuthenticated()')}"><a th:href="@{/auth/signup}">Sign Up</a></li>
+        <li th:if="${#authorization.expr('isAuthenticated()')}"><a th:href="@{/auth/logout}">Log Out</a></li>
       </ul>
     </nav>
   </div>

@@ -30,6 +30,7 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests(
                 rq -> rq
                         // PUBLIC ENDPOINTS
+                        .requestMatchers("/style.css").permitAll()
                         .requestMatchers(HttpMethod.GET,
                                 "/auth/signup",
                                 "/auth/signin",
