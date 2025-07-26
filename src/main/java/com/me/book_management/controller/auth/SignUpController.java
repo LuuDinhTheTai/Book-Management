@@ -1,7 +1,6 @@
 package com.me.book_management.controller.auth;
 
-import com.me.book_management.dto.request.SignUpRequest;
-import com.me.book_management.exception.CustomException;
+import com.me.book_management.dto.request.auth.SignUpRequest;
 import com.me.book_management.exception.InputException;
 import com.me.book_management.service.AuthService;
 import jakarta.validation.Valid;

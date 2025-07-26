@@ -1,4 +1,4 @@
-package com.me.book_management.dto.response;
+package com.me.book_management.dto.response.account;
 
 import com.me.book_management.entity.account.Account;
 import lombok.AllArgsConstructor;

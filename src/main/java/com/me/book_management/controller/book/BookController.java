@@ -1,9 +1,9 @@
 package com.me.book_management.controller.book;
 
 import com.me.book_management.annotation.book.UpdateRequest;
-import com.me.book_management.dto.request.CreateBookRequest;
-import com.me.book_management.dto.request.CreateCommentRequest;
-import com.me.book_management.dto.request.UpdateBookRequest;
+import com.me.book_management.dto.request.book.CreateBookRequest;
+import com.me.book_management.dto.request.book.CreateCommentRequest;
+import com.me.book_management.dto.request.book.UpdateBookRequest;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.exception.InputException;
 import com.me.book_management.service.BookService;

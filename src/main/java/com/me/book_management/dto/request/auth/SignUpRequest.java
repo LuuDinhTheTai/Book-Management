@@ -1,5 +1,6 @@
-package com.me.book_management.dto.request;
+package com.me.book_management.dto.request.auth;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -8,8 +9,10 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class SignInRequest {
+public class SignUpRequest {
 
+    @Email
+    private String email;
     @NotBlank
     private String username;
     @NotBlank

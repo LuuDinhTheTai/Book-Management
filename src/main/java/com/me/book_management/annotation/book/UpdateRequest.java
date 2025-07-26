@@ -1,7 +1,7 @@
 package com.me.book_management.annotation.book;
 
 import com.me.book_management.constant.Constants;
-import com.me.book_management.dto.request.UpdateBookRequest;
+import com.me.book_management.dto.request.book.UpdateBookRequest;
 import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.entity.rbac0.Permission;

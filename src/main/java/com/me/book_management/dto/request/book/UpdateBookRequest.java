@@ -1,6 +1,5 @@
-package com.me.book_management.dto.request;
+package com.me.book_management.dto.request.book;
 
-import com.me.book_management.entity.book.Book;
 import lombok.*;
 
 @AllArgsConstructor

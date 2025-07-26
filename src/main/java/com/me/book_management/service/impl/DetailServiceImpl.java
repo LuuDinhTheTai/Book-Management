@@ -1,12 +1,11 @@
 package com.me.book_management.service.impl;
 
-import com.me.book_management.dto.request.CreateBookRequest;
+import com.me.book_management.dto.request.book.CreateBookRequest;
 import com.me.book_management.entity.book.Detail;
 import com.me.book_management.repository.book.DetailRepository;
 import com.me.book_management.service.DetailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service

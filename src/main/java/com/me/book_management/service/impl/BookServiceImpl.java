@@ -1,7 +1,7 @@
 package com.me.book_management.service.impl;
 
-import com.me.book_management.dto.request.CreateBookRequest;
-import com.me.book_management.dto.request.UpdateBookRequest;
+import com.me.book_management.dto.request.book.CreateBookRequest;
+import com.me.book_management.dto.request.book.UpdateBookRequest;
 import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.entity.book.Detail;
@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

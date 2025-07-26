@@ -1,6 +1,5 @@
-package com.me.book_management.dto.request;
+package com.me.book_management.dto.request.auth;
 
-import com.me.book_management.exception.CustomException;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -10,7 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class SignUpRequest {
+public class ForgotPasswordRequest {
 
     @Email
     private String email;
