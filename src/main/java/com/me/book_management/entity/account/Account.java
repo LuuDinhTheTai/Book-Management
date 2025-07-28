@@ -30,15 +30,17 @@ public class Account extends EntityWithUpdater {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-        name = "account_role",
-        joinColumns = @JoinColumn(name = "account_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id")
+            name = "account_role",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account",
+            fetch = FetchType.LAZY)
     private Set<Book> books = new HashSet<>();
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account",
+            fetch = FetchType.LAZY)
     private List<Cart> cart = new ArrayList<>();
 }

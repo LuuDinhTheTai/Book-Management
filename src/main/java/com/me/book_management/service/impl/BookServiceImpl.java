@@ -7,9 +7,9 @@ import com.me.book_management.entity.book.Book;
 import com.me.book_management.entity.book.Detail;
 import com.me.book_management.exception.NotFoundException;
 import com.me.book_management.repository.book.BookRepository;
+import com.me.book_management.repository.book.DetailRepository;
 import com.me.book_management.service.AccountService;
 import com.me.book_management.service.BookService;
-import com.me.book_management.service.DetailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,8 +24,8 @@ import org.springframework.stereotype.Service;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
-    private final DetailService detailService;
     private final AccountService accountService;
+    private final DetailRepository detailRepository;
 
     @Override
     public Book create(CreateBookRequest request) {
@@ -75,10 +75,28 @@ public class BookServiceImpl implements BookService {
             book.setStatus(request.getStatus());
         }
         if (request.getDetail() != null) {
-            Detail detail = detailService.create(request.getDetail());
+            Detail detail = create(request.getDetail());
             book.setDetail(detail);
         }
 
         return bookRepository.save(book);
+    }
+
+    private Detail create(CreateBookRequest.Detail detail) {
+        log.info("(create) detail: {}", detail);
+
+        Detail detailEntity = new Detail();
+        detailEntity.setIsbn(detail.getIsbn());
+        detailEntity.setTitle(detail.getTitle());
+        detailEntity.setSubtitle(detail.getSubtitle());
+        detailEntity.setAuthor(detail.getAuthor());
+        detailEntity.setPublisher(detail.getPublisher());
+        detailEntity.setPublishedDate(detail.getPublishedDate());
+        detailEntity.setDescription(detail.getDescription());
+        detailEntity.setPageCount(detail.getPageCount());
+        detailEntity.setLanguage(detail.getLanguage());
+        detailEntity.setFormat(detail.getFormat());
+
+        return detailRepository.save(detailEntity);
     }
 }

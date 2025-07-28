@@ -18,8 +18,8 @@ public class Comment extends EntityWithUpdater {
     private Long id;
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Account account;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Book book;
 }

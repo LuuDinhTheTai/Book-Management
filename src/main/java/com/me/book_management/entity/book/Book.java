@@ -21,9 +21,9 @@ public class Book extends EntityWithUpdater {
     private int qty;
     private String status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Detail detail;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Account account;
 }
