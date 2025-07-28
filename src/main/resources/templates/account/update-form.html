@@ -3,8 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <title>Update Profile</title>
+    <link rel="stylesheet" th:href="@{/style.css}"/>
 </head>
 <body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="container">
+    <h1 class="page-title">Update Profile</h1>
 
+    <div th:if="${errorMessage}" class="error">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <form th:action="@{|/accounts/update/${account.id}|}" th:object="${account}" method="post" class="form">
+        <label for="username">Username:</label>
+        <input type="text" id="username" th:field="*{username}"/><br/>
+
+<!--        <label for="price">Price:</label>-->
+<!--        <input type="number" id="price" th:field="*{price}" step="0.01" required /><br/>-->
+
+<!--        <label for="qty">Quantity:</label>-->
+<!--        <input type="number" id="qty" th:field="*{qty}" required /><br/>-->
+
+<!--        <label for="status">Status:</label>-->
+<!--        <input type="text" id="status" th:field="*{status}" required /><br/>-->
+
+<!--        <div th:if="*{detail != null}">-->
+<!--            <label for="detailTitle">Detail Title:</label>-->
+<!--            <input type="text" id="detailTitle" th:field="*{detail.title}" /><br/>-->
+<!--        </div>-->
+
+        <button type="submit">Update</button>
+    </form>
+</div>
 </body>
 </html>

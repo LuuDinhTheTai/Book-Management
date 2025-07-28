@@ -43,6 +43,10 @@ public class SecurityConfiguration {
                                 "/auth/forgot-password").permitAll()
                         .anyRequest().authenticated()
         );
+//        http.formLogin(form -> form
+//                .loginPage("/auth/signin")           // Đường dẫn đến trang login custom
+//                .permitAll()                   // Cho phép tất cả truy cập trang login
+//        );
         http.oauth2ResourceServer(
                 oauth2 -> oauth2
                         .jwt(

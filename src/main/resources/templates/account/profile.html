@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" th:href="@{/style.css}"/>
+</head>
+<body>
+<div th:object="${account}" class="container">
+    <h1 th:text="${account.username}"></h1>
+
+    <p th:text="${account.email}">Email: </p>
+    <form th:action="@{|/accounts/update/${account.id}|}" method="get">
+        <button type="submit">Update Profile</button>
+    </form>
+    <form th:action="@{|/accounts/delete/${account.id}|}" method="post">
+        <button type="submit">Delete Account</button>
+    </form>
+    <form th:action="@{/auth/signout}" method="post">
+        <button type="submit">Sign out</button>
+    </form>
+</div>
+</body>
+</html>

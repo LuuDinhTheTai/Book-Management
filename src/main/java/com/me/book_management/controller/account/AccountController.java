@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -37,9 +38,20 @@ public class AccountController {
                          @Valid
                          @ModelAttribute("account")
                          UpdateAccountRequest request,
+                         BindingResult bindingResult,
                          Model model) {
-        accountService.update(id, request);
-        return "redirect:/accounts/profile";
+        if (bindingResult.hasErrors()) {
+            return "account/update-form";
+        }
+        try {
+            request.validate();
+            accountService.update(id, request);
+            return "redirect:/accounts/profile";
+
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "account/update-form";
+        }
     }
 
     @PostMapping("delete/{id}")

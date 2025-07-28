@@ -15,14 +15,7 @@ public class CommonUtil {
         return object == null;
     }
 
-    public static boolean isOwner(Authentication authentication, Object resource) {
-        return isOwner(authentication.getName(), resource);
-    }
-
-    public static boolean isOwner(String owner, Object resource) {
-        if (resource instanceof Book) {
-            return ((Book) resource).getAccount().getUsername().equals(owner);
-        }
-        return false;
+    public static boolean isDeleted(Account account) {
+        return account != null && account.getDeletedAt() != null && account.getDeletedBy() != null;
     }
 }

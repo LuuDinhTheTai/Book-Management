@@ -3,7 +3,7 @@ package com.me.book_management.dto.request.account;
 import lombok.*;
 
 @AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 @Getter
 @Setter
 @ToString

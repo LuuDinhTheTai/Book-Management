@@ -12,11 +12,13 @@ import lombok.Setter;
 @Setter
 public class AccountResponse {
 
+    private Long id;
     private String email;
     private String username;
 
     public static AccountResponse from(Account account) {
         return new AccountResponse(
+                account.getId(),
                 account.getEmail(),
                 account.getUsername()
         );

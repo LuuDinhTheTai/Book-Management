@@ -34,15 +34,16 @@ public class SignInController {
     }
 
     @PostMapping("signin")
-    public String loginPost(@Valid
-                            @ModelAttribute("signInRequest")
-                            SignInRequest request,
-                            BindingResult bindingResult,
-                            HttpServletResponse response,
-                            Model model) {
+    public String login(@Valid
+                        @ModelAttribute("signInRequest")
+                        SignInRequest request,
+                        BindingResult bindingResult,
+                        HttpServletResponse response,
+                        Model model) {
         if (bindingResult.hasErrors()) {
             return "auth/signin-form";
         }
+
         try {
             request.validate();
 
@@ -50,7 +51,7 @@ public class SignInController {
             Cookie tokenCookie = cookieUtil.create(Constants.COOKIE.ACCESS_TOKEN, token);
             response.addCookie(tokenCookie);
 
-            return "redirect:/books/create";
+            return "redirect:/books/list";
 
         } catch (InputException e) {
             model.addAttribute("errorMessage", e.getMessage());
