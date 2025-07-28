@@ -1,5 +1,7 @@
 package com.me.book_management.dto.request.auth;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -10,9 +12,9 @@ import lombok.*;
 @ToString
 public class SignInRequest {
 
-    @NotBlank
+    @NotBlank(message = "Username cannot be blank")
     private String username;
-    @NotBlank
+    @NotBlank(message = "Password cannot be blank")
     private String password;
 
     public void validate() {

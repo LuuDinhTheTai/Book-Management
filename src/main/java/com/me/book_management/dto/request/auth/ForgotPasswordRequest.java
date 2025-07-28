@@ -11,11 +11,11 @@ import lombok.*;
 @ToString
 public class ForgotPasswordRequest {
 
-    @Email
+    @Email(message = "Email is not valid")
     private String email;
-    @NotBlank
+    @NotBlank(message = "Username cannot be blank")
     private String username;
-    @NotBlank
+    @NotBlank(message = "Password cannot be blank")
     private String password;
 
     public void validate() {

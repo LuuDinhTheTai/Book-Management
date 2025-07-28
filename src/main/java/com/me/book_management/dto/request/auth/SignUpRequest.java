@@ -1,7 +1,6 @@
 package com.me.book_management.dto.request.auth;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @AllArgsConstructor
@@ -11,11 +10,14 @@ import lombok.*;
 @ToString
 public class SignUpRequest {
 
-    @Email
+    @Email(message = "Email is not valid")
+    @NotBlank(message = "Email cannot be blank")
     private String email;
-    @NotBlank
+    @NotBlank(message = "Username cannot be blank")
+    @Size(min = 4, max = 10, message = "Username must be at least 4 characters long")
     private String username;
-    @NotBlank
+    @NotBlank(message = "Password cannot be blank")
+    @Size(min = 4, max = 10, message = "Username must be at least 4 characters long")
     private String password;
 
     public void validate() {

@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,7 +24,7 @@ public class Detail {
     private String subtitle;
     private String author;
     private String publisher;
-    private String publishedDate;
+    private LocalDateTime publishedDate;
     private String description;
     private String pageCount;
     private String language;

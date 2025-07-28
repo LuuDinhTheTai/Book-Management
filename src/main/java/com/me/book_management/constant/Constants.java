@@ -64,17 +64,36 @@ public class Constants {
     public static class BOOK_STATUS {
 
         public static final String AVAILABLE = "AVAILABLE";
+        public static final String SOLD_OUT = "SOLD_OUT";
+    }
+
+    public static class BOOK_FORMAT {
+
+        public static final String EBOOK = "EBOOK";
+        public static final String AUDIOBOOK = "AUDIOBOOK";
+
+    }
+
+    public static class BOOK_LANGUAGE {
+
+        public static final String EN = "ENGLISH";
+        public static final String VI = "VIETNAMESE";
     }
 
     public static class CART_STATUS {
 
+        public static final String PENDING = "PENDING";
+        public static final String COMPLETED = "COMPLETED";
     }
 
     public static class PAYMENT_METHOD {
 
+        public static final String CASH = "CASH";
     }
 
     public static class SHIPPING_METHOD {
 
+        public static final String COD = "COD";
+        public static final String TRANSFER = "TRANSFER";
     }
 }
