@@ -35,20 +35,16 @@ public class CartServiceImpl implements CartService {
         
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new NotFoundException("Book not found"));
-        
-        // Check if book is available
+
         if (book.getQty() <= 0) {
             throw new InputException("Book is out of stock");
         }
-        
-        // Check if the book already exists in the user's cart
+
         Optional<Cart> existingCart = cartRepository.findByAccountAndBook(account, book);
         if (existingCart.isPresent()) {
-            // Book already in cart, increment quantity
             Cart cart = existingCart.get();
             int newQty = cart.getQty() + 1;
-            
-            // Check if adding one more would exceed available stock
+
             if (newQty > book.getQty()) {
                 throw new InputException("Cannot add more items than available in stock");
             }
@@ -59,8 +55,7 @@ public class CartServiceImpl implements CartService {
             book.setQty(book.getQty() - 1);
             return cartRepository.save(cart);
         }
-        
-        // Book not in cart, create new cart item
+
         Cart newCart = new Cart();
         newCart.setBook(book);
         newCart.setAccount(account);
@@ -84,8 +79,7 @@ public class CartServiceImpl implements CartService {
         log.info("(update) cart: id={} {}", id, cart);
         Cart existingCart = cartRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Cart not found"));
-        
-        // Check if the requested quantity exceeds available stock
+
         if (cart.getQty() > existingCart.getBook().getQty()) {
             throw new InputException("Cannot add more items than available in stock");
         }
@@ -96,8 +90,7 @@ public class CartServiceImpl implements CartService {
             cartRepository.delete(existingCart);
             return null;
         }
-        
-        // Update total price based on new quantity
+
         existingCart.setTotalPrice(existingCart.getBook().getPrice() * cart.getQty());
         return cartRepository.save(existingCart);
     }
