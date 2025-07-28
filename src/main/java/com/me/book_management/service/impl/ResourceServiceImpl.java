@@ -14,24 +14,4 @@ import org.springframework.stereotype.Service;
 public class ResourceServiceImpl implements ResourceService {
 
     private final ResourceRepository resourceRepository;
-
-    @Override
-    public Resource createIfNotExists(Resource resource) {
-        log.info("(create) resource: {}", resource);
-
-        Resource existingResource = findByName(resource.getName());
-        if (existingResource != null) {
-            return existingResource;
-        }
-
-        return resourceRepository.save(resource);
-    }
-
-    @Override
-    public Resource findByName(String name) {
-        log.info("(find) resource: {}", name);
-
-        return resourceRepository.findByName(name)
-                .orElse(null);
-    }
 }

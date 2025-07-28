@@ -21,6 +21,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountResponse find(Long id) {
+        log.info("(find) account: {}", id);
+
         return AccountResponse.from(accountRepository.findById(id).orElseThrow(() -> new NotFoundException("Account not found")));
     }
 
@@ -34,7 +36,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountResponse update(Long id, UpdateAccountRequest request) {
-        log.info("(update) request: {}", request);
+        log.info("(update) account: {}", request);
 
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Account not found"));
@@ -45,10 +47,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void delete(Long id) {
         log.info("(delete) account: {}", id);
+
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Account not found"));
         account.setDeletedAt(LocalDateTime.now());
         account.setDeletedBy(account.getUsername());
+
         accountRepository.save(account);
     }
 }

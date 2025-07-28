@@ -16,18 +16,6 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
 
     @Override
-    public Role createIfNotExists(Role role) {
-        log.info("(create) role: {}", role);
-
-        Role existingRole = findByName(role.getName());
-        if (existingRole != null) {
-            return existingRole;
-        }
-
-        return roleRepository.save(role);
-    }
-
-    @Override
     public Role findByName(String name) {
         log.info("(find) role: {}", name);
 

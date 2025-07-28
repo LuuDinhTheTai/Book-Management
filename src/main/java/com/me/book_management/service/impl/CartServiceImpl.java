@@ -28,7 +28,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Cart add(Long bookId) {
-        log.info("(add) cart: {}", bookId);
+        log.info("(add to cart) book: {}", bookId);
 
         Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
                 .orElseThrow(() -> new NotFoundException("Account not found"));
@@ -76,7 +76,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Cart update(Long id, Cart cart) {
-        log.info("(update) cart: id={} {}", id, cart);
+        log.info("(update) cart: {} {}", id, cart);
+
         Cart existingCart = cartRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Cart not found"));
 
@@ -98,6 +99,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public void delete(Long id) {
         log.info("(delete) cart: {}", id);
+
         cartRepository.deleteById(id);
     }
 

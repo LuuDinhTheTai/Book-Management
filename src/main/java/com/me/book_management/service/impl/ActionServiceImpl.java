@@ -14,24 +14,4 @@ import org.springframework.stereotype.Service;
 public class ActionServiceImpl implements ActionService {
 
     private final ActionRepository actionRepository;
-
-    @Override
-    public Action createIfNotExists(Action action) {
-        log.info("(create) action: {}", action);
-
-        Action existingAction = findByName(action.getName());
-        if (existingAction != null) {
-            return existingAction;
-        }
-
-        return actionRepository.save(action);
-    }
-
-    @Override
-    public Action findByName(String name) {
-        log.info("(find) action: {}", name);
-
-        return actionRepository.findByName(name).
-                orElse(null);
-    }
 }

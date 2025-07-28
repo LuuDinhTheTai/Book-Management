@@ -37,7 +37,7 @@ public class BookServiceImpl implements BookService {
         book.setQty(request.getQty());
         book.setStatus(request.getStatus());
 
-        Detail detail = detailService.create(request.getDetail());
+        Detail detail = create(request.getDetail());
         book.setDetail(detail);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

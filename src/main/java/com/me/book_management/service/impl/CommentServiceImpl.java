@@ -38,7 +38,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Page<Comment> findByBookId(Long bookId, Pageable pageable) {
-        log.info("(find) comment by book id: {}", bookId);
+        log.info("(find) comment: book {}", bookId);
         return commentRepository.findByBookId(bookId, pageable);
     }
 
