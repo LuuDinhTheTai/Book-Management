@@ -1,12 +1,14 @@
 package com.me.book_management.controller.book;
 
-import com.me.book_management.annotation.book.UpdateRequest;
+import com.me.book_management.annotation.book.Create;
+import com.me.book_management.annotation.book.Update;
 import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.book.CreateBookRequest;
 import com.me.book_management.dto.request.book.CreateCommentRequest;
 import com.me.book_management.dto.request.book.UpdateBookRequest;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.exception.InputException;
+import com.me.book_management.exception.NotFoundException;
 import com.me.book_management.service.BookService;
 import com.me.book_management.service.CommentService;
 import jakarta.validation.Valid;
@@ -20,7 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.nio.file.AccessDeniedException;
 
 @Controller
 @RequestMapping("/books/")
@@ -44,6 +46,7 @@ public class BookController {
 
     @PostMapping("create")
     public String create(@Valid
+                         @Create
                          @ModelAttribute("createBookRequest")
                          CreateBookRequest request,
                          BindingResult bindingResult,
@@ -70,7 +73,7 @@ public class BookController {
     public String find(@PathVariable Long id,
                        @RequestParam(defaultValue = "0") int commentPage,
                        @RequestParam(defaultValue = "5") int commentSize,
-                       Model model) {
+                       Model model) throws Exception {
         Book book = bookService.find(id);
         model.addAttribute("book", book);
         model.addAttribute("comments", commentService.findByBookId(id, PageRequest.of(commentPage, commentSize)));
@@ -100,8 +103,8 @@ public class BookController {
 
     @PostMapping("update")
     public String update(@Valid
+                         @Update
                          @ModelAttribute("book")
-                         @UpdateRequest
                          UpdateBookRequest request,
                          Model model) {
         try {

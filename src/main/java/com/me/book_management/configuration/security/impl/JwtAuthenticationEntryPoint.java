@@ -1,6 +1,6 @@
 package com.me.book_management.configuration.security.impl;
 
-import com.me.book_management.exception.CustomException;
+import com.me.book_management.exception.BadRequestException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,6 +17,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
   public void commence(HttpServletRequest request, 
                        HttpServletResponse response, 
                        AuthenticationException authException) throws IOException, ServletException {
-    throw new CustomException("Invalid token");
+    throw new BadRequestException("Invalid token");
   }
 }

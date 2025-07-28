@@ -1,9 +1,13 @@
 package com.me.book_management.controller.cart;
 
+import com.me.book_management.annotation.cart.Create;
+import com.me.book_management.annotation.cart.Delete;
+import com.me.book_management.annotation.cart.Update;
 import com.me.book_management.entity.cart.Cart;
 import com.me.book_management.exception.InputException;
 import com.me.book_management.service.CartService;
 import com.me.book_management.util.CommonUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,10 +25,12 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping("add/{id}")
-    public String add(@PathVariable("id") Long bookId,
+    public String add(@Valid
+                      @Create
+                      @PathVariable("id")
+                      Long bookId,
                       RedirectAttributes redirectAttributes) {
         try {
-            
             cartService.add(bookId);
             redirectAttributes.addFlashAttribute("successMessage", "Book added to cart successfully!");
 
@@ -42,7 +48,9 @@ public class CartController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@PathVariable("id") Long id,
+    public String update(@Valid
+                         @Update
+                         @PathVariable("id") Long id,
                          Cart cart,
                          RedirectAttributes redirectAttributes) {
         try {
@@ -56,7 +64,9 @@ public class CartController {
     }
 
     @PostMapping("delete/{id}")
-    public String delete(@PathVariable("id") Long id,
+    public String delete(@Valid
+                         @Delete
+                         @PathVariable("id") Long id,
                          RedirectAttributes redirectAttributes) {
         cartService.delete(id);
         redirectAttributes.addFlashAttribute("successMessage", "Item removed from cart!");
