@@ -41,7 +41,7 @@ public class BookController {
             request.validate();
             Book book = bookService.create(request);
             model.addAttribute("book", book);
-            return "book/detail";
+            return "redirect:/books/" + book.getId();
 
         } catch (InputException e) {
             model.addAttribute("errorMessage", e.getMessage());

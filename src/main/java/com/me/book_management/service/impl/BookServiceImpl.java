@@ -69,9 +69,6 @@ public class BookServiceImpl implements BookService {
         if (request.getName() != null) {
             book.setName(request.getName());
         }
-        if (request.getPrice() != null) {
-            book.setPrice(request.getPrice());
-        }
 
         book.setQty(request.getQty());
         if (request.getStatus() != null) {

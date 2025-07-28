@@ -6,12 +6,26 @@
     <nav class="navbar">
       <a class="navbar-brand" th:href="@{/books/list}">Book Management</a>
       <ul class="navbar-links">
-        <li><a th:href="@{/books/list}">Category</a></li>
-        <li th:if="${#authorization.expr('isAuthenticated()')}"><a th:href="@{/accounts/profile}">Profile</a></li>
-        <li th:if="${not #authorization.expr('isAuthenticated()')}"><a th:href="@{/auth/signin}">Sign In</a></li>
-        <li th:if="${not #authorization.expr('isAuthenticated()')}"><a th:href="@{/auth/signup}">Sign Up</a></li>
-        <li th:if="${#authorization.expr('isAuthenticated()')}"><a th:href="@{/auth/signout}">Sign Out</a></li>
+        <li th:if="${#authorization.expr('isAuthenticated()')}">
+          <a th:href="@{/carts/list}">Cart</a>
+        </li>
+        <li th:if="${#authorization.expr('isAuthenticated()')}">
+          <a th:href="@{/accounts/profile}">Profile</a>
+        </li>
+        <li th:if="${not #authorization.expr('isAuthenticated()')}">
+          <a th:href="@{/auth/signin}">Sign In</a>
+        </li>
+        <li th:if="${not #authorization.expr('isAuthenticated()')}">
+          <a th:href="@{/auth/signup}">Sign Up</a>
+        </li>
+        <li th:if="${#authorization.expr('isAuthenticated()')}">
+          <a th:href="@{/auth/signout}">Sign out</a>
+        </li>
       </ul>
+<!--      <form class="navbar-search" th:action="@{/books/list}" method="get">-->
+<!--        <input type="text" name="q" placeholder="Search..." class="navbar-search-input" />-->
+<!--        <button type="submit" class="navbar-search-btn">Search</button>-->
+<!--      </form>-->
     </nav>
   </div>
 </body>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart</title>
+    <link rel="stylesheet" th:href="@{/style.css}"/>
+</head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="container">
+    <h1 class="page-title">Cart</h1>
+
+    <div th:if="${successMessage}" class="success">
+        <p th:text="${successMessage}"></p>
+    </div>
+    
+    <div th:if="${errorMessage}" class="error">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <div th:if="${#lists.isEmpty(carts)}" class="empty-cart">
+        <p>Your cart is empty.</p>
+        <a th:href="@{/books/list}" class="btn-link">Continue Shopping</a>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(carts)}">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Book</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="cart : ${carts}">
+                <td>
+                    <a th:href="@{/books/{id}(id=${cart.book.id})}" th:text="${cart.book.name}"></a>
+                </td>
+                <td th:text="${cart.book.price + 'đ'}"></td>
+                <td>
+                    <form th:action="@{/carts/update/{id}(id=${cart.id})}" method="post" style="display: inline;">
+                        <input type="number" name="qty" th:value="${cart.qty}" min="1" max="99" style="width: 60px;">
+                        <button type="submit" class="btn-small">Update</button>
+                    </form>
+                </td>
+                <td th:text="${cart.totalPrice + 'đ'}"></td>
+                <td>
+                    <form th:action="@{/carts/delete/{id}(id=${cart.id})}" method="post" style="display: inline;">
+                        <button type="submit" class="btn-small btn-danger" onclick="return confirm('Remove this item?')">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="cart-summary">
+            <h2>Total: <span th:text="${totalPrice + 'đ'}"></span></h2>
+        </div>
+    </div>
+</div>
+</body>
+</html>

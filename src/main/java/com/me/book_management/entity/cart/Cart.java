@@ -1,7 +1,7 @@
-package com.me.book_management.entity.book;
+package com.me.book_management.entity.cart;
 
 import com.me.book_management.entity.account.Account;
-import com.me.book_management.entity.base.EntityWithUpdater;
+import com.me.book_management.entity.book.Book;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,19 +11,19 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class Book extends EntityWithUpdater {
+public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private float price;
-    private int qty;
-    private String status;
-
     @ManyToOne
-    private Detail detail;
-
+    private Book book;
     @ManyToOne
     private Account account;
+    private int qty;
+    private float totalPrice;
+    // address id
+    private String shippingMethod;
+    private String paymentMethod;
+    private String status;
 }

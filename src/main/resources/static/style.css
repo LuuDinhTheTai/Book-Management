@@ -216,8 +216,69 @@ button:hover {
     font-size: 1rem;
 }
 .comment-content {
+    margin-top: 4px;
+    color: #666;
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+}
+
+.empty-cart p {
+    margin-bottom: 16px;
+    font-size: 1.1rem;
+}
+
+.cart-summary {
+    text-align: right;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #ddd;
+}
+
+.cart-summary h2 {
+    margin: 0;
     color: #333;
-    font-size: 1rem;
-    margin-bottom: 4px;
-    white-space: pre-line;
+}
+
+.btn-small {
+    padding: 4px 8px;
+    font-size: 0.9rem;
+    margin-left: 4px;
+}
+
+.btn-danger {
+    background: #dc3545;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+.book-actions {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+}
+
+.book-actions form {
+    display: inline;
+    margin: 0;
+}
+
+.book-actions .btn-link {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #6c757d;
+    color: #fff;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.book-actions .btn-link:hover {
+    background: #545b62;
+    text-decoration: none;
 }

@@ -60,4 +60,21 @@ public class Constants {
 
         public static final String ACCESS_TOKEN = "token";
     }
+
+    public static class BOOK_STATUS {
+
+        public static final String AVAILABLE = "AVAILABLE";
+    }
+
+    public static class CART_STATUS {
+
+    }
+
+    public static class PAYMENT_METHOD {
+
+    }
+
+    public static class SHIPPING_METHOD {
+
+    }
 }

@@ -3,11 +3,14 @@ package com.me.book_management.entity.account;
 
 import com.me.book_management.entity.base.EntityWithUpdater;
 import com.me.book_management.entity.book.Book;
+import com.me.book_management.entity.cart.Cart;
 import com.me.book_management.entity.rbac0.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -35,4 +38,7 @@ public class Account extends EntityWithUpdater {
 
     @OneToMany(mappedBy = "account")
     private Set<Book> books = new HashSet<>();
+
+    @OneToMany(mappedBy = "account")
+    private List<Cart> cart = new ArrayList<>();
 }

@@ -10,7 +10,7 @@ import lombok.*;
 public class CreateBookRequest {
 
     private String name;
-    private String price;
+    private float price;
     private int qty;
     private String status;
     private Detail detail = new Detail();

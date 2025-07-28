@@ -58,4 +58,12 @@ public class SignInController {
             return "auth/signin-form";
         }
     }
+
+    @PostMapping("signout")
+    public String signout(HttpServletResponse response) {
+//        Cookie tokenCookie = cookieUtil.create(Constants.COOKIE.ACCESS_TOKEN, "");
+//        tokenCookie.setMaxAge(0);
+//        response.addCookie(tokenCookie);
+        return "redirect:/auth/signin";
+    }
 }

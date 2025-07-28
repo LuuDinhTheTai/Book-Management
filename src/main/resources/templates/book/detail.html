@@ -28,6 +28,12 @@
             <p>Language: <span th:text="${book.detail.language}"></span></p>
             <p>Format: <span th:text="${book.detail.format}"></span></p>
         </div>
+        <div class="book-actions">
+            <form th:action="@{|/carts/add/${book.id}|}" method="post" style="display: inline;">
+                <button type="submit">Add to Cart</button>
+            </form>
+            <a th:href="@{/books/list}" class="btn-link" style="margin-left: 10px;">Continue Shopping</a>
+        </div>
     </div>
 </div>
 
@@ -39,8 +45,8 @@
             <div class="comment-item" th:each="comment : ${comments.content}">
                 <div class="comment-avatar" th:text="${comment.account != null && comment.account.username != null ? comment.account.username.substring(0,1).toUpperCase() : 'A'}"></div>
                 <div class="comment-body">
-                    <div class="comment-username" th:text="${comment.account != null ? comment.account.username : 'Anonymous'}"></div>
-                    <div class="comment-content" th:text="${comment.content}"></div>
+                    <div class="comment-username" th:text="${comment.account != null ? comment.account.username : '?'}"></div>
+                    <div class="comment-content" th:text="${comment.content != null ? comment.content : '?'}"></div>
                 </div>
             </div>
         </div>

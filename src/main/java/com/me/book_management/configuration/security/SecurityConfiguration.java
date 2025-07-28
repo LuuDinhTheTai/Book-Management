@@ -35,12 +35,15 @@ public class SecurityConfiguration {
                                 "/auth/signup",
                                 "/auth/signin",
                                 "/auth/forgot-password",
+                                "/auth/logout",
                                 "/books/{id}",
                                 "/books/list").permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/auth/signup",
                                 "/auth/signin",
                                 "/auth/forgot-password").permitAll()
+                        // CART ENDPOINTS - require authentication
+                        .requestMatchers("/carts/**").authenticated()
                         .anyRequest().authenticated()
         );
 //        http.formLogin(form -> form
