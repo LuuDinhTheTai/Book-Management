@@ -1,5 +1,6 @@
 package com.me.book_management.dto.request.book;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -20,6 +21,7 @@ public class CreateBookRequest {
     private int qty;
     @NotBlank(message = "Status cannot be blank")
     private String status;
+    @Valid
     private Detail detail = new Detail();
 
     @AllArgsConstructor
@@ -41,12 +43,12 @@ public class CreateBookRequest {
         private String author;
         @NotBlank(message = "Publisher cannot be blank")
         private String publisher;
-        @NotBlank(message = "Published date cannot be blank")
+        @NotNull(message = "Published date cannot be null")
         private LocalDateTime publishedDate;
         @NotBlank(message = "Description cannot be blank")
         @Size(max = 1000, message = "Description cannot be more than 1000 characters")
         private String description;
-        @NotBlank(message = "Page count cannot be blank")
+        @Positive(message = "Page count must be positive")
         private String pageCount;
         @NotBlank(message = "Language cannot be blank")
         private String language;

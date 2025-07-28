@@ -7,45 +7,108 @@
 </head>
 <body>
 <div th:replace="fragments/navbar :: navbar"></div>
+
 <div class="container">
-<h1 class="page-title">Create Book</h1>
-<div th:if="${errorMessage}" class="error">
-    <p th:text="${errorMessage}"></p>
-</div>
-<form th:action="@{/books/create}" th:object="${createBookRequest}" method="post" class="form">
-    <label>Name:</label>
-    <input th:field="*{name}" type="text"/><br>
-    <label>Price:</label>
-    <input th:field="*{price}" type="number"/><br>
-    <label>Quantity:</label>
-    <input th:field="*{qty}" type="number"/><br>
-    <label>Status:</label>
-    <input th:field="*{status}" type="text"/><br>
-    <fieldset>
-        <legend>Detail</legend>
-        <label>ISBN:</label>
-        <input th:field="*{detail.isbn}" type="text"/><br>
-        <label>Title:</label>
-        <input th:field="*{detail.title}" type="text"/><br>
-        <label>Subtitle:</label>
-        <input th:field="*{detail.subtitle}" type="text"/><br>
-        <label>Author:</label>
-        <input th:field="*{detail.author}" type="text"/><br>
-        <label>Publisher:</label>
-        <input th:field="*{detail.publisher}" type="text"/><br>
-        <label>Published Date:</label>
-        <input th:field="*{detail.publishedDate}" type="text"/><br>
-        <label>Description:</label>
-        <input th:field="*{detail.description}" type="text"/><br>
-        <label>Page Count:</label>
-        <input th:field="*{detail.pageCount}" type="text"/><br>
-        <label>Language:</label>
-        <input th:field="*{detail.language}" type="text"/><br>
-        <label>Format:</label>
-        <input th:field="*{detail.format}" type="text"/><br>
-    </fieldset>
-    <button type="submit">Create</button>
-</form>
+    <h1 class="page-title">Create Book</h1>
+
+    <div th:if="${errorMessage}" class="error">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <form th:action="@{/books/create}" th:object="${createBookRequest}" method="post" class="form">
+        <label>Name:</label>
+        <input th:field="*{name}" type="text"/>
+        <div th:if="${#fields.hasErrors('name')}" class="error" th:errors="*{name}"></div>
+        <br>
+
+        <label>Price:</label>
+        <input th:field="*{price}" type="number"/>
+        <div th:if="${#fields.hasErrors('price')}" class="error" th:errors="*{price}"></div>
+        <br>
+
+        <label>Quantity:</label>
+        <input th:field="*{qty}" type="number"/>
+        <div th:if="${#fields.hasErrors('qty')}" class="error" th:errors="*{qty}"></div>
+        <br>
+
+        <label>Status:</label>
+        <select th:field="*{status}">
+            <option value="" disabled selected>Choose status</option>
+            <option th:each="status : ${statuses}"
+                    th:value="${status}"
+                    th:text="${status}">
+            </option>
+        </select>
+        <div th:if="${#fields.hasErrors('status')}" class="error" th:errors="*{status}"></div>
+        <br>
+
+        <fieldset>
+            <legend>Detail</legend>
+            <label>ISBN:</label>
+            <input th:field="*{detail.isbn}" type="text"/>
+            <div th:if="${#fields.hasErrors('detail.isbn')}" class="error" th:errors="*{detail.isbn}"></div>
+            <br>
+
+            <label>Title:</label>
+            <input th:field="*{detail.title}" type="text"/>
+            <div th:if="${#fields.hasErrors('detail.title')}" class="error" th:errors="*{detail.title}"></div>
+            <br>
+
+            <label>Subtitle:</label>
+            <input th:field="*{detail.subtitle}" type="text"/>
+            <div th:if="${#fields.hasErrors('detail.subtitle')}" class="error" th:errors="*{detail.subtitle}"></div>
+            <br>
+
+            <label>Author:</label>
+            <input th:field="*{detail.author}" type="text"/>
+            <div th:if="${#fields.hasErrors('detail.author')}" class="error" th:errors="*{detail.author}"></div>
+            <br>
+
+            <label>Publisher:</label>
+            <input th:field="*{detail.publisher}" type="text"/>
+            <div th:if="${#fields.hasErrors('detail.publisher')}" class="error" th:errors="*{detail.publisher}"></div>
+            <br>
+
+            <label>Published Date:</label>
+            <input th:field="*{detail.publishedDate}" type="datetime-local"/>
+            <div th:if="${#fields.hasErrors('detail.publishedDate')}" class="error" th:errors="*{detail.publishedDate}"></div>
+            <br>
+
+            <label>Description:</label>
+            <input th:field="*{detail.description}" type="text"/>
+            <div th:if="${#fields.hasErrors('detail.description')}" class="error" th:errors="*{detail.description}"></div>
+            <br>
+
+            <label>Page Count:</label>
+            <input th:field="*{detail.pageCount}" type="text"/>
+            <div th:if="${#fields.hasErrors('detail.pageCount')}" class="error" th:errors="*{detail.pageCount}"></div>
+            <br>
+
+            <label>Language:</label>
+            <select th:field="*{detail.language}">
+                <option value="" disabled selected>Choose language</option>
+                <option th:each="lang : ${languages}"
+                        th:value="${lang}"
+                        th:text="${lang}">
+                </option>
+            </select>
+            <div th:if="${#fields.hasErrors('detail.language')}" class="error" th:errors="*{detail.language}"></div>
+            <br>
+
+            <label>Format:</label>
+            <select th:field="*{detail.format}">
+                <option value="" disabled selected>Choose format</option>
+                <option th:each="fmt : ${formats}"
+                        th:value="${fmt}"
+                        th:text="${fmt}">
+                </option>
+            </select>
+            <div th:if="${#fields.hasErrors('detail.format')}" class="error" th:errors="*{detail.format}"></div>
+            <br>
+        </fieldset>
+        <button type="submit">Create</button>
+    </form>
+
 </div>
 </body>
 </html>

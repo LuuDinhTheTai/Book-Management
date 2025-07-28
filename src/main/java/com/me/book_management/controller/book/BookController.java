@@ -1,6 +1,7 @@
 package com.me.book_management.controller.book;
 
 import com.me.book_management.annotation.book.UpdateRequest;
+import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.book.CreateBookRequest;
 import com.me.book_management.dto.request.book.CreateCommentRequest;
 import com.me.book_management.dto.request.book.UpdateBookRequest;
@@ -16,7 +17,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/books/")
@@ -31,12 +35,25 @@ public class BookController {
     public String create(Model model) {
         CreateBookRequest createBookRequest = new CreateBookRequest();
         model.addAttribute("createBookRequest", createBookRequest);
+        model.addAttribute("statuses", Constants.BOOK_STATUS.list());
+        model.addAttribute("languages", Constants.BOOK_LANGUAGE.list());
+        model.addAttribute("formats", Constants.BOOK_FORMAT.list());
+
         return "book/creation-form";
     }
 
     @PostMapping("create")
-    public String create(@Valid @ModelAttribute("createBookRequest") CreateBookRequest request,
+    public String create(@Valid
+                         @ModelAttribute("createBookRequest")
+                         CreateBookRequest request,
+                         BindingResult bindingResult,
                          Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("statuses", Constants.BOOK_STATUS.list());
+            model.addAttribute("languages", Constants.BOOK_LANGUAGE.list());
+            model.addAttribute("formats", Constants.BOOK_FORMAT.list());
+            return "book/creation-form";
+        }
         try {
             request.validate();
             Book book = bookService.create(request);
