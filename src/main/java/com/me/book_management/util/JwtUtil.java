@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.StringJoiner;
 import java.util.UUID;
 
-
 @Component
 @Slf4j
 public class JwtUtil {

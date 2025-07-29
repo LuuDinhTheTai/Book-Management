@@ -4,6 +4,7 @@ import com.me.book_management.configuration.security.impl.BearerTokenResolverImp
 import com.me.book_management.configuration.security.impl.JwtAuthenticationConverterImpl;
 import com.me.book_management.configuration.security.impl.JwtDecoderImpl;
 import com.me.book_management.configuration.security.impl.UserDetailsServiceImpl;
+import com.me.book_management.constant.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,9 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -34,22 +33,30 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET,
                                 "/auth/signup",
                                 "/auth/signin",
-                                "/auth/forgot-password",
+                                "/accounts/forgot-password",
                                 "/auth/logout",
                                 "/books/{id}",
                                 "/books/list").permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/auth/signup",
                                 "/auth/signin",
-                                "/auth/forgot-password").permitAll()
+                                "/accounts/forgot-password").permitAll()
                         // CART ENDPOINTS - require authentication
                         .requestMatchers("/carts/**").authenticated()
                         .anyRequest().authenticated()
         );
-//        http.formLogin(form -> form
-//                .loginPage("/auth/signin")           // Đường dẫn đến trang login custom
-//                .permitAll()                   // Cho phép tất cả truy cập trang login
-//        );
+        http.formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/books/list", true)
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/auth/signout")
+                        .logoutSuccessUrl("/auth/signin")
+//                        .invalidateHttpSession(true)           // Hủy session
+                        .deleteCookies("JSESSIONID", Constants.COOKIE.ACCESS_TOKEN)
+                        .permitAll()
+                );
         http.oauth2ResourceServer(
                 oauth2 -> oauth2
                         .jwt(

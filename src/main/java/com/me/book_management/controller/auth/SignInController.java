@@ -2,6 +2,7 @@ package com.me.book_management.controller.auth;
 
 import com.me.book_management.constant.Constants;
 import com.me.book_management.exception.InputException;
+import com.me.book_management.service.AccountService;
 import com.me.book_management.util.CookieUtil;
 import com.me.book_management.util.JwtUtil;
 import com.me.book_management.dto.request.auth.SignInRequest;
@@ -23,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class SignInController {
 
-    private final JwtUtil jwtUtil;
-    private final CookieUtil cookieUtil;
     private final AuthService authService;
 
     @GetMapping("signin")
@@ -47,9 +46,7 @@ public class SignInController {
         try {
             request.validate();
 
-            String token = jwtUtil.generateToken(authService.signIn(request));
-            Cookie tokenCookie = cookieUtil.create(Constants.COOKIE.ACCESS_TOKEN, token);
-            response.addCookie(tokenCookie);
+            response.addCookie(authService.signIn(request));
 
             return "redirect:/books/list";
 
@@ -57,13 +54,5 @@ public class SignInController {
             model.addAttribute("errorMessage", e.getMessage());
             return "auth/signin-form";
         }
-    }
-
-    @PostMapping("signout")
-    public String signout(HttpServletResponse response) {
-//        Cookie tokenCookie = cookieUtil.create(Constants.COOKIE.ACCESS_TOKEN, "");
-//        tokenCookie.setMaxAge(0);
-//        response.addCookie(tokenCookie);
-        return "redirect:/auth/signin";
     }
 }

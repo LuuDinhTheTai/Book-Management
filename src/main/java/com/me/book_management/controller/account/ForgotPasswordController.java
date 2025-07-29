@@ -1,4 +1,4 @@
-package com.me.book_management.controller.auth;
+package com.me.book_management.controller.account;
 
 import com.me.book_management.dto.request.auth.ForgotPasswordRequest;
 import com.me.book_management.exception.InputException;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/auth/")
+@RequestMapping("/accounts/")
 @RequiredArgsConstructor
 public class ForgotPasswordController {
 

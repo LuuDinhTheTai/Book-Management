@@ -10,6 +10,9 @@ import com.me.book_management.exception.InputException;
 import com.me.book_management.repository.account.AccountRepository;
 import com.me.book_management.service.AuthService;
 import com.me.book_management.service.RoleService;
+import com.me.book_management.util.CookieUtil;
+import com.me.book_management.util.JwtUtil;
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +26,8 @@ public class AuthServiceImpl implements AuthService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
+    private final JwtUtil jwtUtil;
+    private final CookieUtil cookieUtil;
 
     @Override
     public void signUp(SignUpRequest request) {
@@ -50,7 +55,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Account signIn(SignInRequest request) {
+    public Cookie signIn(SignInRequest request) {
         log.info("(signIn) request: {}", request);
 
         Account account = accountRepository.findByUsername(request.getUsername())
@@ -60,7 +65,10 @@ public class AuthServiceImpl implements AuthService {
             throw new InputException("Invalid password");
         }
 
-        return account;
+        String token = jwtUtil.generateToken(account);
+        Cookie tokenCookie = cookieUtil.create(Constants.COOKIE.ACCESS_TOKEN, token);
+
+        return tokenCookie;
     }
 
     @Override
