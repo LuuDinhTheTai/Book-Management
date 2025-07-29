@@ -3,8 +3,10 @@ package com.me.book_management.dto.request.book;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -44,6 +46,7 @@ public class CreateBookRequest {
         @NotBlank(message = "Publisher cannot be blank")
         private String publisher;
         @NotNull(message = "Published date cannot be null")
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         private LocalDateTime publishedDate;
         @NotBlank(message = "Description cannot be blank")
         @Size(max = 1000, message = "Description cannot be more than 1000 characters")
@@ -54,6 +57,13 @@ public class CreateBookRequest {
         private String language;
         @NotBlank(message = "Format cannot be blank")
         private String format;
+        
+        public String getFormattedPublishedDate() {
+            if (publishedDate != null) {
+                return publishedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            }
+            return "";
+        }
 
         public void validate() {
 

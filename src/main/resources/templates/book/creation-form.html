@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Create Book</title>
     <link rel="stylesheet" th:href="@{/style.css}"/>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 </head>
 <body>
 <div th:replace="component/navbar :: navbar"></div>
@@ -70,13 +71,16 @@
             <br>
 
             <label>Published Date:</label>
-            <input th:field="*{detail.publishedDate}" type="datetime-local"/>
-            <div th:if="${#fields.hasErrors('detail.publishedDate')}" class="error" th:errors="*{detail.publishedDate}"></div>
+            <input th:field="*{detail.publishedDate}" type="datetime-local"
+                   th:value="${createBookRequest.detail.formattedPublishedDate}"/>
+            <div th:if="${#fields.hasErrors('detail.publishedDate')}" class="error"
+                 th:errors="*{detail.publishedDate}"></div>
             <br>
 
             <label>Description:</label>
             <input th:field="*{detail.description}" type="text"/>
-            <div th:if="${#fields.hasErrors('detail.description')}" class="error" th:errors="*{detail.description}"></div>
+            <div th:if="${#fields.hasErrors('detail.description')}" class="error"
+                 th:errors="*{detail.description}"></div>
             <br>
 
             <label>Page Count:</label>

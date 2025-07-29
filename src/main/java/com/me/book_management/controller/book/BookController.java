@@ -8,7 +8,6 @@ import com.me.book_management.dto.request.book.CreateCommentRequest;
 import com.me.book_management.dto.request.book.UpdateBookRequest;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.exception.InputException;
-import com.me.book_management.exception.NotFoundException;
 import com.me.book_management.service.BookService;
 import com.me.book_management.service.CommentService;
 import jakarta.validation.Valid;
@@ -21,8 +20,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.nio.file.AccessDeniedException;
 
 @Controller
 @RequestMapping("/books/")
@@ -108,6 +105,9 @@ public class BookController {
                          Model model) {
         Book book = bookService.find(id);
         model.addAttribute("book", book);
+        model.addAttribute("statuses", Constants.BOOK_STATUS.list());
+        model.addAttribute("languages", Constants.BOOK_LANGUAGE.list());
+        model.addAttribute("formats", Constants.BOOK_FORMAT.list());
         return "book/update-form";
     }
 
@@ -121,7 +121,7 @@ public class BookController {
             request.validate();
             Book book = bookService.update(request);
             model.addAttribute("book", book);
-            return "book/detail";
+            return "redirect:/books/" + book.getId();
 
         } catch (InputException e) {
             model.addAttribute("errorMessage", e.getMessage());
