@@ -93,6 +93,16 @@ public class BookController {
         return "book/list";
     }
 
+    @GetMapping("my-book")
+    public String myBook(@RequestParam(defaultValue = "0") int page,
+                          @RequestParam(defaultValue = "10") int size,
+                          Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> bookPage = bookService.findByAccount(pageable);
+        model.addAttribute("bookPage", bookPage);
+        return "book/my-book";
+    }
+
     @GetMapping("update/{id}")
     public String update(@PathVariable Long id,
                          Model model) {

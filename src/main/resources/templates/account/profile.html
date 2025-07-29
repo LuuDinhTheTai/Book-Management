@@ -7,7 +7,9 @@
 </head>
 <body>
 <div th:replace="component/navbar :: navbar"></div>
+
 <div th:object="${account}" class="container">
+    <h1>Hello, </h1>
     <h1 th:text="${account.username}"></h1>
 
     <p th:text="${account.email}">Email: </p>
@@ -19,6 +21,16 @@
     </form>
     <form th:action="@{/auth/signout}" method="post">
         <button type="submit">Sign out</button>
+    </form>
+</div>
+
+<div class="container">
+    <h2>Book</h2>
+    <form th:action="@{/books/create}" method="get">
+        <button type="submit">Create</button>
+    </form>
+    <form th:action="@{/books/my-book}" method="get">
+        <button type="submit">My book</button>
     </form>
 </div>
 </body>

@@ -10,6 +10,7 @@ import com.me.book_management.repository.book.BookRepository;
 import com.me.book_management.repository.book.DetailRepository;
 import com.me.book_management.service.AccountService;
 import com.me.book_management.service.BookService;
+import com.me.book_management.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -80,6 +81,13 @@ public class BookServiceImpl implements BookService {
         }
 
         return bookRepository.save(book);
+    }
+
+    @Override
+    public Page<Book> findByAccount(Pageable pageable) {
+        Account account = accountService.findByUsername(CommonUtil.getCurrentAccount());
+
+        return bookRepository.findByAccount(account, pageable);
     }
 
     private Detail create(CreateBookRequest.Detail detail) {

@@ -28,7 +28,6 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(
                 rq -> rq
-                        // PUBLIC ENDPOINTS
                         .requestMatchers("/style.css").permitAll()
                         .requestMatchers(HttpMethod.GET,
                                 "/auth/signup",
@@ -41,8 +40,6 @@ public class SecurityConfiguration {
                                 "/auth/signup",
                                 "/auth/signin",
                                 "/accounts/forgot-password").permitAll()
-                        // CART ENDPOINTS - require authentication
-                        .requestMatchers("/carts/**").authenticated()
                         .anyRequest().authenticated()
         );
         http.formLogin(form -> form

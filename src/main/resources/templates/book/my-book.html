@@ -6,8 +6,9 @@
 </head>
 <body>
 <div th:replace="component/navbar :: navbar"></div>
+
 <div class="container">
-    <h1 class="page-title">Book List</h1>
+    <h1 class="page-title">My Book</h1>
 
     <table class="table">
         <thead>
@@ -16,6 +17,7 @@
             <th>Price</th>
             <th>Quantity</th>
             <th>Status</th>
+            <th>Action</th>
         </tr>
         </thead>
         <tbody>
@@ -26,6 +28,14 @@
             <td th:text="${book.price}"></td>
             <td th:text="${book.qty}"></td>
             <td th:text="${book.status}"></td>
+            <td>
+                <form th:action="@{|/books/update/${book.id}|}" method="get">
+                    <button type="submit" class="btn-link">Update</button>
+                </form>
+                <form th:action="@{|/books/delete/${book.id}|}" method="post">
+                    <button type="submit" class="btn-link">Delete</button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>
@@ -34,9 +44,9 @@
         <span th:text="'Page ' + ${bookPage.number + 1} + ' of ' + ${bookPage.totalPages}"></span>
     </div>
     <div class="pagination-nav">
-        <a th:if="${bookPage.hasPrevious()}" th:href="@{/books/list(page=${bookPage.number - 1},size=${bookPage.size})}"
+        <a th:if="${bookPage.hasPrevious()}" th:href="@{/books/my-book(page=${bookPage.number - 1},size=${bookPage.size})}"
            class="btn-link">Previous</a>
-        <a th:if="${bookPage.hasNext()}" th:href="@{/books/list(page=${bookPage.number + 1},size=${bookPage.size})}"
+        <a th:if="${bookPage.hasNext()}" th:href="@{/books/my-book(page=${bookPage.number + 1},size=${bookPage.size})}"
            class="btn-link">Next</a>
     </div>
 </div>

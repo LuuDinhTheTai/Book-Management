@@ -12,4 +12,5 @@ public interface BookService {
     Book find(Long id);
     Page<Book> list(Pageable pageable);
     Book update(UpdateBookRequest request);
+    Page<Book> findByAccount(Pageable pageable);
 }
