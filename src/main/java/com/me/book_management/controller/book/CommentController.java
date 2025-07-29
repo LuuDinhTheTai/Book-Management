@@ -1,5 +1,6 @@
 package com.me.book_management.controller.book;
 
+import com.me.book_management.annotation.book.Create;
 import com.me.book_management.dto.request.book.CreateCommentRequest;
 import com.me.book_management.repository.book.CommentRepository;
 import com.me.book_management.service.BookService;
@@ -24,6 +25,7 @@ public class CommentController {
 
     @PostMapping("create")
     public String createComment(@Valid
+                                @Create
                                 @ModelAttribute("createCommentRequest")
                                 CreateCommentRequest request,
                                 Model model) {

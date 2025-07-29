@@ -43,7 +43,7 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
         );
         http.formLogin(form -> form
-                        .loginPage("/login")
+                        .loginPage("/auth/signin")
                         .defaultSuccessUrl("/books/list", true)
                         .permitAll()
                 )
