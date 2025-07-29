@@ -40,11 +40,11 @@ public @interface Delete {
         }
 
         @Override
-        public boolean isValid(Long value, ConstraintValidatorContext context) {
+        public boolean isValid(Long bookId, ConstraintValidatorContext context) {
             if (!CommonUtil.hasPermission(this.account, Constants.PERMISSION.DELETE_BOOK)) {
                 return false;
             }
-            if (!isOwner(value)) {
+            if (!isOwner(bookId)) {
                 return false;
             }
             return true;

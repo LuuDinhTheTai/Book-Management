@@ -71,8 +71,7 @@
             <br>
 
             <label>Published Date:</label>
-            <input th:field="*{detail.publishedDate}" type="datetime-local"
-                   th:value="${createBookRequest.detail.formattedPublishedDate}"/>
+            <input th:field="*{detail.publishedDate}" type="datetime-local"/>
             <div th:if="${#fields.hasErrors('detail.publishedDate')}" class="error"
                  th:errors="*{detail.publishedDate}"></div>
             <br>

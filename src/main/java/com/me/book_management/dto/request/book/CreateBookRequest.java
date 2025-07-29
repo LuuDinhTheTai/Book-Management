@@ -57,13 +57,6 @@ public class CreateBookRequest {
         private String language;
         @NotBlank(message = "Format cannot be blank")
         private String format;
-        
-        public String getFormattedPublishedDate() {
-            if (publishedDate != null) {
-                return publishedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            }
-            return "";
-        }
 
         public void validate() {
 

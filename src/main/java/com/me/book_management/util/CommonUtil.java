@@ -21,6 +21,10 @@ public class CommonUtil {
         return account != null && account.getDeletedAt() != null && account.getDeletedBy() != null;
     }
 
+    public static boolean isDeleted(Book book) {
+        return book != null && book.getDeletedAt() != null && book.getDeletedBy() != null;
+    }
+
     public static boolean hasPermission(Account account, String permission) {
         for (Role role : account.getRoles()) {
             for (Permission p : role.getPermissions()) {
@@ -30,5 +34,15 @@ public class CommonUtil {
             }
         }
         return false;
+    }
+
+    public static boolean hasStatus(Book book, String status) {
+        if (book == null || book.getStatus() == null) {
+            return false;
+        }
+        if (!book.getStatus().equals(status)) {
+            return false;
+        }
+        return true;
     }
 }

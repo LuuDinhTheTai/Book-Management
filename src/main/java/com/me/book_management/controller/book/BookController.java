@@ -1,10 +1,12 @@
 package com.me.book_management.controller.book;
 
 import com.me.book_management.annotation.book.Create;
+import com.me.book_management.annotation.book.Delete;
 import com.me.book_management.annotation.book.Update;
 import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.book.CreateBookRequest;
 import com.me.book_management.dto.request.book.CreateCommentRequest;
+import com.me.book_management.dto.request.book.DeleteBookRequest;
 import com.me.book_management.dto.request.book.UpdateBookRequest;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.exception.InputException;
@@ -127,5 +129,13 @@ public class BookController {
             model.addAttribute("errorMessage", e.getMessage());
             return "book/update-form";
         }
+    }
+
+    @PostMapping("delete/{id}")
+    public String delete(@Valid
+                             @Delete
+                             @PathVariable Long id) {
+        bookService.delete(id);
+        return "redirect:/books/my-book";
     }
 }

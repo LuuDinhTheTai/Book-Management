@@ -1,6 +1,7 @@
 package com.me.book_management.service.impl;
 
 import com.me.book_management.dto.request.book.CreateBookRequest;
+import com.me.book_management.dto.request.book.DeleteBookRequest;
 import com.me.book_management.dto.request.book.UpdateBookRequest;
 import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.book.Book;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -41,8 +44,7 @@ public class BookServiceImpl implements BookService {
         Detail detail = create(request.getDetail());
         book.setDetail(detail);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Account account = accountService.findByUsername(authentication.getName());
+        Account account = accountService.findByUsername(CommonUtil.getCurrentAccount());
         book.setAccount(account);
 
         return bookRepository.save(book);
@@ -88,6 +90,17 @@ public class BookServiceImpl implements BookService {
         Account account = accountService.findByUsername(CommonUtil.getCurrentAccount());
 
         return bookRepository.findByAccount(account, pageable);
+    }
+
+    @Override
+    public void delete(Long id) {
+        log.info("(delete) book: {}", id);
+
+        Book book = find(id);
+        book.setDeletedAt(LocalDateTime.now());
+        book.setDeletedBy(CommonUtil.getCurrentAccount());
+
+        bookRepository.save(book);
     }
 
     private Detail create(CreateBookRequest.Detail detail) {

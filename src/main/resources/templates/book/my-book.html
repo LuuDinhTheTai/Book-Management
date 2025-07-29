@@ -19,6 +19,7 @@
             <th>Quantity</th>
             <th>Status</th>
             <th>Action</th>
+            <th>Deleted at</th>
         </tr>
         </thead>
         <tbody>
@@ -37,6 +38,7 @@
                     <button type="submit" class="btn-link">Delete</button>
                 </form>
             </td>
+            <td th:text="${book.deletedAt}"></td>
         </tr>
         </tbody>
     </table>
