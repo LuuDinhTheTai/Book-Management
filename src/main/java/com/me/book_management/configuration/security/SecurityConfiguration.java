@@ -42,15 +42,16 @@ public class SecurityConfiguration {
                                 "/accounts/forgot-password").permitAll()
                         .anyRequest().authenticated()
         );
-        http.formLogin(form -> form
-                        .loginPage("/auth/signin")
-                        .defaultSuccessUrl("/books/list", true)
-                        .permitAll()
-                )
+        http
+//                .formLogin(form -> form
+//                        .loginPage("/auth/signin")
+//                        .defaultSuccessUrl("/books/list")
+//                        .permitAll()
+//                )
                 .logout(logout -> logout
                         .logoutUrl("/auth/signout")
                         .logoutSuccessUrl("/auth/signin")
-//                        .invalidateHttpSession(true)           // Hủy session
+                        .invalidateHttpSession(true)           // Hủy session
                         .deleteCookies("JSESSIONID", Constants.COOKIE.ACCESS_TOKEN)
                         .permitAll()
                 );
