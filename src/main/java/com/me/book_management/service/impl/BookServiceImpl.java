@@ -1,5 +1,8 @@
 package com.me.book_management.service.impl;
 
+import com.me.book_management.annotation.book.Create;
+import com.me.book_management.annotation.book.Delete;
+import com.me.book_management.annotation.book.Update;
 import com.me.book_management.dto.request.book.CreateBookRequest;
 import com.me.book_management.dto.request.book.DeleteBookRequest;
 import com.me.book_management.dto.request.book.UpdateBookRequest;
@@ -32,6 +35,7 @@ public class BookServiceImpl implements BookService {
     private final DetailRepository detailRepository;
 
     @Override
+    @Create
     public Book create(CreateBookRequest request) {
         log.info("(create) request: {}", request);
 
@@ -64,6 +68,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Update
     public Book update(UpdateBookRequest request) {
         log.info("(update) request: {}", request);
 
@@ -93,6 +98,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Delete
     public void delete(Long id) {
         log.info("(delete) book: {}", id);
 

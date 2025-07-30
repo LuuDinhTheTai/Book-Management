@@ -5,6 +5,9 @@ import com.me.book_management.entity.book.Book;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,11 +19,14 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Book book;
-    @ManyToOne(fetch = FetchType.LAZY)
+    
+    @OneToOne
+    @JoinColumn(name = "account_id")
     private Account account;
-    private int qty;
+    
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartBook> cartBooks = new ArrayList<>();
+    
     private float totalPrice;
     // address id
     private String shippingMethod;

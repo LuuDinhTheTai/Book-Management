@@ -3,18 +3,16 @@ package com.me.book_management.controller.cart;
 import com.me.book_management.annotation.cart.Create;
 import com.me.book_management.annotation.cart.Delete;
 import com.me.book_management.annotation.cart.Update;
+import com.me.book_management.dto.request.cart.UpdateCartRequest;
 import com.me.book_management.entity.cart.Cart;
 import com.me.book_management.exception.InputException;
+import com.me.book_management.repository.cart.CartBookRepository;
 import com.me.book_management.service.CartService;
-import com.me.book_management.util.CommonUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -23,10 +21,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class CartController {
 
     private final CartService cartService;
+    private final CartBookRepository cartBookRepository;
 
     @PostMapping("add/{id}")
     public String add(@Valid
-                      @Create
                       @PathVariable("id")
                       Long bookId,
                       RedirectAttributes redirectAttributes) {
@@ -42,19 +40,20 @@ public class CartController {
 
     @GetMapping("list")
     public String list(Model model) {
-        model.addAttribute("carts", cartService.list());
-        model.addAttribute("totalPrice", cartService.getTotalPrice());
+        Cart cart = cartService.get();
+        model.addAttribute("cart", cart);
+        model.addAttribute("totalPrice", cart.getTotalPrice());
         return "cart/list";
     }
 
     @PostMapping("update/{id}")
     public String update(@Valid
-                         @Update
-                         @PathVariable("id") Long id,
-                         Cart cart,
+                         @PathVariable("id") Long cartBookId,
+                         @ModelAttribute UpdateCartRequest request,
                          RedirectAttributes redirectAttributes) {
         try {
-            cartService.update(id, cart);
+            cartService.update(cartBookId, request.getQty());
+            
             redirectAttributes.addFlashAttribute("successMessage", "Cart updated successfully!");
 
         } catch (InputException e) {
@@ -65,11 +64,15 @@ public class CartController {
 
     @PostMapping("delete/{id}")
     public String delete(@Valid
-                         @Delete
-                         @PathVariable("id") Long id,
+                         @PathVariable("id") Long cartBookId,
                          RedirectAttributes redirectAttributes) {
-        cartService.delete(id);
-        redirectAttributes.addFlashAttribute("successMessage", "Item removed from cart!");
+        try {
+            cartService.delete(cartBookId);
+            redirectAttributes.addFlashAttribute("successMessage", "Item removed from cart!");
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to remove item from cart");
+        }
         return "redirect:/carts/list";
     }
 }

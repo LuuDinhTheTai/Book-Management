@@ -19,12 +19,12 @@
         <p th:text="${errorMessage}"></p>
     </div>
 
-    <div th:if="${#lists.isEmpty(carts)}" class="empty-cart">
+    <div th:if="${#lists.isEmpty(cart.cartBooks)}" class="empty-cart">
         <p>Your cart is empty.</p>
         <a th:href="@{/books/list}" class="btn-link">Continue Shopping</a>
     </div>
 
-    <div th:if="${!#lists.isEmpty(carts)}">
+    <div th:if="${!#lists.isEmpty(cart.cartBooks)}">
         <table class="table">
             <thead>
             <tr>
@@ -36,20 +36,27 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="cart : ${carts}">
+            <tr th:each="cartBook : ${cart.cartBooks}">
                 <td>
-                    <a th:href="@{/books/{id}(id=${cart.book.id})}" th:text="${cart.book.name}"></a>
+                    <a th:href="@{/books/{id}(id=${cartBook.book.id})}" th:text="${cartBook.book.name}"></a>
                 </td>
-                <td th:text="${cart.book.price + 'đ'}"></td>
+                <td th:text="${cartBook.book.price + 'đ'}"></td>
                 <td>
-                    <form th:action="@{/carts/update/{id}(id=${cart.id})}" method="post" style="display: inline;">
-                        <input type="number" name="qty" th:value="${cart.qty}" min="1" max="99" style="width: 60px;">
-                        <button type="submit" class="btn-small">Update</button>
-                    </form>
+                    <div class="quantity-controls">
+                        <form th:action="@{/carts/update/{id}(id=${cartBook.id})}" method="post" style="display: inline;">
+                            <input type="hidden" name="qty" th:value="${cartBook.qty - 1}">
+                            <button type="submit" class="btn-small btn-minus" th:disabled="${cartBook.qty <= 1}">-</button>
+                        </form>
+                        <span class="quantity-display" th:text="${cartBook.qty}"></span>
+                        <form th:action="@{/carts/update/{id}(id=${cartBook.id})}" method="post" style="display: inline;">
+                            <input type="hidden" name="qty" th:value="${cartBook.qty + 1}">
+                            <button type="submit" class="btn-small btn-plus">+</button>
+                        </form>
+                    </div>
                 </td>
-                <td th:text="${cart.totalPrice + 'đ'}"></td>
+                <td th:text="${cartBook.price + 'đ'}"></td>
                 <td>
-                    <form th:action="@{/carts/delete/{id}(id=${cart.id})}" method="post" style="display: inline;">
+                    <form th:action="@{/carts/delete/{id}(id=${cartBook.id})}" method="post" style="display: inline;">
                         <button type="submit" class="btn-small btn-danger" onclick="return confirm('Remove this item?')">Remove</button>
                     </form>
                 </td>

@@ -1,5 +1,6 @@
 package com.me.book_management.service.impl;
 
+import com.me.book_management.annotation.comment.Create;
 import com.me.book_management.dto.request.book.CreateCommentRequest;
 import com.me.book_management.entity.book.Comment;
 import com.me.book_management.repository.book.CommentRepository;
@@ -25,6 +26,7 @@ public class CommentServiceImpl implements CommentService {
     private final AccountService accountService;
 
     @Override
+    @Create
     public Comment create(CreateCommentRequest request) {
         log.info("(create) comment: {}", request);
 

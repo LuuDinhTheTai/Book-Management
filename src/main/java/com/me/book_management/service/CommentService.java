@@ -10,8 +10,12 @@ import java.util.List;
 public interface CommentService {
 
     Comment create(CreateCommentRequest request);
+
     Page<Comment> findByBookId(Long bookId, Pageable pageable);
+
     List<Comment> list();
+
     Comment update(Comment comment);
+
     void delete(Long id);
 }

@@ -40,7 +40,6 @@ public class Account extends EntityWithUpdater {
             fetch = FetchType.LAZY)
     private Set<Book> books = new HashSet<>();
 
-    @OneToMany(mappedBy = "account",
-            fetch = FetchType.LAZY)
-    private List<Cart> cart = new ArrayList<>();
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Cart cart;
 }

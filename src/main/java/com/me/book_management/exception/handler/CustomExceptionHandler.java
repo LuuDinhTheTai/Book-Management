@@ -3,6 +3,7 @@ package com.me.book_management.exception.handler;
 import com.me.book_management.exception.BadRequestException;
 import com.me.book_management.exception.NotFoundException;
 import com.me.book_management.exception.base.BaseException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -21,11 +22,11 @@ public class CustomExceptionHandler {
         return "exception/error";
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public String handleInternalError(Exception e, Model model) {
-//        log.error("Internal Server Error: {}", e.getMessage());
-//        model.addAttribute("status", HttpStatus.INTERNAL_SERVER_ERROR);
-////        model.addAttribute("message", e);
-//        return "exception/error";
-//    }
+    @ExceptionHandler(Exception.class)
+    public String handleInternalError(Exception e, Model model) {
+        log.error("Internal Server Error: {}", e.getMessage());
+        model.addAttribute("status", HttpStatus.INTERNAL_SERVER_ERROR);
+//        model.addAttribute("message", e);
+        return "exception/error";
+    }
 }

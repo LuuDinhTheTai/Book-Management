@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;
 
-@Target({ElementType.PARAMETER})
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = Create.CreateBookValidator.class)
 public @interface Create {

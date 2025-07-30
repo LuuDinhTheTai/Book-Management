@@ -32,16 +32,15 @@ public @interface Update {
         private AccountService accountService;
         @Autowired
         private BookService bookService;
-        private Account account;
 
         @Override
         public void initialize(Update constraintAnnotation) {
             ConstraintValidator.super.initialize(constraintAnnotation);
-            this.account = accountService.findByUsername(CommonUtil.getCurrentAccount());
         }
 
         @Override
         public boolean isValid(UpdateBookRequest request, ConstraintValidatorContext constraintValidatorContext) {
+            Account account = accountService.findByUsername(CommonUtil.getCurrentAccount());
             if (CommonUtil.isNull(request)) {
                 return false;
             }
@@ -49,10 +48,10 @@ public @interface Update {
             if (CommonUtil.isNull(book)) {
                 return false;
             }
-            if (!isOwner(this.account, book)) {
+            if (!isOwner(account, book)) {
                 return false;
             }
-            if (CommonUtil.hasPermission(this.account, Constants.PERMISSION.UPDATE_BOOK)) {
+            if (CommonUtil.hasPermission(account, Constants.PERMISSION.UPDATE_BOOK)) {
                 return true;
             }
             return true;

@@ -25,7 +25,6 @@ public class CommentController {
 
     @PostMapping("create")
     public String createComment(@Valid
-                                @Create
                                 @ModelAttribute("createCommentRequest")
                                 CreateCommentRequest request,
                                 Model model) {
