@@ -20,7 +20,7 @@
               <a th:each="category : ${categories}"
                  th:href="@{/categories/{id}(id=${category.id})}"
                  th:text="${category.name}"
-                 class="dropdown-item">
+                 class="dropdown-item" style="color: black;">
               </a>
             </div>
           </div>
@@ -30,6 +30,9 @@
         </li>
         <li th:if="${#authorization.expr('isAuthenticated()')}">
           <a th:href="@{/accounts/profile}">Profile</a>
+        </li>
+        <li th:if="${#authorization.expr('isAuthenticated()')}">
+          <a th:href="@{/addresses/list}">Addresses</a>
         </li>
         <li th:if="${not #authorization.expr('isAuthenticated()')}">
           <a th:href="@{/auth/signin}">Sign In</a>

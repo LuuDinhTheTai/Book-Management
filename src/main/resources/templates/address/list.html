@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BM - Addresses</title>
+    <link rel="stylesheet" th:href="@{/style.css}"/>
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+</head>
+<body>
+<div th:replace="component/navbar :: navbar"></div>
+
+<div class="container">
+    <h1 class="page-title">My Addresses</h1>
+
+    <div th:if="${successMessage}" class="success">
+        <p th:text="${successMessage}"></p>
+    </div>
+
+    <div th:if="${errorMessage}" class="error">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <div class="address-actions">
+        <a th:href="@{/addresses/create}" class="btn-link">+ Add New Address</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(addresses)}" class="empty-addresses">
+        <p>No addresses found. Add your first address to get started!</p>
+        <a th:href="@{/addresses/create}" class="btn-link">Add Address</a>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(addresses)}" class="addresses-section">
+        <div th:each="address : ${addresses}" class="address-card">
+            <div class="address-details">
+                <p><strong>Street:</strong> <span th:text="${address.street}"></span></p>
+                <p><strong>City:</strong> <span th:text="${address.city}"></span></p>
+                <p><strong>State:</strong> <span th:text="${address.state}"></span></p>
+                <p><strong>Country:</strong> <span th:text="${address.country}"></span></p>
+                <p><strong>Postal Code:</strong> <span th:text="${address.postalCode}"></span></p>
+            </div>
+            <div class="address-actions">
+                <a th:href="@{/addresses/update/{id}(id=${address.id})}" class="btn-small">Edit</a>
+                <form th:action="@{/addresses/set-default/{id}(id=${address.id})}" method="post"
+                      style="display: inline;">
+                    <button type="submit" class="btn-small" th:disabled="${address.isDefault}">Set Default</button>
+                </form>
+                <form th:action="@{/addresses/delete/{id}(id=${address.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn-small btn-danger"
+                            onclick="return confirm('Are you sure you want to delete this address?')">Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html> 

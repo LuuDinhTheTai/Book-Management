@@ -23,6 +23,30 @@
     <form th:action="@{/auth/signout}" method="post">
         <button type="submit">Sign out</button>
     </form>
+    <a th:href="@{/addresses/list}" class="btn-link">Manage Addresses</a>
+</div>
+
+<div class="container">
+    <h2>Addresses</h2>
+    <div th:if="${#lists.isEmpty(account.addresses)}" class="empty-addresses">
+        <p>No addresses found.</p>
+    </div>
+    
+    <div th:if="${!#lists.isEmpty(account.addresses)}" class="addresses-section">
+        <div th:each="address : ${account.addresses}" class="address-card">
+            <div class="address-header">
+                <h3 th:text="${address.addressType}">Address Type</h3>
+                <span th:if="${address.isDefault}" class="default-badge">Default</span>
+            </div>
+            <div class="address-details">
+                <p><strong>Street:</strong> <span th:text="${address.street}"></span></p>
+                <p><strong>City:</strong> <span th:text="${address.city}"></span></p>
+                <p><strong>State:</strong> <span th:text="${address.state}"></span></p>
+                <p><strong>Country:</strong> <span th:text="${address.country}"></span></p>
+                <p><strong>Postal Code:</strong> <span th:text="${address.postalCode}"></span></p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="container">

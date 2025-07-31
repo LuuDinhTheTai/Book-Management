@@ -11,11 +11,12 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-@Order(2)
 public class AccountDataSeeder implements CommandLineRunner {
 
     private final AccountRepository accountRepository;
@@ -24,36 +25,50 @@ public class AccountDataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        System.out.println("AccountDataSeeder: Starting account seeding...");
         seedAccounts();
+        System.out.println("AccountDataSeeder: Completed account seeding.");
     }
 
     private void seedAccounts() {
-        if (!accountRepository.existsByUsername("admin")) {
-            Account adminAccount = new Account();
-            adminAccount.setEmail("admin@bookmanagement.com");
-            adminAccount.setUsername("admin");
-            adminAccount.setPassword(passwordEncoder.encode("admin"));
-            
-            Optional<Role> adminRole = roleRepository.findByName(Constants.ROLE.ADMIN);
-            if (adminRole.isPresent()) {
-                adminAccount.getRoles().add(adminRole.get());
+        List<AccountData> accountsToSeed = Arrays.asList(
+            new AccountData("admin", "admin@bookmanagement.com", "admin", Constants.ROLE.ADMIN),
+            new AccountData("user", "user@bookmanagement.com", "user", Constants.ROLE.USER)
+        );
+        
+        for (AccountData accountData : accountsToSeed) {
+            if (!accountRepository.existsByUsername(accountData.username)) {
+                Account account = createAccount(accountData);
+                accountRepository.save(account);
             }
-            
-            accountRepository.save(adminAccount);
         }
-
-        if (!accountRepository.existsByUsername("user")) {
-            Account userAccount = new Account();
-            userAccount.setEmail("user@bookmanagement.com");
-            userAccount.setUsername("user");
-            userAccount.setPassword(passwordEncoder.encode("user"));
-            
-            Optional<Role> userRole = roleRepository.findByName(Constants.ROLE.USER);
-            if (userRole.isPresent()) {
-                userAccount.getRoles().add(userRole.get());
-            }
-            
-            accountRepository.save(userAccount);
+    }
+    
+    private Account createAccount(AccountData accountData) {
+        Account account = new Account();
+        account.setEmail(accountData.email);
+        account.setUsername(accountData.username);
+        account.setPassword(passwordEncoder.encode(accountData.password));
+        
+        Optional<Role> role = roleRepository.findByName(accountData.roleName);
+        if (role.isPresent()) {
+            account.getRoles().add(role.get());
+        }
+        
+        return account;
+    }
+    
+    private static class AccountData {
+        private final String username;
+        private final String email;
+        private final String password;
+        private final String roleName;
+        
+        public AccountData(String username, String email, String password, String roleName) {
+            this.username = username;
+            this.email = email;
+            this.password = password;
+            this.roleName = roleName;
         }
     }
 } 

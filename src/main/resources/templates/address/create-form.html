@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BM - Add Address</title>
+    <link rel="stylesheet" th:href="@{/style.css}"/>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+</head>
+<body>
+<div th:replace="component/navbar :: navbar"></div>
+
+<div class="container">
+    <h1 class="page-title">Add New Address</h1>
+
+    <div th:if="${errorMessage}" class="error">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <form th:action="@{/addresses/create}" th:object="${address}" method="post" class="address-form">
+        <div class="form-group">
+            <label for="street">Street Address *</label>
+            <input type="text" id="street" th:field="*{street}" placeholder="Enter street address">
+            <span th:if="${#fields.hasErrors('street')}" th:errors="*{street}" class="form-error"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="city">City *</label>
+            <input type="text" id="city" th:field="*{city}" placeholder="Enter city">
+            <span th:if="${#fields.hasErrors('city')}" th:errors="*{city}" class="form-error"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="state">State/Province *</label>
+            <input type="text" id="state" th:field="*{state}" placeholder="Enter state or province">
+            <span th:if="${#fields.hasErrors('state')}" th:errors="*{state}" class="form-error"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="country">Country *</label>
+            <input type="text" id="country" th:field="*{country}" placeholder="Enter country">
+            <span th:if="${#fields.hasErrors('country')}" th:errors="*{country}" class="form-error"></span>
+        </div>
+
+                 <div class="form-group">
+             <label for="postalCode">Postal Code *</label>
+             <input type="text" id="postalCode" th:field="*{postalCode}" placeholder="Enter postal code">
+             <span th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" class="form-error"></span>
+         </div>
+
+         <div class="form-group">
+             <label class="checkbox-label">
+                 <input type="checkbox" th:field="*{isDefault}">
+                 Set as default address
+             </label>
+         </div>
+
+         <div class="form-actions">
+            <button type="submit" class="btn-primary">Create Address</button>
+            <a th:href="@{/addresses/list}" class="btn-link">Cancel</a>
+        </div>
+    </form>
+</div>
+</body>
+</html> 
