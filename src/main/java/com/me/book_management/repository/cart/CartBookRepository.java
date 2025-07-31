@@ -17,4 +17,6 @@ public interface CartBookRepository extends JpaRepository<CartBook, Long> {
     List<CartBook> findByCart(Cart cart);
     
     Optional<CartBook> findByCartAndId(Cart cart, Long id);
+    
+    void deleteByCart(Cart cart);
 }

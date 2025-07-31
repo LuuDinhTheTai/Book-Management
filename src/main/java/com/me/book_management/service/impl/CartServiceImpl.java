@@ -3,7 +3,8 @@ package com.me.book_management.service.impl;
 import com.me.book_management.annotation.cart.Create;
 import com.me.book_management.annotation.cart.Delete;
 import com.me.book_management.annotation.cart.Read;
-import com.me.book_management.annotation.cart.Update;
+import com.me.book_management.dto.request.cart.AddItemRequest;
+import com.me.book_management.dto.request.cart.UpdateItemRequest;
 import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.entity.cart.Cart;
@@ -14,12 +15,14 @@ import com.me.book_management.repository.book.BookRepository;
 import com.me.book_management.repository.cart.CartBookRepository;
 import com.me.book_management.repository.cart.CartRepository;
 import com.me.book_management.service.CartService;
-import com.me.book_management.util.CommonUtil;
+import com.me.book_management.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,98 +36,105 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Create
-    public Cart add(Long bookId) {
-        log.info("(add to cart) book: {}", bookId);
-
-        Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
+    public Cart create() {
+        log.info("(create) cart");
+        String currentUsername = SecurityUtil.getCurrentAccount();
+        Account account = accountRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new NotFoundException("Account not found"));
 
-        Cart cart = getOrCreateCart(account);
-
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new NotFoundException("Book not found"));
-
-        CartBook existingCartBook = cartBookRepository.findByCartAndBook(cart, book)
-                .orElse(null);
-
-        if (!CommonUtil.isNull(existingCartBook)) {
-            existingCartBook.setQty(existingCartBook.getQty() + 1);
-            existingCartBook.setPrice(book.getPrice() * existingCartBook.getQty());
-            cartBookRepository.save(existingCartBook);
-
-        } else {
-            CartBook newCartBook = new CartBook();
-            newCartBook.setCart(cart);
-            newCartBook.setBook(book);
-            newCartBook.setQty(1);
-            newCartBook.setPrice(book.getPrice());
-            cartBookRepository.save(newCartBook);
-        }
-
-        updateCartTotalPrice(cart);
-
-        return cart;
+        Cart cart = new Cart();
+        cart.setAccount(account);
+        cart.setTotalPrice(0.0f);
+        
+        return cartRepository.save(cart);
     }
 
     @Override
     @Read
-    public Cart get() {
-        Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
-                .orElseThrow(() -> new NotFoundException("Account not found"));
-
-        return getOrCreateCart(account);
+    public Cart find(Long id) {
+        log.info("(find) cart: {}", id);
+        return cartRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Cart not found"));
     }
 
     @Override
-    @Update
-    public Cart update(Long id, int qty) {
-        log.info("(update) cart: {}, qty={}", id, qty);
-
-        Cart cart = get();
-        CartBook cartBook = cartBookRepository.findByCartAndId(cart, id)
-                .orElseThrow(() -> new NotFoundException("Cart item not found"));
-
-        cartBook.setQty(qty);
-        cartBook.setPrice(cartBook.getBook().getPrice() * qty);
-        cartBookRepository.save(cartBook);
+    @Read
+    public List<Cart> list() {
+        String currentUsername = SecurityUtil.getCurrentAccount();
+        Account account = accountRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new NotFoundException("Account not found"));
         
-        updateCartTotalPrice(cart);
-        return cart;
+        return cartRepository.findByAccount(account);
     }
 
     @Override
     @Delete
     public void delete(Long id) {
         log.info("(delete) cart: {}", id);
+        cartRepository.deleteById(id);
+    }
 
-        Cart cart = get();
-        CartBook cartBook = cartBookRepository.findByCartAndId(cart, id)
-                .orElseThrow(() -> new NotFoundException("Cart item not found"));
+    @Override
+    public Cart addItem(AddItemRequest request) {
+        log.info("(add) item: {}", request);
+        Account account = accountRepository.findByUsername(SecurityUtil.getCurrentAccount())
+                .orElseThrow(() -> new NotFoundException("Account not found"));
+
+        Book book = bookRepository.findById(request.getBookId())
+                .orElseThrow(() -> new NotFoundException("Book not found"));
+        Cart cart = cartRepository.findByAccountAndId(account, request.getCartId())
+                .orElseThrow(() -> new NotFoundException("Cart not found"));
+
+        // Check if book already exists in cart
+        Optional<CartBook> existingCartBook = cartBookRepository.findByCartAndBook(cart, book);
         
-        cartBookRepository.delete(cartBook);
-        updateCartTotalPrice(cart);
-    }
-
-    private Cart getOrCreateCart(Account account) {
-        if (account.getCart() == null) {
-            Cart newCart = new Cart();
-            newCart.setAccount(account);
-            newCart.setTotalPrice(0.0f);
-            cartRepository.save(newCart);
-            account.setCart(newCart);
-            accountRepository.save(account);
-            return newCart;
+        if (existingCartBook.isPresent()) {
+            // Update quantity
+            CartBook cartBook = existingCartBook.get();
+            cartBook.setQty(cartBook.getQty() + request.getQty());
+            cartBook.setPrice(book.getPrice() * cartBook.getQty());
+            cartBookRepository.save(cartBook);
+        } else {
+            // Add new item
+            CartBook cartBook = new CartBook();
+            cartBook.setCart(cart);
+            cartBook.setBook(book);
+            cartBook.setQty(request.getQty());
+            cartBook.setPrice(book.getPrice() * request.getQty());
+            cartBookRepository.save(cartBook);
         }
-        return account.getCart();
+
+        updateCartTotal(cart);
+        
+        return cart;
     }
 
-    private void updateCartTotalPrice(Cart cart) {
+    @Override
+    public Cart updateItem(UpdateItemRequest request) {
+        CartBook cartBook = cartBookRepository.findById(request.getCartBookId())
+                .orElseThrow(() -> new NotFoundException("Cart item not found"));
+
+        if (request.getQty() <= 0) {
+            cartBookRepository.delete(cartBook);
+
+        } else {
+            cartBook.setQty(request.getQty());
+            cartBook.setPrice(cartBook.getBook().getPrice() * request.getQty());
+            cartBookRepository.save(cartBook);
+        }
+
+        updateCartTotal(cartBook.getCart());
+        
+        return cartBook.getCart();
+    }
+
+    private void updateCartTotal(Cart cart) {
         List<CartBook> cartBooks = cartBookRepository.findByCart(cart);
-        float totalPrice = 0.0f;
+        float total = 0.0f;
         for (CartBook cartBook : cartBooks) {
-            totalPrice += cartBook.getPrice();
+            total += cartBook.getPrice();
         }
-        cart.setTotalPrice(totalPrice);
+        cart.setTotalPrice(total);
         cartRepository.save(cart);
     }
 }

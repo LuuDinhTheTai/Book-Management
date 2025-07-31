@@ -30,7 +30,14 @@
             <p>Format: <span th:text="${book.detail.format}"></span></p>
         </div>
         <div class="book-actions">
-            <form th:action="@{|/carts/add/${book.id}|}" method="post" style="display: inline;">
+            <form th:action="@{/carts/add-item}" method="post">
+                <input type="hidden" name="bookId" th:value="${book.id}"/>
+                <label for="qty">Quantity: </label>
+                <input type="number" id="qty" name="qty" value="1" min="1" max="99">
+                <label for="cart">Cart: </label>
+                <select id="cart" name="cartId">
+                    <option th:each="cart : ${carts}" th:value="${cart.id}" th:text="${cart.id}"></option>
+                </select>
                 <button type="submit">Add to Cart</button>
             </form>
             <a th:href="@{/books/list}" class="btn-link" style="margin-left: 10px;">Continue Shopping</a>

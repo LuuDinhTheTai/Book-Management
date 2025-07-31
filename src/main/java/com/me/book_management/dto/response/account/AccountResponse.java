@@ -23,7 +23,7 @@ public class AccountResponse {
     private String username;
     private Set<Long> roles;
     private Set<Long> books;
-    private Long cart;
+//    private Long cart;
 
     public static AccountResponse from(Account account) {
         return new AccountResponse(
@@ -31,8 +31,8 @@ public class AccountResponse {
                 account.getEmail(),
                 account.getUsername(),
                 account.getRoles().stream().map(Role::getId).collect(Collectors.toSet()),
-                account.getBooks().stream().map(Book::getId).collect(Collectors.toSet()),
-                account.getCart().getId()
+                account.getBooks().stream().map(Book::getId).collect(Collectors.toSet())
+//                account.getCart().getId()
         );
     }
 }

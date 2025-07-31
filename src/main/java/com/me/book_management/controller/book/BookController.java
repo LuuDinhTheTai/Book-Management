@@ -9,6 +9,7 @@ import com.me.book_management.dto.request.book.UpdateBookRequest;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.exception.InputException;
 import com.me.book_management.service.BookService;
+import com.me.book_management.service.CartService;
 import com.me.book_management.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class BookController {
 
     private final BookService bookService;
     private final CommentService commentService;
+    private final CartService cartService;
 
     @GetMapping("create")
     public String create(Model model) {
@@ -73,6 +75,8 @@ public class BookController {
         Book book = bookService.find(id);
         model.addAttribute("book", book);
         model.addAttribute("comments", commentService.findByBookId(id, PageRequest.of(commentPage, commentSize)));
+        model.addAttribute("carts", cartService.list());
+
         CreateCommentRequest commentRequest = new CreateCommentRequest();
         commentRequest.setBookId(id);
         model.addAttribute("createCommentRequest", commentRequest);

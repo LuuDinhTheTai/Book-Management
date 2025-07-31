@@ -5,6 +5,9 @@ import com.me.book_management.entity.base.EntityWithUpdater;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,4 +29,10 @@ public class Book extends EntityWithUpdater {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Account account;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "book_category",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private Set<Category> categories = new HashSet<>();
 }
