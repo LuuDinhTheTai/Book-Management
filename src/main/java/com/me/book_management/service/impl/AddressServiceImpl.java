@@ -2,14 +2,17 @@ package com.me.book_management.service.impl;
 
 import com.me.book_management.annotation.address.Create;
 import com.me.book_management.annotation.address.Delete;
+import com.me.book_management.annotation.address.Read;
 import com.me.book_management.annotation.address.Update;
 import com.me.book_management.dto.request.account.address.CreateAddressRequest;
 import com.me.book_management.dto.request.account.address.UpdateAddressRequest;
 import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.account.Address;
 import com.me.book_management.exception.NotFoundException;
+import com.me.book_management.repository.account.AccountRepository;
 import com.me.book_management.repository.account.AddressRepository;
 import com.me.book_management.service.AddressService;
+import com.me.book_management.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,12 +26,15 @@ import java.util.List;
 public class AddressServiceImpl implements AddressService {
 
     private final AddressRepository addressRepository;
+    private final AccountRepository accountRepository;
 
     @Override
-    @Transactional
     @Create
-    public Address create(CreateAddressRequest request, Account account) {
-        log.info("(create) request: {}, account: {}", request, account);
+    public Address create(CreateAddressRequest request) {
+        log.info("(create) request: {}", request);
+
+        Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
+                .orElseThrow(() -> new NotFoundException("Account not found: " + CommonUtil.getCurrentAccount()));
 
         Address address = new Address();
         address.setStreet(request.getStreet());
@@ -36,29 +42,19 @@ public class AddressServiceImpl implements AddressService {
         address.setState(request.getState());
         address.setCountry(request.getCountry());
         address.setPostalCode(request.getPostalCode());
-        address.setIsDefault(request.getIsDefault());
+        address.setAccount(account);
 
-        // If this is set as default, unset other default addresses
-        if (request.getIsDefault()) {
-            List<Address> existingAddresses = addressRepository.findByAccounts(account);
-            for (Address existingAddress : existingAddresses) {
-                if (existingAddress.getIsDefault()) {
-                    existingAddress.setIsDefault(false);
-                    addressRepository.save(existingAddress);
-                }
-            }
-        }
-
-        address.getAccounts().add(account);
         account.getAddresses().add(address);
         
         Address savedAddress = addressRepository.save(address);
+        accountRepository.save(account);
         log.info("(create) address response: {}", savedAddress);
         
         return savedAddress;
     }
 
     @Override
+    @Read
     public Address find(Long id) {
         log.info("(find) id: {}", id);
 
@@ -70,16 +66,15 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public List<Address> findByAccount(Account account) {
-        log.info("(findByAccount) account: {}", account);
+    @Read
+    public List<Address> list() {
+        Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
+                .orElseThrow(() -> new NotFoundException("Account not found with username: " + CommonUtil.getCurrentAccount()));
 
-        List<Address> addresses = addressRepository.findByAccounts(account);
-        log.info("(findByAccount) addresses size: {}", addresses.size());
-        return addresses;
+        return account.getAddresses();
     }
 
     @Override
-    @Transactional
     @Update
     public Address update(Long id, UpdateAddressRequest request) {
         log.info("(update) id: {}, request: {}", id, request);
@@ -91,18 +86,6 @@ public class AddressServiceImpl implements AddressService {
         address.setState(request.getState());
         address.setCountry(request.getCountry());
         address.setPostalCode(request.getPostalCode());
-        address.setIsDefault(request.getIsDefault());
-
-        // If this is set as default, unset other default addresses
-        if (request.getIsDefault()) {
-            List<Address> existingAddresses = addressRepository.findByAccounts(address.getAccounts().iterator().next());
-            for (Address existingAddress : existingAddresses) {
-                if (!existingAddress.getId().equals(id) && existingAddress.getIsDefault()) {
-                    existingAddress.setIsDefault(false);
-                    addressRepository.save(existingAddress);
-                }
-            }
-        }
 
         Address updatedAddress = addressRepository.save(address);
         log.info("(update) address response: {}", updatedAddress);
@@ -110,14 +93,9 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    @Transactional
     @Delete
     public void delete(Long id) {
-        log.info("(delete) id: {}", id);
 
-        Address address = find(id);
-        addressRepository.delete(address);
-        
-        log.info("(delete) address deleted successfully");
+        addressRepository.deleteById(id);
     }
 } 

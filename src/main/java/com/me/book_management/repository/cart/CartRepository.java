@@ -14,7 +14,5 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
 
     List<Cart> findByAccount(Account account);
 
-    Optional<Cart> findFirstByAccountOrderByIdDesc(Account account);
-
     Optional<Cart> findByAccountAndId(Account account, Long id);
 }

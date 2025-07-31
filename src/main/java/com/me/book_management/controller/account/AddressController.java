@@ -41,10 +41,7 @@ public class AddressController {
         }
 
         try {
-            String username = SecurityUtil.getCurrentAccount();
-            Account currentAccount = accountService.findByUsername(username);
-
-            addressService.create(request, currentAccount);
+            addressService.create(request);
 
             redirectAttributes.addFlashAttribute("successMessage", "Address created successfully!");
             return "redirect:/addresses/list";
@@ -58,12 +55,8 @@ public class AddressController {
     @GetMapping("list")
     public String list(Model model) {
         try {
-            String username = SecurityUtil.getCurrentAccount();
-            Account currentAccount = accountService.findByUsername(username);
-
-            List<Address> addresses = addressService.findByAccount(currentAccount);
+            List<Address> addresses = addressService.list();
             model.addAttribute("addresses", addresses);
-            model.addAttribute("account", currentAccount);
             return "address/list";
 
         } catch (Exception e) {

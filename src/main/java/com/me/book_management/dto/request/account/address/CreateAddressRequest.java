@@ -22,6 +22,4 @@ public class CreateAddressRequest {
 
     @NotBlank(message = "Postal code is required")
     private String postalCode;
-
-    private Boolean isDefault = false;
 } 

@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>BM - Add Address</title>
     <link rel="stylesheet" th:href="@{/style.css}"/>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 </head>
 <body>
 <div th:replace="component/navbar :: navbar"></div>
@@ -41,20 +42,13 @@
             <span th:if="${#fields.hasErrors('country')}" th:errors="*{country}" class="form-error"></span>
         </div>
 
-                 <div class="form-group">
-             <label for="postalCode">Postal Code *</label>
-             <input type="text" id="postalCode" th:field="*{postalCode}" placeholder="Enter postal code">
-             <span th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" class="form-error"></span>
-         </div>
+        <div class="form-group">
+            <label for="postalCode">Postal Code *</label>
+            <input type="text" id="postalCode" th:field="*{postalCode}" placeholder="Enter postal code">
+            <span th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" class="form-error"></span>
+        </div>
 
-         <div class="form-group">
-             <label class="checkbox-label">
-                 <input type="checkbox" th:field="*{isDefault}">
-                 Set as default address
-             </label>
-         </div>
-
-         <div class="form-actions">
+        <div class="form-actions">
             <button type="submit" class="btn-primary">Create Address</button>
             <a th:href="@{/addresses/list}" class="btn-link">Cancel</a>
         </div>

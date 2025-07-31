@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface AddressService {
 
-    Address create(CreateAddressRequest request, Account account);
+    Address create(CreateAddressRequest request);
 
     Address find(Long id);
 
-    List<Address> findByAccount(Account account);
+    List<Address> list();
 
     Address update(Long id, UpdateAddressRequest request);
 

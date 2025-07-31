@@ -4,7 +4,9 @@ import com.me.book_management.entity.base.EntityWithUpdater;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -13,7 +15,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString(exclude = {"accounts"})
 public class Address extends EntityWithUpdater {
 
     @Id
@@ -35,9 +36,8 @@ public class Address extends EntityWithUpdater {
     @Column(name = "postal_code", nullable = false)
     private String postalCode;
 
-    @Column(name = "is_default")
-    private Boolean isDefault = false;
+    @ManyToOne
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account account;
 
-    @ManyToMany(mappedBy = "addresses", fetch = FetchType.LAZY)
-    private Set<Account> accounts = new HashSet<>();
 } 
