@@ -18,7 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"books", "carts"})
 public class Account extends EntityWithUpdater {
 
     @Id
@@ -40,6 +40,6 @@ public class Account extends EntityWithUpdater {
             fetch = FetchType.LAZY)
     private Set<Book> books = new HashSet<>();
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Cart> carts = new ArrayList<>();
 }

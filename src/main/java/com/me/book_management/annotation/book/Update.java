@@ -4,6 +4,7 @@ import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.book.UpdateBookRequest;
 import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.book.Book;
+import com.me.book_management.exception.UnauthorizedAccessException;
 import com.me.book_management.service.AccountService;
 import com.me.book_management.service.BookService;
 import com.me.book_management.util.CommonUtil;
@@ -21,12 +22,12 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = Update.UpdateBookValidator.class)
 public @interface Update {
 
-    String message() default "Invalid update book request";
+    String message() default "Yêu cầu cập nhật sách không hợp lệ";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
     @Component
-    class UpdateBookValidator implements ConstraintValidator<Update, UpdateBookRequest> {
+    class UpdateBookValidator implements ConstraintValidator<Update, Long> {
 
         @Autowired
         private AccountService accountService;
@@ -39,22 +40,33 @@ public @interface Update {
         }
 
         @Override
-        public boolean isValid(UpdateBookRequest request, ConstraintValidatorContext constraintValidatorContext) {
-            Account account = accountService.findByUsername(CommonUtil.getCurrentAccount());
-            if (CommonUtil.isNull(request)) {
-                return false;
-            }
-            Book book = bookService.find(request.getId());
-            if (CommonUtil.isNull(book)) {
-                return false;
-            }
-            if (!isOwner(account, book)) {
-                return false;
-            }
-            if (CommonUtil.hasPermission(account, Constants.PERMISSION.UPDATE_BOOK)) {
+        public boolean isValid(Long id, ConstraintValidatorContext constraintValidatorContext) {
+            try {
+                Account account = accountService.findByUsername(CommonUtil.getCurrentAccount());
+                if (CommonUtil.isNull(account)) {
+                    throw new UnauthorizedAccessException("Người dùng không tồn tại");
+                }
+
+                Book book = bookService.find(id);
+                if (CommonUtil.isNull(book)) {
+                    throw new UnauthorizedAccessException("Sách không tồn tại");
+                }
+
+                if (!isOwner(account, book)) {
+                    throw new UnauthorizedAccessException("Bạn không có quyền sửa sách này. Chỉ chủ sở hữu mới có thể sửa sách.");
+                }
+
+                if (!CommonUtil.hasPermission(account, Constants.PERMISSION.UPDATE_BOOK)) {
+                    throw new UnauthorizedAccessException("Bạn không có quyền sửa sách");
+                }
+                
                 return true;
+            } catch (Exception e) {
+                if (e instanceof UnauthorizedAccessException) {
+                    throw e;
+                }
+                throw new UnauthorizedAccessException("Lỗi kiểm tra quyền sửa sách: " + e.getMessage());
             }
-            return true;
         }
 
         private boolean isOwner(Account account, Book book) {

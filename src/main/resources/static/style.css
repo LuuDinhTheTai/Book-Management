@@ -718,3 +718,39 @@ button:hover {
     padding-top: 16px;
     border-top: 1px solid #eee;
 }
+
+/* Category selection styles */
+.category-selection {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 12px;
+    background: #f8f9fa;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.category-checkbox {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    padding: 4px 0;
+}
+
+.category-checkbox input[type="checkbox"] {
+    margin-right: 8px;
+    width: auto;
+}
+
+.category-checkbox label {
+    margin: 0;
+    cursor: pointer;
+    font-weight: normal;
+    color: #333;
+}
+
+.category-checkbox:hover {
+    background: #e9ecef;
+    border-radius: 4px;
+    padding: 4px 8px;
+    margin: 4px -8px;
+}

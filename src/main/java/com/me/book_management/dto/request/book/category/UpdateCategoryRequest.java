@@ -1,6 +1,5 @@
-package com.me.book_management.dto.request.book;
+package com.me.book_management.dto.request.book.category;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 

@@ -1,7 +1,7 @@
 package com.me.book_management.annotation.comment;
 
 import com.me.book_management.constant.Constants;
-import com.me.book_management.dto.request.book.CreateCommentRequest;
+import com.me.book_management.dto.request.book.comment.CreateCommentRequest;
 import com.me.book_management.entity.account.Account;
 import com.me.book_management.service.AccountService;
 import com.me.book_management.util.CommonUtil;

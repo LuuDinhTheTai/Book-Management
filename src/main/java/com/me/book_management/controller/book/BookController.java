@@ -1,15 +1,16 @@
 package com.me.book_management.controller.book;
 
-import com.me.book_management.annotation.book.Delete;
-import com.me.book_management.annotation.book.Update;
 import com.me.book_management.constant.Constants;
+import com.me.book_management.annotation.book.Access;
 import com.me.book_management.dto.request.book.CreateBookRequest;
-import com.me.book_management.dto.request.book.CreateCommentRequest;
+import com.me.book_management.dto.request.book.comment.CreateCommentRequest;
 import com.me.book_management.dto.request.book.UpdateBookRequest;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.exception.InputException;
+import com.me.book_management.exception.UnauthorizedAccessException;
 import com.me.book_management.service.BookService;
 import com.me.book_management.service.CartService;
+import com.me.book_management.service.CategoryService;
 import com.me.book_management.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class BookController {
     private final BookService bookService;
     private final CommentService commentService;
     private final CartService cartService;
+    private final CategoryService categoryService;
 
     @GetMapping("create")
     public String create(Model model) {
@@ -39,6 +41,7 @@ public class BookController {
         model.addAttribute("statuses", Constants.BOOK_STATUS.list());
         model.addAttribute("languages", Constants.BOOK_LANGUAGE.list());
         model.addAttribute("formats", Constants.BOOK_FORMAT.list());
+        model.addAttribute("categories", categoryService.list());
 
         return "book/creation-form";
     }
@@ -53,16 +56,20 @@ public class BookController {
             model.addAttribute("statuses", Constants.BOOK_STATUS.list());
             model.addAttribute("languages", Constants.BOOK_LANGUAGE.list());
             model.addAttribute("formats", Constants.BOOK_FORMAT.list());
+            model.addAttribute("categories", categoryService.list());
             return "book/creation-form";
         }
         try {
-            request.validate();
             Book book = bookService.create(request);
             model.addAttribute("book", book);
             return "redirect:/books/" + book.getId();
 
         } catch (InputException e) {
             model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("statuses", Constants.BOOK_STATUS.list());
+            model.addAttribute("languages", Constants.BOOK_LANGUAGE.list());
+            model.addAttribute("formats", Constants.BOOK_FORMAT.list());
+            model.addAttribute("categories", categoryService.list());
             return "book/creation-form";
         }
     }
@@ -104,24 +111,28 @@ public class BookController {
     }
 
     @GetMapping("update/{id}")
-    public String update(@PathVariable Long id,
+    public String update(@Access
+                         @PathVariable Long id,
                          Model model) {
         Book book = bookService.find(id);
         model.addAttribute("book", book);
         model.addAttribute("statuses", Constants.BOOK_STATUS.list());
         model.addAttribute("languages", Constants.BOOK_LANGUAGE.list());
         model.addAttribute("formats", Constants.BOOK_FORMAT.list());
+        model.addAttribute("categories", categoryService.list());
         return "book/update-form";
     }
 
-    @PostMapping("update")
-    public String update(@Valid
+    @PostMapping("update/{id}")
+    public String update(@Access
+                         @PathVariable
+                         Long id,
+                         @Valid
                          @ModelAttribute("book")
                          UpdateBookRequest request,
                          Model model) {
         try {
-            request.validate();
-            Book book = bookService.update(request);
+            Book book = bookService.update(id, request);
             model.addAttribute("book", book);
             return "redirect:/books/" + book.getId();
 
@@ -132,7 +143,7 @@ public class BookController {
     }
 
     @PostMapping("delete/{id}")
-    public String delete(@Valid
+    public String delete(@Access
                          @PathVariable Long id) {
         bookService.delete(id);
         return "redirect:/books/my-book";

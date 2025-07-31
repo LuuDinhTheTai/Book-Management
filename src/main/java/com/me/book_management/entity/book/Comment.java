@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"account", "book"})
 public class Comment extends EntityWithUpdater {
 
     @Id

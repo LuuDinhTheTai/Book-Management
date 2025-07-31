@@ -1,5 +1,6 @@
 package com.me.book_management.dto.request.book;
 
+import com.me.book_management.entity.book.Detail;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -7,6 +8,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,6 +26,7 @@ public class CreateBookRequest {
     private int qty;
     @NotBlank(message = "Status cannot be blank")
     private String status;
+    private Set<Long> categories;
     @Valid
     private Detail detail = new Detail();
 
@@ -58,13 +62,19 @@ public class CreateBookRequest {
         @NotBlank(message = "Format cannot be blank")
         private String format;
 
-        public void validate() {
-
+        public static void toDetail(
+                Detail resource,
+                com.me.book_management.entity.book.Detail target) {
+            target.setIsbn(resource.getIsbn());
+            target.setTitle(resource.getTitle());
+            target.setSubtitle(resource.getSubtitle());
+            target.setAuthor(resource.getAuthor());
+            target.setPublisher(resource.getPublisher());
+            target.setPublishedDate(resource.getPublishedDate());
+            target.setDescription(resource.getDescription());
+            target.setPageCount(resource.getPageCount());
+            target.setLanguage(resource.getLanguage());
+            target.setFormat(resource.getFormat());
         }
-    }
-
-    public void validate() {
-        detail.validate();
-
     }
 }

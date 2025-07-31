@@ -15,8 +15,7 @@
         <p th:text="${errorMessage}"></p>
     </div>
 
-    <form th:action="@{/books/update}" th:object="${book}" method="post" class="form">
-        <input type="hidden" th:field="*{id}"/>
+    <form th:action="@{|/books/update/${book.id}|}" th:object="${book}" method="post" class="form">
 
       <label>Name:</label>
       <input th:field="*{name}" type="text"/>
@@ -42,6 +41,19 @@
         </option>
       </select>
       <div th:if="${#fields.hasErrors('status')}" class="error" th:errors="*{status}"></div>
+      <br>
+
+      <label>Categories:</label>
+      <div class="category-selection">
+          <div th:each="category : ${categories}" class="category-checkbox">
+              <input type="checkbox" 
+                     th:name="categories" 
+                     th:value="${category.id}" 
+                     th:id="'category-' + ${category.id}"
+                     th:checked="${book.categories.contains(category)}"/>
+              <label th:for="'category-' + ${category.id}" th:text="${category.name}"></label>
+          </div>
+      </div>
       <br>
 
       <fieldset>

@@ -1,13 +1,11 @@
 package com.me.book_management.service.impl;
 
-import com.me.book_management.dto.request.book.CreateCategoryRequest;
-import com.me.book_management.dto.request.book.UpdateCategoryRequest;
+import com.me.book_management.dto.request.book.category.CreateCategoryRequest;
+import com.me.book_management.dto.request.book.category.UpdateCategoryRequest;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.entity.book.Category;
 import com.me.book_management.exception.NotFoundException;
 import com.me.book_management.repository.CategoryRepository;
-import com.me.book_management.repository.book.BookRepository;
-import com.me.book_management.service.BookService;
 import com.me.book_management.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,15 +46,6 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> list() {
         return categoryRepository.findAll();
-    }
-
-    @Override
-    public List<Book> findBookByCategory(Long id) {
-        log.info("(find) category: {}", id);
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Category not found"));
-
-        return category.getBooks().stream().toList();
     }
 
     @Override

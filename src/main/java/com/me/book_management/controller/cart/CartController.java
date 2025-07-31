@@ -118,6 +118,7 @@ public class CartController {
             Cart cart = cartService.updateItem(request);
             redirectAttributes.addFlashAttribute("successMessage", "Cart updated successfully!");
             return "redirect:/carts/" + cart.getId();
+
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to update cart: " + e.getMessage());
             return "redirect:/carts/list";
@@ -152,26 +153,5 @@ public class CartController {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to remove item: " + e.getMessage());
             return "redirect:/carts/list";
         }
-    }
-
-    @PostMapping("clear")
-    public String clearCart(RedirectAttributes redirectAttributes) {
-        try {
-            String currentUsername = SecurityUtil.getCurrentAccount();
-            Account account = accountRepository.findByUsername(currentUsername)
-                    .orElseThrow(() -> new RuntimeException("Account not found"));
-            
-            Cart cart = cartRepository.findFirstByAccountOrderByIdDesc(account)
-                    .orElseThrow(() -> new RuntimeException("Cart not found"));
-            
-            cartBookRepository.deleteByCart(cart);
-            cart.setTotalPrice(0.0f);
-            cartRepository.save(cart);
-            
-            redirectAttributes.addFlashAttribute("successMessage", "Cart cleared successfully!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to clear cart: " + e.getMessage());
-        }
-        return "redirect:/carts/list";
     }
 }

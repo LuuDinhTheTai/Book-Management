@@ -11,7 +11,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "books")
 public class Category {
 
     @Id

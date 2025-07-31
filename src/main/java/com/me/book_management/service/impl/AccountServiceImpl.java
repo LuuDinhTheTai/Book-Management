@@ -21,17 +21,29 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountResponse find(Long id) {
-        log.info("(find) account: {}", id);
+        log.info("(find) account request: {}", id);
 
-        return AccountResponse.from(accountRepository.findById(id).orElseThrow(() -> new NotFoundException("Account not found")));
+        AccountResponse accountResponse = AccountResponse
+                .from(
+                        accountRepository.findById(id)
+                                .orElseThrow(() -> new NotFoundException("Account not found"))
+                );
+
+        log.info("(find) account response: {}", accountResponse);
+
+        return accountResponse;
     }
 
     @Override
     public Account findByUsername(String username) {
-        log.info("(find) account: {}", username);
+        log.info("(find) account request: {}", username);
 
-        return accountRepository.findByUsername(username)
+        Account account = accountRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("Account not found"));
+
+        log.info("(find) account response: {}", account);
+
+        return account;
     }
 
     @Override
@@ -40,8 +52,11 @@ public class AccountServiceImpl implements AccountService {
 
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Account not found"));
+        AccountResponse response = AccountResponse.from(account);
 
-        return AccountResponse.from(accountRepository.save(account));
+        log.info("(update) account response: {}", response);
+
+        return response;
     }
 
     @Override

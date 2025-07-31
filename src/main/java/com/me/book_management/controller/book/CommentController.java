@@ -1,7 +1,6 @@
 package com.me.book_management.controller.book;
 
-import com.me.book_management.annotation.book.Create;
-import com.me.book_management.dto.request.book.CreateCommentRequest;
+import com.me.book_management.dto.request.book.comment.CreateCommentRequest;
 import com.me.book_management.repository.book.CommentRepository;
 import com.me.book_management.service.BookService;
 import com.me.book_management.service.CommentService;

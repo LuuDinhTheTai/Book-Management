@@ -1,7 +1,5 @@
-package com.me.book_management.dto.request.book;
+package com.me.book_management.dto.request.book.comment;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;

@@ -15,6 +15,7 @@
             </button>
             <div class="dropdown-menu" id="categoryDropdown">
               <a th:href="@{/books/list}" class="dropdown-item">All Books</a>
+              <a th:href="@{/categories/list}" class="dropdown-item">All categories</a>
               <div class="dropdown-divider"></div>
               <a th:each="category : ${categories}"
                  th:href="@{/categories/{id}(id=${category.id})}"

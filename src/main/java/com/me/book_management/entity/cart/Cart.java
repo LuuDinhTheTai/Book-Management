@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"account", "cartBooks"})
 public class Cart {
 
     @Id
@@ -24,7 +24,7 @@ public class Cart {
     @JoinColumn(name = "account_id")
     private Account account;
     
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CartBook> cartBooks = new ArrayList<>();
     
     private float totalPrice;

@@ -11,6 +11,10 @@
 <div class="container">
     <h1 class="page-title">My Book</h1>
 
+    <div th:if="${errorMessage}" class="error">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
     <table class="table">
         <thead>
         <tr>

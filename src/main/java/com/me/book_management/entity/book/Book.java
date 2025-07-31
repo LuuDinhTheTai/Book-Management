@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"detail", "account", "categories"})
 public class Book extends EntityWithUpdater {
 
     @Id

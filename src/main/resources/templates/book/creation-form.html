@@ -43,6 +43,19 @@
         <div th:if="${#fields.hasErrors('status')}" class="error" th:errors="*{status}"></div>
         <br>
 
+        <label>Categories:</label>
+        <div class="category-selection">
+            <div th:each="category : ${categories}" class="category-checkbox">
+                <input type="checkbox" 
+                       th:name="categories" 
+                       th:value="${category.id}" 
+                       th:id="'category-' + ${category.id}"/>
+                <label th:for="'category-' + ${category.id}" th:text="${category.name}"></label>
+            </div>
+        </div>
+        <div th:if="${#fields.hasErrors('categories')}" class="error" th:errors="*{categories}"></div>
+        <br>
+
         <fieldset>
             <legend>Detail</legend>
             <label>ISBN:</label>

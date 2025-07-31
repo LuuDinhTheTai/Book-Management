@@ -1,7 +1,7 @@
 package com.me.book_management.service;
 
-import com.me.book_management.dto.request.book.CreateCategoryRequest;
-import com.me.book_management.dto.request.book.UpdateCategoryRequest;
+import com.me.book_management.dto.request.book.category.CreateCategoryRequest;
+import com.me.book_management.dto.request.book.category.UpdateCategoryRequest;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.entity.book.Category;
 
@@ -14,8 +14,6 @@ public interface CategoryService {
     Category find(Long id);
 
     List<Category> list();
-
-    List<Book> findBookByCategory(Long id);
 
     Category update(Long id, UpdateCategoryRequest request);
 
