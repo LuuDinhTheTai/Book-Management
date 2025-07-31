@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BM</title>
+    <link rel="stylesheet" th:href="@{/style.css}"/>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+</head>
+<body>
+<div th:replace="component/navbar :: navbar"></div>
+<div class="container">
+    <h1 class="page-title">Categories</h1>
+
+    <div th:if="${successMessage}" class="success">
+        <p th:text="${successMessage}"></p>
+    </div>
+    
+    <div th:if="${errorMessage}" class="error">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <div class="category-actions">
+        <a th:href="@{/categories/create}" class="btn-link">Create New Category</a>
+    </div>
+
+    <div th:if="${categories == null || #lists.isEmpty(categories)}" class="empty-state">
+        <p>No categories found.</p>
+        <a th:href="@{/categories/create}" class="btn-link">Create First Category</a>
+    </div>
+
+    <div th:if="${categories != null && !#lists.isEmpty(categories)}">
+        <div class="categories-grid">
+            <div th:each="category : ${categories}" class="category-card">
+                <div class="category-info">
+                    <h3>
+                        <a th:href="@{/categories/{id}(id=${category.id})}" th:text="${category.name}"></a>
+                    </h3>
+                    <p class="category-description" th:text="${category.description}"></p>
+                    <p class="category-books-count" th:text="${category.books.size() + ' books'}"></p>
+                </div>
+                <div class="category-actions">
+                    <a th:href="@{/categories/{id}(id=${category.id})}" class="btn-small">View Books</a>
+                    <a th:href="@{/categories/update/{id}(id=${category.id})}" class="btn-small">Edit</a>
+                    <form th:action="@{/categories/delete/{id}(id=${category.id})}" method="post" style="display: inline;">
+                        <button type="submit" class="btn-small btn-danger" onclick="return confirm('Delete this category?')">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a th:href="@{/books/list}" class="btn-link">← Back to Books</a>
+    </div>
+</div>
+</body>
+</html>

@@ -95,8 +95,8 @@ public class BookController {
 
     @GetMapping("my-book")
     public String myBook(@RequestParam(defaultValue = "0") int page,
-                          @RequestParam(defaultValue = "10") int size,
-                          Model model) {
+                         @RequestParam(defaultValue = "10") int size,
+                         Model model) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Book> bookPage = bookService.findByAccount(pageable);
         model.addAttribute("bookPage", bookPage);
@@ -116,7 +116,6 @@ public class BookController {
 
     @PostMapping("update")
     public String update(@Valid
-                         @Update
                          @ModelAttribute("book")
                          UpdateBookRequest request,
                          Model model) {
@@ -134,8 +133,7 @@ public class BookController {
 
     @PostMapping("delete/{id}")
     public String delete(@Valid
-                             @Delete
-                             @PathVariable Long id) {
+                         @PathVariable Long id) {
         bookService.delete(id);
         return "redirect:/books/my-book";
     }

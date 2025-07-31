@@ -84,6 +84,25 @@ public class CartController {
     @PostMapping("add-item")
     public String addItem(@ModelAttribute AddItemRequest request, RedirectAttributes redirectAttributes) {
         try {
+            // If cartId is not provided, get the user's active cart
+            if (request.getCartId() == null) {
+                String currentUsername = SecurityUtil.getCurrentAccount();
+                Account account = accountRepository.findByUsername(currentUsername)
+                        .orElseThrow(() -> new RuntimeException("Account not found"));
+                
+                Cart activeCart = cartRepository.findFirstByAccountOrderByIdDesc(account)
+                        .filter(c -> "ACTIVE".equals(c.getStatus()))
+                        .orElseGet(() -> {
+                            Cart newCart = new Cart();
+                            newCart.setAccount(account);
+                            newCart.setStatus("ACTIVE");
+                            newCart.setTotalPrice(0.0f);
+                            return cartRepository.save(newCart);
+                        });
+                
+                request.setCartId(activeCart.getId());
+            }
+            
             Cart cart = cartService.addItem(request);
             redirectAttributes.addFlashAttribute("successMessage", "Item added to cart successfully!");
             return "redirect:/carts/" + cart.getId();

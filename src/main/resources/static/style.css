@@ -424,3 +424,297 @@ button:hover {
     background: #5a6268;
     text-decoration: none;
 }
+
+/* Navbar Dropdown Styles */
+.navbar-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    background: transparent;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+
+.dropdown-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background: #fff;
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 1000;
+    border-radius: 4px;
+    top: 100%;
+    left: 0;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-item {
+    color: #333;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+    background: #f8f9fa;
+    text-decoration: none;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: #e9ecef;
+    margin: 4px 0;
+}
+
+/* Responsive dropdown */
+@media (max-width: 768px) {
+    .navbar-dropdown {
+        margin: 10px 0;
+    }
+    
+    .dropdown-menu {
+        position: static;
+        box-shadow: none;
+        border: 1px solid #ddd;
+        margin-top: 5px;
+    }
+}
+
+/* Book Grid and Cards */
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.book-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    background: #fff;
+    transition: box-shadow 0.2s;
+}
+
+.book-card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.book-info h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+}
+
+.book-info h3 a {
+    color: #333;
+    text-decoration: none;
+}
+
+.book-info h3 a:hover {
+    color: #007bff;
+}
+
+.book-price {
+    font-weight: bold;
+    color: #28a745;
+    margin: 8px 0;
+}
+
+.book-status {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 8px 0;
+}
+
+.book-actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.empty-state p {
+    color: #666;
+    margin-bottom: 16px;
+}
+
+/* Loading and error states for dropdown */
+.loading {
+    color: #666;
+    font-style: italic;
+    padding: 12px 16px;
+    text-align: center;
+}
+
+.dropdown-item.disabled {
+    color: #999;
+    cursor: not-allowed;
+    font-style: italic;
+}
+
+.dropdown-item.disabled:hover {
+    background: transparent;
+}
+
+/* Test page styles */
+.test-section {
+    margin: 20px 0;
+}
+
+.test-info ul {
+    list-style: none;
+    padding: 0;
+}
+
+.test-info li {
+    padding: 4px 0;
+    color: #28a745;
+}
+
+.test-controls {
+    margin: 20px 0;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.test-controls button {
+    margin: 0 8px 8px 0;
+}
+
+.test-status {
+    margin: 20px 0;
+    padding: 16px;
+    background: #e9ecef;
+    border-radius: 4px;
+}
+
+.test-status p {
+    margin: 8px 0;
+    font-family: monospace;
+}
+
+/* Category specific styles */
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.category-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    background: #fff;
+    transition: box-shadow 0.2s;
+}
+
+.category-card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.category-info h3 {
+    margin: 0 0 12px 0;
+    font-size: 1.3rem;
+}
+
+.category-info h3 a {
+    color: #333;
+    text-decoration: none;
+}
+
+.category-info h3 a:hover {
+    color: #007bff;
+}
+
+.category-description {
+    color: #666;
+    margin: 12px 0;
+    line-height: 1.5;
+}
+
+.category-books-count {
+    color: #28a745;
+    font-weight: bold;
+    margin: 8px 0;
+}
+
+.category-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.category-actions .btn-small {
+    margin: 0;
+}
+
+.category-description {
+    background: #f8f9fa;
+    padding: 16px;
+    border-radius: 4px;
+    margin: 20px 0;
+    border-left: 4px solid #007bff;
+}
+
+/* Form styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.form-error {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-top: 4px;
+    display: block;
+}
+
+.form-actions {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+}

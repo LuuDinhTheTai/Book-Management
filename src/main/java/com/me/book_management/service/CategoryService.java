@@ -1,5 +1,7 @@
 package com.me.book_management.service;
 
+import com.me.book_management.dto.request.book.CreateCategoryRequest;
+import com.me.book_management.dto.request.book.UpdateCategoryRequest;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.entity.book.Category;
 
@@ -7,9 +9,15 @@ import java.util.List;
 
 public interface CategoryService {
 
-    Category create(Category category);
+    Category create(CreateCategoryRequest request);
+
+    Category find(Long id);
+
     List<Category> list();
-    List<Book> listBooksByCategory(Long id);
-    Category update(Category category);
+
+    List<Book> findBookByCategory(Long id);
+
+    Category update(Long id, UpdateCategoryRequest request);
+
     void delete(Long id);
 }

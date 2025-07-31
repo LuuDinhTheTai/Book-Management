@@ -5,7 +5,25 @@
   <div th:fragment="navbar">
     <nav class="navbar">
       <a class="navbar-brand" th:href="@{/books/list}">Book Management</a>
+
       <ul class="navbar-links">
+        <li>
+          <!-- Category Dropdown -->
+          <div class="navbar-dropdown">
+            <button class="dropdown-toggle" onclick="toggleDropdown()">
+              Categories ▼
+            </button>
+            <div class="dropdown-menu" id="categoryDropdown">
+              <a th:href="@{/books/list}" class="dropdown-item">All Books</a>
+              <div class="dropdown-divider"></div>
+              <a th:each="category : ${categories}"
+                 th:href="@{/categories/{id}(id=${category.id})}"
+                 th:text="${category.name}"
+                 class="dropdown-item">
+              </a>
+            </div>
+          </div>
+        </li>
         <li th:if="${#authorization.expr('isAuthenticated()')}">
           <a th:href="@{/carts/list}">Cart</a>
         </li>
@@ -22,11 +40,26 @@
           <a th:href="@{/auth/signout}">Sign out</a>
         </li>
       </ul>
-<!--      <form class="navbar-search" th:action="@{/books/list}" method="get">-->
-<!--        <input type="text" name="q" placeholder="Search..." class="navbar-search-input" />-->
-<!--        <button type="submit" class="navbar-search-btn">Search</button>-->
-<!--      </form>-->
     </nav>
+
+    <script>
+    function toggleDropdown() {
+      const dropdown = document.getElementById('categoryDropdown');
+      dropdown.classList.toggle('show');
+    }
+
+    // Close dropdown when clicking outside
+    window.onclick = function(event) {
+      if (!event.target.matches('.dropdown-toggle')) {
+        const dropdowns = document.getElementsByClassName('dropdown-menu');
+        for (let dropdown of dropdowns) {
+          if (dropdown.classList.contains('show')) {
+            dropdown.classList.remove('show');
+          }
+        }
+      }
+    }
+    </script>
   </div>
 </body>
 </html> 

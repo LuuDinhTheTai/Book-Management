@@ -2,6 +2,7 @@ package com.me.book_management.repository.book;
 
 import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.book.Book;
+import com.me.book_management.entity.book.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

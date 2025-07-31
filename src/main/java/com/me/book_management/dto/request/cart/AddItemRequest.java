@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddItemRequest {
-
     private Long bookId;
-    private Integer qty = 1;
     private Long cartId;
+    private Integer qty = 1;
 }
