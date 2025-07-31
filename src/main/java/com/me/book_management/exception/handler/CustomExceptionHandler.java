@@ -16,17 +16,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Slf4j
 public class CustomExceptionHandler {
 
-    @ExceptionHandler(BaseException.class)
-    public String handleBaseException(BaseException e, Model model) {
-        log.error("Exception: {}", e.getMessage());
-        model.addAttribute("status", e.getStatusCode());
-//        model.addAttribute("message", e.getMessage());
-        return "exception/error";
-    }
-
     @ExceptionHandler(UnauthorizedAccessException.class)
-    public String handleUnauthorizedAccessException(UnauthorizedAccessException e, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-        return "redirect:/books/my-book";
+    public String handleUnauthorizedAccessException(UnauthorizedAccessException e, Model model) {
+        model.addAttribute("statusCode", HttpStatus.UNAUTHORIZED.toString());
+        model.addAttribute("message", e.getMessage());
+        return "exception/error";
     }
 }

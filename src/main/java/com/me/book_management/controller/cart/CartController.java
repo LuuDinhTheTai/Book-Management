@@ -1,5 +1,6 @@
 package com.me.book_management.controller.cart;
 
+import com.me.book_management.annotation.cart.Access;
 import com.me.book_management.dto.request.cart.AddItemRequest;
 import com.me.book_management.dto.request.cart.UpdateItemRequest;
 import com.me.book_management.entity.account.Account;
@@ -42,7 +43,7 @@ public class CartController {
     }
 
     @GetMapping("{id}")
-    public String find(@PathVariable Long id, Model model) {
+    public String find(@Access @PathVariable Long id, Model model) {
         try {
             Cart cart = cartService.find(id);
             model.addAttribute("cart", cart);
@@ -56,7 +57,7 @@ public class CartController {
     }
 
     @GetMapping("list")
-    public String list(Model model) {
+    public String list(@Access Model model) {
         try {
             List<Cart> carts = cartService.list();
             model.addAttribute("carts", carts);
@@ -70,7 +71,7 @@ public class CartController {
     }
 
     @PostMapping("delete/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String delete(@Access @PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             cartService.delete(id);
             redirectAttributes.addFlashAttribute("successMessage", "Cart deleted successfully!");
@@ -84,28 +85,10 @@ public class CartController {
     @PostMapping("add-item")
     public String addItem(@ModelAttribute AddItemRequest request, RedirectAttributes redirectAttributes) {
         try {
-            // If cartId is not provided, get the user's active cart
-            if (request.getCartId() == null) {
-                String currentUsername = SecurityUtil.getCurrentAccount();
-                Account account = accountRepository.findByUsername(currentUsername)
-                        .orElseThrow(() -> new RuntimeException("Account not found"));
-                
-                Cart activeCart = cartRepository.findFirstByAccountOrderByIdDesc(account)
-                        .filter(c -> "ACTIVE".equals(c.getStatus()))
-                        .orElseGet(() -> {
-                            Cart newCart = new Cart();
-                            newCart.setAccount(account);
-                            newCart.setStatus("ACTIVE");
-                            newCart.setTotalPrice(0.0f);
-                            return cartRepository.save(newCart);
-                        });
-                
-                request.setCartId(activeCart.getId());
-            }
-            
             Cart cart = cartService.addItem(request);
             redirectAttributes.addFlashAttribute("successMessage", "Item added to cart successfully!");
             return "redirect:/carts/" + cart.getId();
+
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to add item: " + e.getMessage());
             return "redirect:/carts/list";
@@ -126,7 +109,7 @@ public class CartController {
     }
 
     @PostMapping("update/{id}")
-    public String updateItemQuantity(@PathVariable Long id, @RequestParam Integer qty, RedirectAttributes redirectAttributes) {
+    public String updateItemQuantity(@Access @PathVariable Long id, @RequestParam Integer qty, RedirectAttributes redirectAttributes) {
         try {
             UpdateItemRequest request = new UpdateItemRequest();
             request.setCartBookId(id);
@@ -134,6 +117,7 @@ public class CartController {
             Cart cart = cartService.updateItem(request);
             redirectAttributes.addFlashAttribute("successMessage", "Quantity updated successfully!");
             return "redirect:/carts/" + cart.getId();
+
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to update quantity: " + e.getMessage());
             return "redirect:/carts/list";
@@ -141,7 +125,7 @@ public class CartController {
     }
 
     @PostMapping("delete-item/{id}")
-    public String deleteItem(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String deleteItem(@Access @PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             CartBook cartBook = cartBookRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Cart item not found"));
@@ -149,6 +133,7 @@ public class CartController {
             cartBookRepository.delete(cartBook);
             redirectAttributes.addFlashAttribute("successMessage", "Item removed from cart successfully!");
             return "redirect:/carts/" + cartId;
+
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to remove item: " + e.getMessage());
             return "redirect:/carts/list";
