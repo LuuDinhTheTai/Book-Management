@@ -7,7 +7,8 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class UpdateCartRequest {
+public class DecreaseItemRequest extends UpdateItemRequest {
 
-    private int qty;
+    private Long cartBookId;
+    private int qty = 1;
 }

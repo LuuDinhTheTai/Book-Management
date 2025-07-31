@@ -22,7 +22,6 @@
     <div th:if="${cart != null}">
         <div class="cart-info">
             <p><strong>Cart ID:</strong> <span th:text="${cart.id}"></span></p>
-            <p><strong>Status:</strong> <span th:text="${cart.status}"></span></p>
             <p><strong>Total Price:</strong> <span th:text="${cart.totalPrice + 'đ'}"></span></p>
         </div>
 
@@ -40,7 +39,6 @@
                     <th>Price</th>
                     <th>Quantity</th>
                     <th>Total</th>
-                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -51,23 +49,18 @@
                     <td th:text="${cartBook.book.price + 'đ'}"></td>
                     <td>
                         <div class="quantity-controls">
-                            <form th:action="@{/carts/update/{id}(id=${cartBook.id})}" method="post" style="display: inline;">
-                                <input type="hidden" name="qty" th:value="${cartBook.qty - 1}">
-                                <button type="submit" class="btn-small btn-minus" th:disabled="${cartBook.qty <= 1}">-</button>
+                            <form th:action="@{/carts/decrease-item/{id}(id=${cartBook.id})}" method="post" style="display: inline;">
+                                <input type="hidden" name="qty" th:value="1">
+                                <button type="submit" class="btn-small btn-minus">-</button>
                             </form>
                             <span class="quantity-display" th:text="${cartBook.qty}"></span>
-                            <form th:action="@{/carts/update/{id}(id=${cartBook.id})}" method="post" style="display: inline;">
-                                <input type="hidden" name="qty" th:value="${cartBook.qty + 1}">
+                            <form th:action="@{/carts/increase-item/{id}(id=${cartBook.id})}" method="post" style="display: inline;">
+                                <input type="hidden" name="qty" th:value="1">
                                 <button type="submit" class="btn-small btn-plus">+</button>
                             </form>
                         </div>
                     </td>
                     <td th:text="${cartBook.price + 'đ'}"></td>
-                    <td>
-                        <form th:action="@{/carts/delete-item/{id}(id=${cartBook.id})}" method="post" style="display: inline;">
-                            <button type="submit" class="btn-small btn-danger" onclick="return confirm('Remove this item?')">Remove</button>
-                        </form>
-                    </td>
                 </tr>
                 </tbody>
             </table>

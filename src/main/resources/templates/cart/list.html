@@ -34,7 +34,6 @@
             <thead>
             <tr>
                 <th>Cart ID</th>
-                <th>Status</th>
                 <th>Total Price</th>
                 <th>Actions</th>
             </tr>
@@ -44,7 +43,6 @@
                 <td>
                     <a th:href="@{/carts/{id}(id=${cart.id})}" th:text="${cart.id}"></a>
                 </td>
-                <td th:text="${cart.status}"></td>
                 <td th:text="${cart.totalPrice + 'đ'}"></td>
                 <td>
                     <a th:href="@{/carts/{id}(id=${cart.id})}" class="btn-small">View</a>

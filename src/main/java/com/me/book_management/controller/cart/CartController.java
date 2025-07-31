@@ -2,15 +2,14 @@ package com.me.book_management.controller.cart;
 
 import com.me.book_management.annotation.cart.Access;
 import com.me.book_management.dto.request.cart.AddItemRequest;
-import com.me.book_management.dto.request.cart.UpdateItemRequest;
-import com.me.book_management.entity.account.Account;
+import com.me.book_management.dto.request.cart.DecreaseItemRequest;
+import com.me.book_management.dto.request.cart.IncreaseItemRequest;
 import com.me.book_management.entity.cart.Cart;
-import com.me.book_management.entity.cart.CartBook;
 import com.me.book_management.repository.account.AccountRepository;
 import com.me.book_management.repository.cart.CartBookRepository;
 import com.me.book_management.repository.cart.CartRepository;
 import com.me.book_management.service.CartService;
-import com.me.book_management.util.SecurityUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,7 +56,7 @@ public class CartController {
     }
 
     @GetMapping("list")
-    public String list(@Access Model model) {
+    public String list(Model model) {
         try {
             List<Cart> carts = cartService.list();
             model.addAttribute("carts", carts);
@@ -95,47 +94,40 @@ public class CartController {
         }
     }
 
-    @PostMapping("update-item")
-    public String updateItem(@ModelAttribute UpdateItemRequest request, RedirectAttributes redirectAttributes) {
+    @PostMapping("increase-item/{id}")
+    public String increaseItem(@PathVariable
+                               Long id,
+                               @Valid
+                               @ModelAttribute
+                               IncreaseItemRequest request,
+                               RedirectAttributes redirectAttributes) {
         try {
-            Cart cart = cartService.updateItem(request);
-            redirectAttributes.addFlashAttribute("successMessage", "Cart updated successfully!");
+            Cart cart = cartService.increaseItem(id, request);
+            redirectAttributes.addFlashAttribute("successMessage", "Thêm số lượng thành công!");
+
             return "redirect:/carts/" + cart.getId();
 
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update cart: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to add item: " + e.getMessage());
             return "redirect:/carts/list";
         }
     }
 
-    @PostMapping("update/{id}")
-    public String updateItemQuantity(@Access @PathVariable Long id, @RequestParam Integer qty, RedirectAttributes redirectAttributes) {
+    @PostMapping("decrease-item/{id}")
+    public String decreaseItem(@PathVariable
+                               Long id,
+                               @Valid
+                               @ModelAttribute
+                               DecreaseItemRequest request,
+                               RedirectAttributes redirectAttributes) {
         try {
-            UpdateItemRequest request = new UpdateItemRequest();
-            request.setCartBookId(id);
-            request.setQty(qty);
-            Cart cart = cartService.updateItem(request);
-            redirectAttributes.addFlashAttribute("successMessage", "Quantity updated successfully!");
+            Cart cart = cartService.decreaseItem(id, request);
+            redirectAttributes.addFlashAttribute("successMessage", "Giảm số lượng thành công!");
+
             return "redirect:/carts/" + cart.getId();
 
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update quantity: " + e.getMessage());
-            return "redirect:/carts/list";
-        }
-    }
-
-    @PostMapping("delete-item/{id}")
-    public String deleteItem(@Access @PathVariable Long id, RedirectAttributes redirectAttributes) {
-        try {
-            CartBook cartBook = cartBookRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Cart item not found"));
-            Long cartId = cartBook.getCart().getId();
-            cartBookRepository.delete(cartBook);
-            redirectAttributes.addFlashAttribute("successMessage", "Item removed from cart successfully!");
-            return "redirect:/carts/" + cartId;
-
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to remove item: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to decrease item: " + e.getMessage());
             return "redirect:/carts/list";
         }
     }

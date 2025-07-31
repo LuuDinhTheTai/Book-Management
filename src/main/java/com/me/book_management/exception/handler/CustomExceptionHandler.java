@@ -22,4 +22,11 @@ public class CustomExceptionHandler {
         model.addAttribute("message", e.getMessage());
         return "exception/error";
     }
+
+    @ExceptionHandler(BaseException.class)
+    public String handleBaseException(BaseException e, Model model) {
+        log.error("Exception: {}", e.getMessage());
+        model.addAttribute("status", e.getStatusCode());
+        return "exception/error";
+    }
 }

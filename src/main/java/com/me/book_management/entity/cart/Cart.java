@@ -27,9 +27,8 @@ public class Cart {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CartBook> cartBooks = new ArrayList<>();
     
-    private float totalPrice;
+    private float totalPrice = 0;
     // address id
     private String shippingMethod;
     private String paymentMethod;
-    private String status;
 }
