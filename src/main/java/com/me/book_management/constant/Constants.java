@@ -38,6 +38,10 @@ public class Constants {
         public static final String READ_CATEGORY = ACTION.READ + BRIDGE + RESOURCE.CATEGORY;
         public static final String UPDATE_CATEGORY = ACTION.UPDATE + BRIDGE + RESOURCE.CATEGORY;
         public static final String DELETE_CATEGORY = ACTION.DELETE + BRIDGE + RESOURCE.CATEGORY;
+        public static final String CREATE_ADDRESS = ACTION.CREATE + BRIDGE + RESOURCE.ADDRESS;
+        public static final String READ_ADDRESS = ACTION.READ + BRIDGE + RESOURCE.ADDRESS;
+        public static final String UPDATE_ADDRESS = ACTION.UPDATE + BRIDGE + RESOURCE.ADDRESS;
+        public static final String DELETE_ADDRESS = ACTION.DELETE + BRIDGE + RESOURCE.ADDRESS;
     }
 
     public static class ACTION {
@@ -56,6 +60,7 @@ public class Constants {
         public static final String CART = "CART";
         public static final String ROLE = "ROLE";
         public static final String CATEGORY = "CATEGORY";
+        public static final String ADDRESS = "ADDRESS";
     }
 
     public static class COOKIE {

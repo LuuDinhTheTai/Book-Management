@@ -1,5 +1,9 @@
 package com.me.book_management.controller.account;
 
+import com.me.book_management.annotation.address.Access;
+import com.me.book_management.annotation.address.Create;
+import com.me.book_management.annotation.address.Delete;
+import com.me.book_management.annotation.address.Update;
 import com.me.book_management.dto.request.account.address.CreateAddressRequest;
 import com.me.book_management.dto.request.account.address.UpdateAddressRequest;
 import com.me.book_management.entity.account.Account;
@@ -66,7 +70,8 @@ public class AddressController {
     }
 
     @GetMapping("update/{id}")
-    public String updateForm(@PathVariable Long id, Model model) {
+
+    public String updateForm(@Access @PathVariable Long id, Model model) {
         try {
             Address address = addressService.find(id);
             model.addAttribute("address", address);

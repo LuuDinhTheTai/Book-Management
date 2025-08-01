@@ -2,13 +2,13 @@ package com.me.book_management.service.impl;
 
 import com.me.book_management.annotation.address.Create;
 import com.me.book_management.annotation.address.Delete;
-import com.me.book_management.annotation.address.Read;
 import com.me.book_management.annotation.address.Update;
 import com.me.book_management.dto.request.account.address.CreateAddressRequest;
 import com.me.book_management.dto.request.account.address.UpdateAddressRequest;
 import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.account.Address;
 import com.me.book_management.exception.NotFoundException;
+import com.me.book_management.exception.UnauthorizedAccessException;
 import com.me.book_management.repository.account.AccountRepository;
 import com.me.book_management.repository.account.AddressRepository;
 import com.me.book_management.service.AddressService;
@@ -16,7 +16,6 @@ import com.me.book_management.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -54,7 +53,6 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    @Read
     public Address find(Long id) {
         log.info("(find) id: {}", id);
 
@@ -66,7 +64,6 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    @Read
     public List<Address> list() {
         Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
                 .orElseThrow(() -> new NotFoundException("Account not found with username: " + CommonUtil.getCurrentAccount()));
@@ -79,8 +76,15 @@ public class AddressServiceImpl implements AddressService {
     public Address update(Long id, UpdateAddressRequest request) {
         log.info("(update) id: {}, request: {}", id, request);
 
+        Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
+                .orElseThrow(() -> new NotFoundException("Account not found with username: " + CommonUtil.getCurrentAccount()));
+
         Address address = find(id);
-        
+
+        if (!address.getAccount().getUsername().equals(account.getUsername())) {
+            throw new UnauthorizedAccessException("You are not owner");
+        }
+
         address.setStreet(request.getStreet());
         address.setCity(request.getCity());
         address.setState(request.getState());
