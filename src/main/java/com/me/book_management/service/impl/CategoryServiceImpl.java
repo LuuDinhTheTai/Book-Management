@@ -1,5 +1,8 @@
 package com.me.book_management.service.impl;
 
+import com.me.book_management.annotation.category.Create;
+import com.me.book_management.annotation.category.Delete;
+import com.me.book_management.annotation.category.Update;
 import com.me.book_management.dto.request.book.category.CreateCategoryRequest;
 import com.me.book_management.dto.request.book.category.UpdateCategoryRequest;
 import com.me.book_management.entity.book.Book;
@@ -21,6 +24,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
+    @Create
     public Category create(CreateCategoryRequest request) {
         log.info("(create) category: {}", request);
 
@@ -49,6 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Update
     public Category update(Long id, UpdateCategoryRequest request) {
         log.info("(update) category: {}", request);
 
@@ -62,6 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Delete
     public void delete(Long id) {
         log.info("(delete) category id: {}", id);
         categoryRepository.deleteById(id);
