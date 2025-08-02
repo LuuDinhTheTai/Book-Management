@@ -1,45 +1,201 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>BM</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Books - BookStore</title>
     <link rel="stylesheet" th:href="@{/style.css}"/>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 </head>
 <body>
-<div th:replace="component/navbar :: navbar"></div>
-<div class="container">
-    <h1 class="page-title">Book List</h1>
+    <div th:replace="component/navbar :: navbar"></div>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Status</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="book : ${bookPage.content}">
-            <td>
-                <a th:text="${book.name}" th:href="@{|/books/${book.id}|}"></a>
-            </td>
-            <td th:text="${book.price}"></td>
-            <td th:text="${book.qty}"></td>
-            <td th:text="${book.status}"></td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="container">
+        <div class="page-header">
+            <div class="header-content">
+                <h1 class="page-title">Browse Books</h1>
+                <p class="page-subtitle">Discover your next favorite read</p>
+            </div>
+            
+            <div class="header-actions" th:if="${#authorization.expr('isAuthenticated()')}">
+                <a th:href="@{/books/create}" class="btn btn-primary">
+                    <span class="btn-icon">📝</span>
+                    Add Book
+                </a>
+            </div>
+        </div>
 
-    <div class="pagination-info">
-        <span th:text="'Page ' + ${bookPage.number + 1} + ' of ' + ${bookPage.totalPages}"></span>
+        <!-- Search and Filter Section -->
+        <div class="search-filter-section">
+            <div class="search-box">
+                <form th:action="@{/books/list}" method="get" class="search-form">
+                    <div class="search-input-group">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" 
+                               name="search" 
+                               th:value="${param.search}"
+                               class="search-input" 
+                               placeholder="Search books by title, author, or category...">
+                        <button type="submit" class="search-btn">Search</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="filter-options">
+                <div class="filter-group">
+                    <label for="categoryFilter" class="filter-label">Category:</label>
+                    <select id="categoryFilter" name="category" class="filter-select" onchange="applyFilter()">
+                        <option value="">All Categories</option>
+                        <option th:each="category : ${categories}" 
+                                th:value="${category.id}" 
+                                th:text="${category.name}"
+                                th:selected="${param.category != null and param.category[0] == category.id.toString()}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="statusFilter" class="filter-label">Status:</label>
+                    <select id="statusFilter" name="status" class="filter-select" onchange="applyFilter()">
+                        <option value="">All Status</option>
+                        <option value="Available" th:selected="${param.status != null and param.status[0] == 'Available'}">Available</option>
+                        <option value="Sold out" th:selected="${param.status != null and param.status[0] == 'Sold out'}">Sold Out</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="sortBy" class="filter-label">Sort by:</label>
+                    <select id="sortBy" name="sort" class="filter-select" onchange="applyFilter()">
+                        <option value="name" th:selected="${param.sort == null or param.sort[0] == 'name'}">Name</option>
+                        <option value="price" th:selected="${param.sort != null and param.sort[0] == 'price'}">Price</option>
+                        <option value="createdAt" th:selected="${param.sort != null and param.sort[0] == 'createdAt'}">Newest</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Summary -->
+        <div class="results-summary">
+            <span class="results-count" th:text="${bookPage.totalElements} + ' books found'"></span>
+            <span class="results-page" th:text="'Page ' + ${bookPage.number + 1} + ' of ' + ${bookPage.totalPages}"></span>
+        </div>
+
+        <!-- Books Grid -->
+        <div th:if="${bookPage.content.size() > 0}" class="books-grid">
+            <div th:each="book : ${bookPage.content}" class="book-card">
+                <div class="book-image">
+                    <div class="book-placeholder">📚</div>
+                </div>
+                
+                <div class="book-info">
+                    <h3 class="book-title">
+                        <a th:href="@{|/books/${book.id}|}" th:text="${book.name}"></a>
+                    </h3>
+                    
+                    <div class="book-meta">
+                        <span class="book-price" th:text="'$' + ${book.price}"></span>
+                        <span class="book-status" th:class="${book.status == 'Available' ? 'status-available' : 'status-soldout'}" 
+                              th:text="${book.status}"></span>
+                    </div>
+                    
+                    <div class="book-details">
+                        <span class="book-quantity" th:text="${book.qty} + ' in stock'"></span>
+                        <span th:if="${book.detail != null and book.detail.author != null}" class="book-author"
+                              th:text="'by ' + ${book.detail.author}"></span>
+                    </div>
+                    
+                    <div class="book-actions">
+                        <a th:href="@{|/books/${book.id}|}" class="btn btn-outline btn-small">
+                            <span class="btn-icon">👁️</span>
+                            View Details
+                        </a>
+
+                        <form th:if="${#authorization.expr('isAuthenticated()')}"
+                              th:action="@{/carts/add-item}"
+                              method="post"
+                              class="add-to-cart-form">
+                            <input type="hidden" name="bookId" th:value="${book.id}"/>
+                            <input type="hidden" name="qty" value="1"/>
+                            <button type="submit" class="btn btn-primary btn-small"
+                                    th:disabled="${book.status != 'Available'}">
+                                <span class="btn-icon">🛒</span>
+                                Add to Cart
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${bookPage.content.size() == 0}" class="empty-state">
+            <div class="empty-icon">📚</div>
+            <h3 class="empty-title">No books found</h3>
+            <p class="empty-message">Try adjusting your search criteria or browse all categories</p>
+            <div class="empty-actions">
+                <a th:href="@{/books/list}" class="btn btn-outline">Browse All Books</a>
+                <a th:href="@{/categories/list}" class="btn btn-outline">Browse Categories</a>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div th:if="${bookPage.totalPages > 1}" class="pagination">
+            <div class="pagination-info">
+                <span th:text="'Showing ' + ${bookPage.numberOfElements} + ' of ' + ${bookPage.totalElements} + ' books'"></span>
+            </div>
+            
+            <div class="pagination-controls">
+                <a th:if="${bookPage.hasPrevious()}" 
+                   th:href="@{/books/list(page=${bookPage.number - 1}, size=${bookPage.size}, search=${param.search}, category=${param.category}, status=${param.status}, sort=${param.sort})}"
+                   class="pagination-btn">
+                    <span class="btn-icon">←</span>
+                    Previous
+                </a>
+                
+                <div class="pagination-pages">
+                    <span th:each="pageNum : ${#numbers.sequence(0, bookPage.totalPages - 1)}"
+                          th:if="${pageNum >= bookPage.number - 2 and pageNum <= bookPage.number + 2}"
+                          th:class="${pageNum == bookPage.number ? 'pagination-page active' : 'pagination-page'}">
+                        <a th:href="@{/books/list(page=${pageNum}, size=${bookPage.size}, search=${param.search}, category=${param.category}, status=${param.status}, sort=${param.sort})}"
+                           th:text="${pageNum + 1}"></a>
+                    </span>
+                </div>
+                
+                <a th:if="${bookPage.hasNext()}" 
+                   th:href="@{/books/list(page=${bookPage.number + 1}, size=${bookPage.size}, search=${param.search}, category=${param.category}, status=${param.status}, sort=${param.sort})}"
+                   class="pagination-btn">
+                    Next
+                    <span class="btn-icon">→</span>
+                </a>
+            </div>
+        </div>
     </div>
-    <div class="pagination-nav">
-        <a th:if="${bookPage.hasPrevious()}" th:href="@{/books/list(page=${bookPage.number - 1},size=${bookPage.size})}"
-           class="btn-link">Previous</a>
-        <a th:if="${bookPage.hasNext()}" th:href="@{/books/list(page=${bookPage.number + 1},size=${bookPage.size})}"
-           class="btn-link">Next</a>
-    </div>
-</div>
+
+    <script>
+    function applyFilter() {
+        const categoryFilter = document.getElementById('categoryFilter');
+        const statusFilter = document.getElementById('statusFilter');
+        const sortBy = document.getElementById('sortBy');
+        const searchInput = document.querySelector('.search-input');
+        
+        const params = new URLSearchParams(window.location.search);
+        
+        if (categoryFilter.value) params.set('category', categoryFilter.value);
+        else params.delete('category');
+        
+        if (statusFilter.value) params.set('status', statusFilter.value);
+        else params.delete('status');
+        
+        if (sortBy.value) params.set('sort', sortBy.value);
+        else params.delete('sort');
+        
+        if (searchInput.value) params.set('search', searchInput.value);
+        else params.delete('search');
+        
+        params.delete('page'); // Reset to first page when filtering
+        
+        window.location.href = '/books/list?' + params.toString();
+    }
+    </script>
 </body>
 </html>

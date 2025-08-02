@@ -1,12 +1,14 @@
 package com.me.book_management.controller.account;
 
 import com.me.book_management.dto.request.account.UpdateAccountRequest;
-import com.me.book_management.entity.account.Account;
 import com.me.book_management.service.AccountService;
+import com.me.book_management.service.BookService;
+import com.me.book_management.service.CartService;
+import com.me.book_management.service.CommentService;
 import com.me.book_management.util.SecurityUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,11 +20,17 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
 
     private final AccountService accountService;
+    private final BookService bookService;
+    private final CartService cartService;
+    private final CommentService commentService;
 
     @GetMapping("profile")
     public String profile(Model model) {
         String username = SecurityUtil.getCurrentAccount();
         model.addAttribute("account", accountService.findByUsername(username));
+        model.addAttribute("myBooks", bookService.findByAccount(PageRequest.of(1, 5)).getContent());
+        model.addAttribute("carts", cartService.list());
+        model.addAttribute("myComments", commentService.findByAccount());
         return "account/profile";
     }
 

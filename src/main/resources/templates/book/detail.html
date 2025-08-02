@@ -1,85 +1,268 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>BM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${book.name} + ' - BookStore'">Book Details - BookStore</title>
     <link rel="stylesheet" th:href="@{/style.css}"/>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 </head>
 <body>
-<div th:replace="component/navbar :: navbar"></div>
+    <div th:replace="component/navbar :: navbar"></div>
 
-<div class="container">
-    <h1 class="page-title">Book Details</h1>
-
-    <div th:if="${book}" class="book-detail">
-        <p>Name: <span th:text="${book.name}"></span></p>
-        <p>Price: <span th:text="${book.price}"></span></p>
-        <p>Quantity: <span th:text="${book.qty}"></span></p>
-        <p>Status: <span th:text="${book.status}"></span></p>
-        <div th:if="${book.detail}">
-            <p>ISBN: <span th:text="${book.detail.isbn}"></span></p>
-            <p>Title: <span th:text="${book.detail.title}"></span></p>
-            <p>Subtitle: <span th:text="${book.detail.subtitle}"></span></p>
-            <p>Author: <span th:text="${book.detail.author}"></span></p>
-            <p>Publisher: <span th:text="${book.detail.publisher}"></span></p>
-            <p>Published Date: <span th:text="${book.detail.publishedDate}"></span></p>
-            <p>Description: <span th:text="${book.detail.description}"></span></p>
-            <p>Page Count: <span th:text="${book.detail.pageCount}"></span></p>
-            <p>Language: <span th:text="${book.detail.language}"></span></p>
-            <p>Format: <span th:text="${book.detail.format}"></span></p>
+    <div class="container">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a th:href="@{/books/list}" class="breadcrumb-link">Books</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current" th:text="${book.name}"></span>
         </div>
-        <div class="book-actions">
-            <form th:action="@{/carts/add-item}" method="post">
-                <input type="hidden" name="bookId" th:value="${book.id}"/>
-                <label for="qty">Quantity: </label>
-                <input type="number" id="qty" name="qty" value="1" min="1" max="99">
-                <label for="cart">Cart: </label>
-                <select id="cart" name="cartId">
-                    <option th:each="cart : ${carts}" th:value="${cart.id}" th:text="${cart.id}"></option>
-                </select>
-                <button type="submit">Add to Cart</button>
-            </form>
-            <a th:href="@{/books/list}" class="btn-link" style="margin-left: 10px;">Continue Shopping</a>
-        </div>
-    </div>
-</div>
 
-<div class="container">
-    <h2>Comment</h2>
+        <!-- Book Details Section -->
+        <div th:if="${book}" class="book-detail-container">
+            <div class="book-detail-grid">
+                <!-- Book Image and Basic Info -->
+                <div class="book-main-info">
+                    <div class="book-image-section">
+                        <div class="book-image">
+                            <div class="book-placeholder-large">📚</div>
+                        </div>
+                    </div>
+                    
+                    <div class="book-basic-info">
+                        <h1 class="book-title" th:text="${book.name}"></h1>
+                        
+                        <div class="book-meta">
+                            <div class="book-price-section">
+                                <span class="book-price" th:text="'$' + ${book.price}"></span>
+                                <span class="book-status" th:class="${book.status == 'Available' ? 'status-available' : 'status-soldout'}" 
+                                      th:text="${book.status}"></span>
+                            </div>
+                            
+                            <div class="book-stock">
+                                <span class="stock-label">Stock:</span>
+                                <span class="stock-quantity" th:text="${book.qty} + ' available'"></span>
+                            </div>
+                        </div>
 
-    <div>
-        <div class="comment-list">
-            <div class="comment-item" th:each="comment : ${comments.content}">
-                <div class="comment-avatar" th:text="${comment.account != null && comment.account.username != null ? comment.account.username.substring(0,1).toUpperCase() : 'A'}"></div>
-                <div class="comment-body">
-                    <div class="comment-username" th:text="${comment.account != null ? comment.account.username : '?'}"></div>
-                    <div class="comment-content" th:text="${comment.content != null ? comment.content : '?'}"></div>
+                        <!-- Add to Cart Section -->
+                        <div th:if="${#authorization.expr('isAuthenticated()')}" class="add-to-cart-section">
+                            <form th:action="@{/carts/add-item}" method="post" class="add-to-cart-form">
+                                <input type="hidden" name="bookId" th:value="${book.id}"/>
+                                
+                                <div class="quantity-selector">
+                                    <label for="qty" class="quantity-label">Quantity:</label>
+                                    <div class="quantity-controls">
+                                        <button type="button" class="quantity-btn" onclick="changeQuantity(-1)">-</button>
+                                        <input type="number" id="qty" name="qty" value="1" min="1" max="99" class="quantity-input">
+                                        <button type="button" class="quantity-btn" onclick="changeQuantity(1)">+</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="cart-selector">
+                                    <label for="cart" class="cart-label">Cart:</label>
+                                    <select id="cart" name="cartId" class="cart-select">
+                                        <option th:each="cart : ${carts}" th:value="${cart.id}" th:text="'Cart ' + ${cart.id}"></option>
+                                    </select>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary btn-large" 
+                                        th:disabled="${book.status != 'Available'}">
+                                    <span class="btn-icon">🛒</span>
+                                    Add to Cart
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Book Actions -->
+                        <div class="book-actions">
+                            <a th:href="@{/books/list}" class="btn btn-outline">
+                                <span class="btn-icon">←</span>
+                                Continue Shopping
+                            </a>
+                            
+                            <div th:if="${#authorization.expr('isAuthenticated()')}" class="action-buttons">
+                                <a th:href="@{|/books/update/${book.id}|}" class="btn btn-outline">
+                                    <span class="btn-icon">✏️</span>
+                                    Edit Book
+                                </a>
+                                
+                                <form th:action="@{|/books/delete/${book.id}|}" method="post" class="delete-form">
+                                    <button type="submit" class="btn btn-danger" 
+                                            onclick="return confirm('Are you sure you want to delete this book?')">
+                                        <span class="btn-icon">🗑️</span>
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Book Details -->
+                <div class="book-details-section">
+                    <h2 class="section-title">Book Details</h2>
+                    
+                    <div th:if="${book.detail}" class="book-details">
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">ISBN:</span>
+                                <span class="detail-value" th:text="${book.detail.isbn}"></span>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <span class="detail-label">Title:</span>
+                                <span class="detail-value" th:text="${book.detail.title}"></span>
+                            </div>
+                            
+                            <div class="detail-item" th:if="${book.detail.subtitle}">
+                                <span class="detail-label">Subtitle:</span>
+                                <span class="detail-value" th:text="${book.detail.subtitle}"></span>
+                            </div>
+                            
+                            <div class="detail-item" th:if="${book.detail.author}">
+                                <span class="detail-label">Author:</span>
+                                <span class="detail-value" th:text="${book.detail.author}"></span>
+                            </div>
+                            
+                            <div class="detail-item" th:if="${book.detail.publisher}">
+                                <span class="detail-label">Publisher:</span>
+                                <span class="detail-value" th:text="${book.detail.publisher}"></span>
+                            </div>
+                            
+                            <div class="detail-item" th:if="${book.detail.publishedDate}">
+                                <span class="detail-label">Published:</span>
+                                <span class="detail-value" th:text="${book.detail.publishedDate}"></span>
+                            </div>
+                            
+                            <div class="detail-item" th:if="${book.detail.pageCount}">
+                                <span class="detail-label">Pages:</span>
+                                <span class="detail-value" th:text="${book.detail.pageCount}"></span>
+                            </div>
+                            
+                            <div class="detail-item" th:if="${book.detail.language}">
+                                <span class="detail-label">Language:</span>
+                                <span class="detail-value" th:text="${book.detail.language}"></span>
+                            </div>
+                            
+                            <div class="detail-item" th:if="${book.detail.format}">
+                                <span class="detail-label">Format:</span>
+                                <span class="detail-value" th:text="${book.detail.format}"></span>
+                            </div>
+                        </div>
+                        
+                        <div th:if="${book.detail.description}" class="book-description">
+                            <h3 class="description-title">Description</h3>
+                            <p class="description-text" th:text="${book.detail.description}"></p>
+                        </div>
+                    </div>
+                    
+                    <div th:unless="${book.detail}" class="no-details">
+                        <p class="no-details-text">No additional details available for this book.</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="pagination-info">
-            <span th:text="${comments.number + 1} + ' of ' + ${comments.totalPages}"></span>
-        </div>
+        <!-- Comments Section -->
+        <div class="comments-section">
+            <div class="section-header">
+                <h2 class="section-title">Reviews & Comments</h2>
+                <span class="comment-count" th:text="${comments.totalElements} + ' comments'"></span>
+            </div>
 
-        <div class="pagination-nav">
-            <a th:if="${comments.hasPrevious()}"
-               th:href="@{|/books/${book.id}?commentPage=${comments.number - 1}&commentSize=${comments.size}|}"
-               class="btn-link">Previous</a>
-            <a th:if="${comments.hasNext()}"
-               th:href="@{|/books/${book.id}?commentPage=${comments.number + 1}&commentSize=${comments.size}|}"
-               class="btn-link">Next</a>
-        </div>
+            <!-- Comment Form -->
+            <div th:if="${#authorization.expr('isAuthenticated()')}" class="comment-form-container">
+                <form th:action="@{/comments/create}" method="post" th:object="${createCommentRequest}" class="comment-form">
+                    <input type="hidden" th:field="*{bookId}"/>
+                    
+                    <div class="form-group">
+                        <label for="content" class="form-label">Write a review:</label>
+                        <textarea id="content" 
+                                  th:field="*{content}" 
+                                  class="comment-textarea"
+                                  placeholder="Share your thoughts about this book..."
+                                  rows="4"
+                                  required></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <span class="btn-icon">💬</span>
+                            Post Comment
+                        </button>
+                    </div>
+                </form>
+            </div>
 
-        <div>
-            <form th:action="@{/comments/create}" method="post" th:object="${createCommentRequest}">
-                <input type="hidden" th:field="*{bookId}"/>
-                <textarea th:field="*{content}" placeholder="Write something…" required></textarea><br>
-                <button type="submit">Send</button>
-            </form>
+            <!-- Comments List -->
+            <div class="comments-list">
+                <div th:if="${comments.content.size() > 0}">
+                    <div class="comment-item" th:each="comment : ${comments.content}">
+                        <div class="comment-avatar">
+                            <span th:text="${comment.account != null && comment.account.username != null ? comment.account.username.substring(0,1).toUpperCase() : 'A'}"></span>
+                        </div>
+                        
+                        <div class="comment-body">
+                            <div class="comment-header">
+                                <span class="comment-username" th:text="${comment.account != null ? comment.account.username : 'Anonymous'}"></span>
+                                <span class="comment-date" th:text="${#temporals.format(comment.createdAt, 'MMM dd, yyyy')}"></span>
+                            </div>
+                            
+                            <div class="comment-content" th:text="${comment.content != null ? comment.content : 'No content'}"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div th:if="${comments.content.size() == 0}" class="no-comments">
+                    <div class="no-comments-icon">💬</div>
+                    <h3 class="no-comments-title">No reviews yet</h3>
+                    <p class="no-comments-text">Be the first to share your thoughts about this book!</p>
+                </div>
+            </div>
+
+            <!-- Comments Pagination -->
+            <div th:if="${comments.totalPages > 1}" class="comments-pagination">
+                <div class="pagination-info">
+                    <span th:text="'Showing ' + ${comments.numberOfElements} + ' of ' + ${comments.totalElements} + ' comments'"></span>
+                </div>
+                
+                <div class="pagination-controls">
+                    <a th:if="${comments.hasPrevious()}"
+                       th:href="@{|/books/${book.id}?commentPage=${comments.number - 1}&commentSize=${comments.size}|}"
+                       class="pagination-btn">
+                        <span class="btn-icon">←</span>
+                        Previous
+                    </a>
+                    
+                    <div class="pagination-pages">
+                        <span th:each="pageNum : ${#numbers.sequence(0, comments.totalPages - 1)}"
+                              th:if="${pageNum >= comments.number - 2 and pageNum <= comments.number + 2}"
+                              th:class="${pageNum == comments.number ? 'pagination-page active' : 'pagination-page'}">
+                            <a th:href="@{|/books/${book.id}?commentPage=${pageNum}&commentSize=${comments.size}|}"
+                               th:text="${pageNum + 1}"></a>
+                        </span>
+                    </div>
+                    
+                    <a th:if="${comments.hasNext()}"
+                       th:href="@{|/books/${book.id}?commentPage=${comments.number + 1}&commentSize=${comments.size}|}"
+                       class="pagination-btn">
+                        Next
+                        <span class="btn-icon">→</span>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+
+    <script>
+    function changeQuantity(delta) {
+        const input = document.getElementById('qty');
+        const newValue = parseInt(input.value) + delta;
+        if (newValue >= 1 && newValue <= 99) {
+            input.value = newValue;
+        }
+    }
+    </script>
 </body>
 </html>

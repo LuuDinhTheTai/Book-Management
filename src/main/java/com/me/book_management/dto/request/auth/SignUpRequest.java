@@ -17,7 +17,7 @@ public class SignUpRequest {
     @Size(min = 4, max = 10, message = "Username must be at least 4 characters long")
     private String username;
     @NotBlank(message = "Password cannot be blank")
-    @Size(min = 4, max = 10, message = "Username must be at least 4 characters long")
+    @Size(min = 4, max = 10, message = "Password must be at least 4 characters long")
     private String password;
 
     public void validate() {

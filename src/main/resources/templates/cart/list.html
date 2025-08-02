@@ -1,59 +1,189 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>BM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart - BookStore</title>
     <link rel="stylesheet" th:href="@{/style.css}"/>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 </head>
 <body>
-<div th:replace="component/navbar :: navbar"></div>
-<div class="container">
-    <h1 class="page-title">Carts</h1>
+    <div th:replace="component/navbar :: navbar"></div>
 
-    <div th:if="${successMessage}" class="success">
-        <p th:text="${successMessage}"></p>
-    </div>
-    
-    <div th:if="${errorMessage}" class="error">
-        <p th:text="${errorMessage}"></p>
-    </div>
+    <div class="container">
+        <div class="page-header">
+            <div class="header-content">
+                <h1 class="page-title">My Cart</h1>
+                <p class="page-subtitle">Review your selected books</p>
+            </div>
+        </div>
 
-    <div>
-        <form th:action="@{/carts/create}" method="post">
-            <button type="submit">Create Cart</button>
-        </form>
-    </div>
+        <div th:if="${errorMessage}" class="alert alert-error">
+            <span class="alert-icon">⚠️</span>
+            <span th:text="${errorMessage}"></span>
+        </div>
 
-    <div th:if="${carts == null || #lists.isEmpty(carts)}" class="empty-cart">
-        <p>No carts found.</p>
-    </div>
+        <div th:if="${successMessage}" class="alert alert-success">
+            <span class="alert-icon">✅</span>
+            <span th:text="${successMessage}"></span>
+        </div>
 
-    <div th:if="${carts != null && !#lists.isEmpty(carts)}">
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Cart ID</th>
-                <th>Total Price</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="cart : ${carts}">
-                <td>
-                    <a th:href="@{/carts/{id}(id=${cart.id})}" th:text="${cart.id}"></a>
-                </td>
-                <td th:text="${cart.totalPrice + 'đ'}"></td>
-                <td>
-                    <a th:href="@{/carts/{id}(id=${cart.id})}" class="btn-small">View</a>
-                    <form th:action="@{/carts/delete/{id}(id=${cart.id})}" method="post" style="display: inline;">
-                        <button type="submit" class="btn-small btn-danger" onclick="return confirm('Delete this cart?')">Delete</button>
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <!-- Cart Summary -->
+        <div th:if="${carts.size() > 0}" class="cart-summary-section">
+            <div class="summary-stats">
+                <div class="stat-item">
+                    <span class="stat-icon">🛒</span>
+                    <span class="stat-label">Total Carts:</span>
+                    <span class="stat-value" th:text="${carts.size()}"></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">📚</span>
+                    <span class="stat-label">Total Items:</span>
+                    <span class="stat-value" th:text="${totalItems}"></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">💰</span>
+                    <span class="stat-label">Total Value:</span>
+                    <span class="stat-value" th:text="'$' + ${totalValue}"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carts List -->
+        <div th:if="${carts.size() > 0}" class="carts-container">
+            <div th:each="cart : ${carts}" class="cart-card">
+                <div class="cart-header">
+                    <div class="cart-info">
+                        <h3 class="cart-title">Cart #<span th:text="${cart.id}"></span></h3>
+                        <span class="cart-date" th:text="${#temporals.format(cart.createdAt, 'MMM dd, yyyy')}"></span>
+                    </div>
+                    
+                    <div class="cart-actions">
+                        <form th:action="@{/carts/delete}" method="post" class="delete-cart-form">
+                            <input type="hidden" name="cartId" th:value="${cart.id}"/>
+                            <button type="submit" class="btn btn-danger btn-small" 
+                                    onclick="return confirm('Are you sure you want to delete this cart?')">
+                                <span class="btn-icon">🗑️</span>
+                                Delete Cart
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Cart Items -->
+                <div th:if="${cart.cartBooks.size() > 0}" class="cart-items">
+                    <div th:each="cartBook : ${cart.cartBooks}" class="cart-item">
+                        <div class="item-image">
+                            <div class="book-placeholder-small">📚</div>
+                        </div>
+                        
+                        <div class="item-info">
+                            <h4 class="item-title">
+                                <a th:href="@{|/books/${cartBook.book.id}|}" th:text="${cartBook.book.name}"></a>
+                            </h4>
+                            
+                            <div class="item-meta">
+                                <span class="item-price" th:text="'$' + ${cartBook.book.price}"></span>
+                                <span class="item-status" th:class="${cartBook.book.status == 'Available' ? 'status-available' : 'status-soldout'}" 
+                                      th:text="${cartBook.book.status}"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="item-quantity">
+                            <div class="quantity-controls">
+                                <form th:action="@{/carts/decrease-item}" method="post" class="quantity-form">
+                                    <input type="hidden" name="cartBookId" th:value="${cartBook.id}"/>
+                                    <button type="submit" class="quantity-btn" th:disabled="${cartBook.qty <= 1}">-</button>
+                                </form>
+                                
+                                <span class="quantity-display" th:text="${cartBook.qty}"></span>
+                                
+                                <form th:action="@{/carts/increase-item}" method="post" class="quantity-form">
+                                    <input type="hidden" name="cartBookId" th:value="${cartBook.id}"/>
+                                    <button type="submit" class="quantity-btn" 
+                                            th:disabled="${cartBook.qty >= cartBook.book.qty}">+</button>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <div class="item-total">
+                            <span class="total-amount" th:text="'$' + ${cartBook.qty * cartBook.book.price}"></span>
+                        </div>
+                        
+                        <div class="item-actions">
+                            <form th:action="@{/carts/delete-item}" method="post" class="remove-item-form">
+                                <input type="hidden" name="cartBookId" th:value="${cartBook.id}"/>
+                                <button type="submit" class="btn btn-danger btn-small">
+                                    <span class="btn-icon">🗑️</span>
+                                    Remove
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty Cart -->
+                <div th:if="${cart.cartBooks.size() == 0}" class="empty-cart">
+                    <div class="empty-icon">🛒</div>
+                    <p class="empty-text">This cart is empty</p>
+                    <a th:href="@{/books/list}" class="btn btn-outline">Browse Books</a>
+                </div>
+
+                <!-- Cart Summary -->
+                <div th:if="${cart.cartBooks.size() > 0}" class="cart-total">
+                    <div class="total-row">
+                        <span class="total-label">Subtotal:</span>
+                        <span class="total-value" th:text="'$' + ${cartSubtotals.get(cart.id)}"></span>
+                    </div>
+                    <div class="total-row">
+                        <span class="total-label">Items:</span>
+                        <span class="total-value" th:text="${cart.cartBooks.size()} + ' books'"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${carts.size() == 0}" class="empty-state">
+            <div class="empty-icon">🛒</div>
+            <h3 class="empty-title">Your cart is empty</h3>
+            <p class="empty-message">Start shopping to add books to your cart</p>
+            <div class="empty-actions">
+                <a th:href="@{/books/list}" class="btn btn-primary">
+                    <span class="btn-icon">📚</span>
+                    Browse Books
+                </a>
+                <a th:href="@{/categories/list}" class="btn btn-outline">
+                    <span class="btn-icon">🏷️</span>
+                    Browse Categories
+                </a>
+            </div>
+        </div>
+
+        <!-- Checkout Section -->
+        <div th:if="${carts.size() > 0 and totalItems > 0}" class="checkout-section">
+            <div class="checkout-summary">
+                <div class="summary-row">
+                    <span class="summary-label">Total Items:</span>
+                    <span class="summary-value" th:text="${totalItems}"></span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Total Value:</span>
+                    <span class="summary-value total" th:text="'$' + ${totalValue}"></span>
+                </div>
+            </div>
+            
+            <div class="checkout-actions">
+                <a th:href="@{/books/list}" class="btn btn-outline">
+                    <span class="btn-icon">📚</span>
+                    Continue Shopping
+                </a>
+                <button class="btn btn-primary btn-large" onclick="alert('Checkout functionality coming soon!')">
+                    <span class="btn-icon">💳</span>
+                    Proceed to Checkout
+                </button>
+            </div>
+        </div>
     </div>
-</div>
 </body>
 </html>

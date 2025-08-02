@@ -2,42 +2,230 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>BM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - BookStore</title>
     <link rel="stylesheet" th:href="@{/style.css}"/>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 </head>
-<body>
+<body class="auth-page">
 <div th:replace="component/navbar :: navbar"></div>
 
-<div class="container">
-    <h1 class="page-title">Registration</h1>
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-icon">📝</div>
+            <h1 class="auth-title">Join BookStore</h1>
+            <p class="auth-subtitle">Create your account and start exploring</p>
+        </div>
 
-    <div th:if="${errorMessage}" class="error">
-        <p th:text="${errorMessage}"></p>
+        <div th:if="${errorMessage}" class="alert alert-error">
+            <span class="alert-icon">⚠️</span>
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <div th:if="${successMessage}" class="alert alert-success">
+            <span class="alert-icon">✅</span>
+            <span th:text="${successMessage}"></span>
+        </div>
+
+        <form th:action="@{/auth/signup}" th:object="${signUpRequest}" method="post" class="auth-form" id="signupForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        <span class="label-icon">👤</span>
+                        Username
+                    </label>
+                    <input id="username"
+                           type="text"
+                           name="username"
+                           th:field="*{username}"
+                           class="form-input"
+                           placeholder="Choose a unique username"
+                           required>
+                    <div th:if="${#fields.hasErrors('username')}" class="form-error">
+                        <span th:errors="*{username}"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">
+                        <span class="label-icon">📧</span>
+                        Email
+                    </label>
+                    <input id="email"
+                           type="email"
+                           name="email"
+                           th:field="*{email}"
+                           class="form-input"
+                           placeholder="Enter your email address"
+                           required>
+                    <div th:if="${#fields.hasErrors('email')}" class="form-error">
+                        <span th:errors="*{email}"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <span class="label-icon">🔒</span>
+                        Password
+                    </label>
+                    <input id="password"
+                           type="password"
+                           name="password"
+                           th:field="*{password}"
+                           class="form-input"
+                           placeholder="Create a strong password"
+                           required>
+                    <div th:if="${#fields.hasErrors('password')}" class="form-error">
+                        <span th:errors="*{password}"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">
+                        <span class="label-icon">🔒</span>
+                        Confirm Password
+                    </label>
+                    <input id="confirmPassword"
+                           type="password"
+                           name="confirmPassword"
+                           class="form-input"
+                           placeholder="Confirm your password"
+                           required>
+                    <div id="confirmPasswordError" class="form-error" style="display: none;">
+                        <span>Passwords do not match</span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-full" id="submitBtn">
+                        <span class="btn-icon">📝</span>
+                        Create Account
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="auth-footer">
+            <p class="auth-link-text">
+                Already have an account?
+                <a th:href="@{/auth/signin}" class="auth-link">Sign in here</a>
+            </p>
+        </div>
     </div>
 
-    <form th:action="@{/auth/signup}" th:object="${signUpRequest}" method="post" class="form">
-        <div>
-            <label>Username: </label>
-            <input th:field="*{username}" type="text"/>
-            <p th:if="${#fields.hasErrors('username')}" th:errorclass="error" th:errors="*{username}"></p>
+    <div class="auth-sidebar">
+        <div class="sidebar-content">
+            <h2 class="sidebar-title">Join Our Community</h2>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span class="feature-icon">🎁</span>
+                    <div class="feature-text">
+                        <h3>Free Account</h3>
+                        <p>Join for free and start exploring immediately</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📚</span>
+                    <div class="feature-text">
+                        <h3>Personal Library</h3>
+                        <p>Build your own collection and track your reading</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">💬</span>
+                    <div class="feature-text">
+                        <h3>Share & Connect</h3>
+                        <p>Review books and connect with other readers</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🛒</span>
+                    <div class="feature-text">
+                        <h3>Easy Shopping</h3>
+                        <p>Save addresses and checkout with ease</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div>
-            <label>Email: </label>
-            <input th:field="*{email}" type="email"/>
-            <p th:if="${#fields.hasErrors('email')}" th:errorclass="error" th:errors="*{email}"></p>
-        </div>
-        <div>
-            <label>Password: </label>
-            <input th:field="*{password}" type="password"/>
-            <p th:if="${#fields.hasErrors('password')}" th:errorclass="error" th:errors="*{password}"></p>
-        </div>
-        <div>
-            <label>Confirm Password: </label>
-            <input type="password"/>
-        </div>
-        <button type="submit">Sign Up</button>
-    </form>
+    </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('signupForm');
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+    const confirmPasswordError = document.getElementById('confirmPasswordError');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    let passwordsMatch = false;
+    
+    // Function to validate password match
+    function validatePasswordMatch() {
+        const passwordValue = password.value;
+        const confirmPasswordValue = confirmPassword.value;
+        
+        if (confirmPasswordValue === '') {
+            confirmPasswordError.style.display = 'none';
+            confirmPassword.classList.remove('form-input-error');
+            passwordsMatch = false;
+            return;
+        }
+        
+        if (passwordValue === confirmPasswordValue) {
+            confirmPasswordError.style.display = 'none';
+            confirmPassword.classList.remove('form-input-error');
+            confirmPassword.classList.add('form-input-success');
+            passwordsMatch = true;
+        } else {
+            confirmPasswordError.style.display = 'block';
+            confirmPassword.classList.remove('form-input-success');
+            confirmPassword.classList.add('form-input-error');
+            passwordsMatch = false;
+        }
+        
+        updateSubmitButton();
+    }
+    
+    // Function to update submit button state
+    function updateSubmitButton() {
+        if (passwordsMatch && password.value && confirmPassword.value) {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('btn-disabled');
+        } else {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('btn-disabled');
+        }
+    }
+    
+    // Add event listeners for real-time validation
+    password.addEventListener('input', validatePasswordMatch);
+    confirmPassword.addEventListener('input', validatePasswordMatch);
+    
+    // Form submission handler
+    form.addEventListener('submit', function(e) {
+        // Prevent form submission if passwords don't match
+        if (!passwordsMatch) {
+            e.preventDefault();
+            confirmPasswordError.style.display = 'block';
+            confirmPassword.focus();
+            return false;
+        }
+        
+        // Remove confirmPassword field from form data before submission
+        confirmPassword.disabled = true;
+        
+        // Re-enable after a short delay to allow form submission
+        setTimeout(() => {
+            confirmPassword.disabled = false;
+        }, 100);
+    });
+    
+    // Initial validation
+    updateSubmitButton();
+});
+</script>
 </body>
 </html>

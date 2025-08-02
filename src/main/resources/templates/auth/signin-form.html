@@ -2,33 +2,114 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>BM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - BookStore</title>
     <link rel="stylesheet" th:href="@{/style.css}"/>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 </head>
-<body>
-<div th:replace="component/navbar :: navbar"></div>
+<body class="auth-page">
+    <div th:replace="component/navbar :: navbar"></div>
 
-<div class="container">
-    <h1 class="page-title">Sign In</h1>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-icon">🔑</div>
+                <h1 class="auth-title">Welcome Back</h1>
+                <p class="auth-subtitle">Sign in to your BookStore account</p>
+            </div>
 
-    <div th:if="${errorMessage}" class="error">
-        <p th:text="${errorMessage}"></p>
+            <div th:if="${errorMessage}" class="alert alert-error">
+                <span class="alert-icon">⚠️</span>
+                <span th:text="${errorMessage}"></span>
+            </div>
+
+            <div th:if="${successMessage}" class="alert alert-success">
+                <span class="alert-icon">✅</span>
+                <span th:text="${successMessage}"></span>
+            </div>
+
+            <form th:action="@{/auth/signin}" th:object="${signInRequest}" method="post" class="auth-form">
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        <span class="label-icon">👤</span>
+                        Username
+                    </label>
+                    <input id="username" 
+                           type="text" 
+                           name="username" 
+                           th:field="*{username}"
+                           class="form-input"
+                           placeholder="Enter your username"
+                           required>
+                    <div th:if="${#fields.hasErrors('username')}" class="form-error">
+                        <span th:errors="*{username}"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <span class="label-icon">🔒</span>
+                        Password
+                    </label>
+                    <input id="password" 
+                           type="password" 
+                           name="password" 
+                           th:field="*{password}"
+                           class="form-input"
+                           placeholder="Enter your password"
+                           required>
+                    <div th:if="${#fields.hasErrors('password')}" class="form-error">
+                        <span th:errors="*{password}"></span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <span class="btn-icon">🔑</span>
+                        Sign In
+                    </button>
+                </div>
+            </form>
+
+            <div class="auth-footer">
+                <p class="auth-link-text">
+                    Don't have an account? 
+                    <a th:href="@{/auth/signup}" class="auth-link">Sign up here</a>
+                </p>
+                <p class="auth-link-text">
+                    <a th:href="@{/accounts/forgot-password}" class="auth-link">Forgot your password?</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="auth-sidebar">
+            <div class="sidebar-content">
+                <h2 class="sidebar-title">Why BookStore?</h2>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <span class="feature-icon">📚</span>
+                        <div class="feature-text">
+                            <h3>Vast Collection</h3>
+                            <p>Browse thousands of books across all genres</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🛒</span>
+                        <div class="feature-text">
+                            <h3>Easy Shopping</h3>
+                            <p>Add books to cart and checkout seamlessly</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">💬</span>
+                        <div class="feature-text">
+                            <h3>Community</h3>
+                            <p>Share reviews and discuss your favorite books</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <form th:action="@{/auth/signin}" th:object="${signInRequest}" method="post" class="form">
-        <div>
-            <label for="username">Username</label>
-            <input id="username" type="text" name="username">
-            <p th:if="${#fields.hasErrors('username')}" th:errorclass="error" th:errors="*{username}"></p>
-        </div>
-        <div>
-            <label for="password">Password</label>
-            <input id="password" type="password" name="password">
-            <p th:if="${#fields.hasErrors('password')}" th:errorclass="error" th:errors="*{password}"></p>
-        </div>
-        <button type="submit">Sign In</button>
-    </form>
-</div>
 </body>
 </html>

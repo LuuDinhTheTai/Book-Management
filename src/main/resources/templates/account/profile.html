@@ -1,45 +1,239 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>BM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - BookStore</title>
     <link rel="stylesheet" th:href="@{/style.css}"/>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 </head>
 <body>
 <div th:replace="component/navbar :: navbar"></div>
 
-<div th:object="${account}" class="container">
-    <h1>Hello, </h1>
-    <h1 th:text="${account.username}"></h1>
-
-    <p th:text="${account.email}">Email: </p>
-    <form th:action="@{|/accounts/update/${account.id}|}" method="get">
-        <button type="submit">Update Profile</button>
-    </form>
-    <form th:action="@{|/accounts/delete/${account.id}|}" method="post">
-        <button type="submit">Delete Account</button>
-    </form>
-    <form th:action="@{/auth/signout}" method="post">
-        <button type="submit">Sign out</button>
-    </form>
-</div>
-
 <div class="container">
-    <h2>Address</h2>
-    <div class="addresses-section">
-        <a th:href="@{/addresses/list}" class="btn-link">Manage Addresses</a>
+    <div class="page-header">
+        <div class="header-content">
+            <h1 class="page-title">My Profile</h1>
+            <p class="page-subtitle">Manage your account information</p>
+        </div>
+
+        <div class="header-actions">
+            <a th:href="@{/accounts/update}" class="btn btn-primary">
+                <span class="btn-icon">✏️</span>
+                Edit Profile
+            </a>
+        </div>
+    </div>
+
+    <div th:if="${errorMessage}" class="alert alert-error">
+        <span class="alert-icon">⚠️</span>
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <div th:if="${successMessage}" class="alert alert-success">
+        <span class="alert-icon">✅</span>
+        <span th:text="${successMessage}"></span>
+    </div>
+
+    <!-- Profile Information -->
+    <div th:if="${account}" class="profile-container">
+        <div class="profile-grid">
+            <!-- Profile Card -->
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <span class="avatar-text" th:text="${account.username.substring(0,1).toUpperCase()}"></span>
+                    </div>
+                    <div class="profile-info">
+                        <h2 class="profile-name" th:text="${account.username}"></h2>
+                        <span class="profile-username" th:text="'@' + ${account.username}"></span>
+                    </div>
+                </div>
+
+                <div class="profile-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Email:</span>
+                        <span class="detail-value" th:text="${account.email}"></span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">First Name:</span>
+                        <span class="detail-value" th:text="${account.username}"></span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Member Since:</span>
+                        <span class="detail-value"
+                              th:text="${#temporals.format(account.createdAt, 'MMM dd, yyyy')}"></span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Roles:</span>
+                        <div class="roles-list">
+                                <span th:each="role : ${account.roles}"
+                                      class="role-badge"
+                                      th:text="${role.name}"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-actions">
+                    <a th:href="@{/accounts/update}" class="btn btn-primary">
+                        <span class="btn-icon">✏️</span>
+                        Edit Profile
+                    </a>
+
+                    <a th:href="@{/addresses/list}" class="btn btn-outline">
+                        <span class="btn-icon">📍</span>
+                        Manage Addresses
+                    </a>
+                </div>
+            </div>
+
+            <!--                 Quick Stats -->
+            <div class="stats-card">
+                <h3 class="stats-title">Account Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-icon">📚</span>
+                        <div class="stat-content">
+                            <span class="stat-value" th:text="${myBooksCount}"></span>
+                            <span class="stat-label">My Books</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-item">
+                        <span class="stat-icon">🛒</span>
+                        <div class="stat-content">
+                            <span class="stat-value" th:text="${cartItemsCount}"></span>
+                            <span class="stat-label">Cart Items</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-item">
+                        <span class="stat-icon">💬</span>
+                        <div class="stat-content">
+                            <span class="stat-value" th:text="${commentsCount}"></span>
+                            <span class="stat-label">Comments</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-item">
+                        <span class="stat-icon">📍</span>
+                        <div class="stat-content">
+                            <span class="stat-value" th:text="${addressesCount}"></span>
+                            <span class="stat-label">Addresses</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="activity-section">
+            <h3 class="section-title">Recent Activity</h3>
+
+            <div class="activity-tabs">
+                <button class="tab-btn active" onclick="showTab('books')">My Books</button>
+                <button class="tab-btn" onclick="showTab('carts')">Shopping Cart</button>
+                <button class="tab-btn" onclick="showTab('comments')">My Comments</button>
+            </div>
+
+            <!-- My Books Tab -->
+            <div id="books-tab" class="tab-content active">
+                <div th:if="${myBooks != null and myBooks.size() > 0}" class="books-grid">
+                    <div th:each="book : ${myBooks}" class="book-card">
+                        <div class="book-image">
+                            <div class="book-placeholder">📚</div>
+                        </div>
+
+                        <div class="book-info">
+                            <h4 class="book-title">
+                                <a th:href="@{|/books/${book.id}|}" th:text="${book.name}"></a>
+                            </h4>
+
+                            <div class="book-meta">
+                                <span class="book-price" th:text="'$' + ${book.price}"></span>
+                                <span class="book-status"
+                                      th:class="${book.status == 'Available' ? 'status-available' : 'status-soldout'}"
+                                      th:text="${book.status}"></span>
+                            </div>
+
+                            <div class="book-actions">
+                                <a th:href="@{|/books/${book.id}|}" class="btn btn-outline btn-small">View</a>
+                                <a th:href="@{|/books/update/${book.id}|}" class="btn btn-outline btn-small">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${myBooks.size() == 0}" class="empty-tab">
+                    <div class="empty-icon">📚</div>
+                    <p class="empty-text">You haven't added any books yet</p>
+                    <a th:href="@{/books/create}" class="btn btn-primary">Add Your First Book</a>
+                </div>
+            </div>
+
+            <!-- Shopping Cart Tab -->
+            <div id="carts-tab" class="tab-content">
+                <div th:if="${carts.size() > 0}" class="carts-summary">
+                    <div th:each="cart : ${carts}" class="cart-summary-item">
+                        <div class="cart-info">
+                            <span class="cart-id">Cart #<span th:text="${cart.id}"></span></span>
+                            <span class="cart-items" th:text="${cart.cartBooks.size()} + ' items'"></span>
+                            <span class="cart-total" th:text="'$' + ${cartSubtotals.get(cart.id)}"></span>
+                        </div>
+                        <a th:href="@{/carts/list}" class="btn btn-outline btn-small">View Cart</a>
+                    </div>
+                </div>
+
+                <div th:if="${carts.size() == 0}" class="empty-tab">
+                    <div class="empty-icon">🛒</div>
+                    <p class="empty-text">Your shopping cart is empty</p>
+                    <a th:href="@{/books/list}" class="btn btn-primary">Start Shopping</a>
+                </div>
+            </div>
+
+            <!-- Comments Tab -->
+            <div id="comments-tab" class="tab-content">
+                <div th:if="${myComments.size() > 0}" class="comments-list">
+                    <div th:each="comment : ${myComments}" class="comment-item">
+                        <div class="comment-book">
+                            <a th:href="@{|/books/${comment.book.id}|}" th:text="${comment.book.name}"></a>
+                        </div>
+                        <div class="comment-content" th:text="${comment.content}"></div>
+                        <div class="comment-date"
+                             th:text="${#temporals.format(comment.createdAt, 'MMM dd, yyyy')}"></div>
+                    </div>
+                </div>
+
+                <div th:if="${myComments.size() == 0}" class="empty-tab">
+                    <div class="empty-icon">💬</div>
+                    <p class="empty-text">You haven't written any comments yet</p>
+                    <a th:href="@{/books/list}" class="btn btn-primary">Browse Books</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="container">
-    <h2>Book</h2>
-    <form th:action="@{/books/create}" method="get">
-        <button type="submit">Create</button>
-    </form>
-    <form th:action="@{/books/my-book}" method="get">
-        <button type="submit">My book</button>
-    </form>
-</div>
+<script>
+    function showTab(tabName) {
+        // Hide all tab contents
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabContents.forEach(content => content.classList.remove('active'));
+
+        // Remove active class from all tab buttons
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+
+        // Show selected tab content
+        document.getElementById(tabName + '-tab').classList.add('active');
+
+        // Add active class to clicked button
+        event.target.classList.add('active');
+    }
+</script>
 </body>
 </html>

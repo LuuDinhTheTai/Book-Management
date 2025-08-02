@@ -2,11 +2,16 @@ package com.me.book_management.service.impl;
 
 import com.me.book_management.annotation.comment.Create;
 import com.me.book_management.dto.request.book.comment.CreateCommentRequest;
+import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.book.Comment;
+import com.me.book_management.exception.NotFoundException;
+import com.me.book_management.repository.account.AccountRepository;
+import com.me.book_management.repository.book.BookRepository;
 import com.me.book_management.repository.book.CommentRepository;
 import com.me.book_management.service.AccountService;
 import com.me.book_management.service.BookService;
 import com.me.book_management.service.CommentService;
+import com.me.book_management.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,8 +27,8 @@ import java.util.List;
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
-    private final BookService bookService;
-    private final AccountService accountService;
+    private final BookRepository bookRepository;
+    private final AccountRepository accountRepository;
 
     @Override
     @Create
@@ -32,8 +37,13 @@ public class CommentServiceImpl implements CommentService {
 
         Comment comment = new Comment();
         comment.setContent(request.getContent());
-        comment.setBook(bookService.find(request.getBookId()));
-        comment.setAccount(accountService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
+        comment.setBook(bookRepository.findById(request.getBookId())
+                .orElseThrow(() -> new NotFoundException("Book not found with id: " + request.getBookId()))
+        );
+
+        Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
+                        .orElseThrow(() -> new NotFoundException("Account not found"));
+        comment.setAccount(account);
 
         return commentRepository.save(comment);
     }
@@ -61,6 +71,13 @@ public class CommentServiceImpl implements CommentService {
         log.info("(find) comment id: {}", id);
         return commentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
+    }
+
+    @Override
+    public List<Comment> findByAccount() {
+        Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
+                .orElseThrow(() -> new NotFoundException("Account not found"));
+        return commentRepository.findByAccount(account);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.me.book_management.service;
 
 import com.me.book_management.dto.request.book.comment.CreateCommentRequest;
+import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.book.Comment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,8 @@ public interface CommentService {
     Comment update(Comment comment);
 
     Comment find(Long id);
+
+    List<Comment> findByAccount();
 
     void delete(Long id);
 }
