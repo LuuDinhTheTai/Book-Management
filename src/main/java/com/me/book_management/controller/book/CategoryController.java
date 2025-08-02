@@ -1,5 +1,6 @@
 package com.me.book_management.controller.book;
 
+import com.me.book_management.annotation.category.Delete;
 import com.me.book_management.dto.request.book.ListBookRequest;
 import com.me.book_management.dto.request.book.category.CreateCategoryRequest;
 import com.me.book_management.dto.request.book.category.UpdateCategoryRequest;
@@ -116,7 +117,7 @@ public class CategoryController {
     }
 
     @PostMapping("delete/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String delete(@Valid @Delete @PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             categoryService.delete(id);
             redirectAttributes.addFlashAttribute("successMessage", "Category deleted successfully!");

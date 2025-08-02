@@ -24,9 +24,6 @@ import java.util.List;
 public class CartController {
 
     private final CartService cartService;
-    private final CartBookRepository cartBookRepository;
-    private final CartRepository cartRepository;
-    private final AccountRepository accountRepository;
 
     @PostMapping("create")
     public String create(RedirectAttributes redirectAttributes) {
@@ -86,7 +83,7 @@ public class CartController {
         try {
             Cart cart = cartService.addItem(request);
             redirectAttributes.addFlashAttribute("successMessage", "Item added to cart successfully!");
-            return "redirect:/carts/" + cart.getId();
+            return "redirect:/carts/list";
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to add item: " + e.getMessage());
@@ -105,7 +102,7 @@ public class CartController {
             Cart cart = cartService.increaseItem(id, request);
             redirectAttributes.addFlashAttribute("successMessage", "Thêm số lượng thành công!");
 
-            return "redirect:/carts/" + cart.getId();
+            return "redirect:/carts/list";
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to add item: " + e.getMessage());
@@ -124,7 +121,7 @@ public class CartController {
             Cart cart = cartService.decreaseItem(id, request);
             redirectAttributes.addFlashAttribute("successMessage", "Giảm số lượng thành công!");
 
-            return "redirect:/carts/" + cart.getId();
+            return "redirect:/carts/list";
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to decrease item: " + e.getMessage());
