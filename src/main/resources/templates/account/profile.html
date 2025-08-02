@@ -17,13 +17,6 @@
             <h1 class="page-title">My Profile</h1>
             <p class="page-subtitle">Manage your account information</p>
         </div>
-
-        <div class="header-actions">
-            <a th:href="@{/accounts/update}" class="btn btn-primary">
-                <span class="btn-icon">✏️</span>
-                Edit Profile
-            </a>
-        </div>
     </div>
 
     <div th:if="${errorMessage}" class="alert alert-error">
@@ -90,44 +83,6 @@
                     </a>
                 </div>
             </div>
-
-            <!--                 Quick Stats -->
-            <div class="stats-card">
-                <h3 class="stats-title">Account Statistics</h3>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-icon">📚</span>
-                        <div class="stat-content">
-                            <span class="stat-value" th:text="${myBooksCount}"></span>
-                            <span class="stat-label">My Books</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-item">
-                        <span class="stat-icon">🛒</span>
-                        <div class="stat-content">
-                            <span class="stat-value" th:text="${cartItemsCount}"></span>
-                            <span class="stat-label">Cart Items</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-item">
-                        <span class="stat-icon">💬</span>
-                        <div class="stat-content">
-                            <span class="stat-value" th:text="${commentsCount}"></span>
-                            <span class="stat-label">Comments</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-item">
-                        <span class="stat-icon">📍</span>
-                        <div class="stat-content">
-                            <span class="stat-value" th:text="${addressesCount}"></span>
-                            <span class="stat-label">Addresses</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Recent Activity -->
@@ -142,7 +97,7 @@
 
             <!-- My Books Tab -->
             <div id="books-tab" class="tab-content active">
-                <div th:if="${myBooks != null and myBooks.size() > 0}" class="books-grid">
+                <div th:if="${myBooks.getContent().size() > 0}" class="books-grid">
                     <div th:each="book : ${myBooks}" class="book-card">
                         <div class="book-image">
                             <div class="book-placeholder">📚</div>
@@ -163,42 +118,118 @@
                             <div class="book-actions">
                                 <a th:href="@{|/books/${book.id}|}" class="btn btn-outline btn-small">View</a>
                                 <a th:href="@{|/books/update/${book.id}|}" class="btn btn-outline btn-small">Edit</a>
+                                <form th:if="${book.deletedAt == null && book.deletedBy == null}"
+                                      th:action="@{|/books/delete/${book.id}|}" method="post" class="delete-form">
+                                    <button type="submit" class="btn btn-danger"
+                                            onclick="return confirm('Are you sure you want to delete this book?')">
+                                        <span class="btn-icon">🗑️</span>
+                                        Delete
+                                    </button>
+                                </form>
+                                <label th:if="${book.deletedAt != null && book.deletedBy != null}"
+                                       th:text="'Deleted at: ' + ${book.deletedAt}">
+                                    Deleted at:
+                                </label>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div th:if="${myBooks.size() == 0}" class="empty-tab">
+                <div th:if="${myBooks.getContent().size() == 0}" class="empty-tab">
                     <div class="empty-icon">📚</div>
                     <p class="empty-text">You haven't added any books yet</p>
                     <a th:href="@{/books/create}" class="btn btn-primary">Add Your First Book</a>
+                </div>
+
+                <!-- Books Pagination -->
+                <div th:if="${myBooks.totalPages > 1}" class="pagination">
+                    <div class="pagination-info">
+                        <span th:text="'Showing ' + ${myBooks.numberOfElements} + ' of ' + ${myBooks.totalElements} + ' books'"></span>
+                    </div>
+                    
+                    <div class="pagination-controls">
+                        <a th:if="${myBooks.hasPrevious()}" 
+                           th:href="@{/accounts/profile(bookPage=${myBooks.number}, bookSize=${myBooks.size}, tab='books')}"
+                           class="pagination-btn">
+                            <span class="btn-icon">←</span>
+                            Previous
+                        </a>
+                        
+                        <div class="pagination-pages">
+                            <span th:each="pageNum : ${#numbers.sequence(0, myBooks.totalPages - 1)}"
+                                  th:if="${pageNum >= myBooks.number - 2 and pageNum <= myBooks.number + 2}"
+                                  th:class="${pageNum == myBooks.number ? 'pagination-page active' : 'pagination-page'}">
+                                <a th:href="@{/accounts/profile(bookPage=${pageNum + 1}, bookSize=${myBooks.size}, tab='books')}"
+                                   th:text="${pageNum + 1}"></a>
+                            </span>
+                        </div>
+                        
+                        <a th:if="${myBooks.hasNext()}" 
+                           th:href="@{/accounts/profile(bookPage=${myBooks.number + 2}, bookSize=${myBooks.size}, tab='books')}"
+                           class="pagination-btn">
+                            Next
+                            <span class="btn-icon">→</span>
+                        </a>
+                    </div>
                 </div>
             </div>
 
             <!-- Shopping Cart Tab -->
             <div id="carts-tab" class="tab-content">
-                <div th:if="${carts.size() > 0}" class="carts-summary">
-                    <div th:each="cart : ${carts}" class="cart-summary-item">
+                <div th:if="${carts.getContent().size() > 0}" class="carts-summary">
+                    <div th:each="cart : ${carts.getContent()}" class="cart-summary-item">
                         <div class="cart-info">
                             <span class="cart-id">Cart #<span th:text="${cart.id}"></span></span>
                             <span class="cart-items" th:text="${cart.cartBooks.size()} + ' items'"></span>
-                            <span class="cart-total" th:text="'$' + ${cartSubtotals.get(cart.id)}"></span>
+                            <span class="cart-total" th:text="'$' + ${cart.totalPrice}"></span>
                         </div>
                         <a th:href="@{/carts/list}" class="btn btn-outline btn-small">View Cart</a>
                     </div>
                 </div>
 
-                <div th:if="${carts.size() == 0}" class="empty-tab">
+                <div th:if="${carts.getContent().size() == 0}" class="empty-tab">
                     <div class="empty-icon">🛒</div>
                     <p class="empty-text">Your shopping cart is empty</p>
-                    <a th:href="@{/books/list}" class="btn btn-primary">Start Shopping</a>
+                    <a th:href="@{/books/}" class="btn btn-primary">Start Shopping</a>
+                </div>
+
+                <!-- Cart Pagination -->
+                <div th:if="${carts.totalPages > 1}" class="pagination">
+                    <div class="pagination-info">
+                        <span th:text="'Showing ' + ${carts.numberOfElements} + ' of ' + ${carts.totalElements} + ' carts'"></span>
+                    </div>
+                    
+                    <div class="pagination-controls">
+                        <a th:if="${carts.hasPrevious()}" 
+                           th:href="@{/accounts/profile(cartPage=${carts.number}, cartSize=${carts.size}, tab='carts')}"
+                           class="pagination-btn">
+                            <span class="btn-icon">←</span>
+                            Previous
+                        </a>
+                        
+                        <div class="pagination-pages">
+                            <span th:each="pageNum : ${#numbers.sequence(0, carts.totalPages - 1)}"
+                                  th:if="${pageNum >= carts.number - 2 and pageNum <= carts.number + 2}"
+                                  th:class="${pageNum == carts.number ? 'pagination-page active' : 'pagination-page'}">
+                                <a th:href="@{/accounts/profile(cartPage=${pageNum + 1}, cartSize=${carts.size}, tab='carts')}"
+                                   th:text="${pageNum + 1}"></a>
+                            </span>
+                        </div>
+                        
+                        <a th:if="${carts.hasNext()}" 
+                           th:href="@{/accounts/profile(cartPage=${carts.number + 2}, cartSize=${carts.size}, tab='carts')}"
+                           class="pagination-btn">
+                            Next
+                            <span class="btn-icon">→</span>
+                        </a>
+                    </div>
                 </div>
             </div>
 
             <!-- Comments Tab -->
             <div id="comments-tab" class="tab-content">
-                <div th:if="${myComments.size() > 0}" class="comments-list">
-                    <div th:each="comment : ${myComments}" class="comment-item">
+                <div th:if="${myComments.getContent().size() > 0}" class="comments-list">
+                    <div th:each="comment : ${myComments.getContent()}" class="comment-item">
                         <div class="comment-book">
                             <a th:href="@{|/books/${comment.book.id}|}" th:text="${comment.book.name}"></a>
                         </div>
@@ -208,10 +239,42 @@
                     </div>
                 </div>
 
-                <div th:if="${myComments.size() == 0}" class="empty-tab">
+                <div th:if="${myComments.getContent().size() == 0}" class="empty-tab">
                     <div class="empty-icon">💬</div>
                     <p class="empty-text">You haven't written any comments yet</p>
-                    <a th:href="@{/books/list}" class="btn btn-primary">Browse Books</a>
+                    <a th:href="@{/books/}" class="btn btn-primary">Browse Books</a>
+                </div>
+
+                <!-- Comments Pagination -->
+                <div th:if="${myComments.totalPages > 1}" class="pagination">
+                    <div class="pagination-info">
+                        <span th:text="'Showing ' + ${myComments.numberOfElements} + ' of ' + ${myComments.totalElements} + ' comments'"></span>
+                    </div>
+                    
+                    <div class="pagination-controls">
+                        <a th:if="${myComments.hasPrevious()}" 
+                           th:href="@{/accounts/profile(commentPage=${myComments.number}, commentSize=${myComments.size}, tab='comments')}"
+                           class="pagination-btn">
+                            <span class="btn-icon">←</span>
+                            Previous
+                        </a>
+                        
+                        <div class="pagination-pages">
+                            <span th:each="pageNum : ${#numbers.sequence(0, myComments.totalPages - 1)}"
+                                  th:if="${pageNum >= myComments.number - 2 and pageNum <= myComments.number + 2}"
+                                  th:class="${pageNum == myComments.number ? 'pagination-page active' : 'pagination-page'}">
+                                <a th:href="@{/accounts/profile(commentPage=${pageNum + 1}, commentSize=${myComments.size}, tab='comments')}"
+                                   th:text="${pageNum + 1}"></a>
+                            </span>
+                        </div>
+                        
+                        <a th:if="${myComments.hasNext()}" 
+                           th:href="@{/accounts/profile(commentPage=${myComments.number + 2}, commentSize=${myComments.size}, tab='comments')}"
+                           class="pagination-btn">
+                            Next
+                            <span class="btn-icon">→</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -233,7 +296,21 @@
 
         // Add active class to clicked button
         event.target.classList.add('active');
+
+        // Update URL with tab parameter
+        const url = new URL(window.location);
+        url.searchParams.set('tab', tabName);
+        window.history.pushState({}, '', url);
     }
+
+    // Set active tab based on URL parameter on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeTab = urlParams.get('tab') || '[[${activeTab}]]';
+        if (activeTab && activeTab !== 'books') {
+            showTab(activeTab);
+        }
+    });
 </script>
 </body>
 </html>

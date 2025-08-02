@@ -25,7 +25,7 @@
 
     <div th:if="${books == null || #lists.isEmpty(books)}" class="empty-state">
         <p>No books found in this category.</p>
-        <a th:href="@{/books/list}" class="btn-link">Browse All Books</a>
+                        <a th:href="@{/books/}" class="btn-link">Browse All Books</a>
     </div>
 
     <div th:if="${books != null && !#lists.isEmpty(books)}">

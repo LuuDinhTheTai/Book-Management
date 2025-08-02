@@ -27,7 +27,7 @@
 
         <div th:if="${#lists.isEmpty(cart.cartBooks)}" class="empty-cart">
             <p>This cart is empty.</p>
-            <a th:href="@{/books/list}" class="btn-link">Add Some Books</a>
+                            <a th:href="@{/books/}" class="btn-link">Add Some Books</a>
         </div>
 
         <div th:if="${!#lists.isEmpty(cart.cartBooks)}">
@@ -70,7 +70,7 @@
             </div>
 
             <div class="cart-actions">
-                <a th:href="@{/books/list}" class="btn-link">Continue Shopping</a>
+                <a th:href="@{/books/}" class="btn-link">Continue Shopping</a>
             </div>
         </div>
     </div>

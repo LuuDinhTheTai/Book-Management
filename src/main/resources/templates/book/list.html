@@ -28,12 +28,12 @@
         <!-- Search and Filter Section -->
         <div class="search-filter-section">
             <div class="search-box">
-                <form th:action="@{/books/list}" method="get" class="search-form">
+                <form th:action="@{/books/}" method="get" class="search-form">
                     <div class="search-input-group">
                         <span class="search-icon">🔍</span>
                         <input type="text" 
-                               name="search" 
-                               th:value="${param.search}"
+                               name="name" 
+                               th:value="${param.name}"
                                class="search-input" 
                                placeholder="Search books by title, author, or category...">
                         <button type="submit" class="search-btn">Search</button>
@@ -44,12 +44,12 @@
             <div class="filter-options">
                 <div class="filter-group">
                     <label for="categoryFilter" class="filter-label">Category:</label>
-                    <select id="categoryFilter" name="category" class="filter-select" onchange="applyFilter()">
+                                            <select id="categoryFilter" name="categoryId" class="filter-select" onchange="applyFilter()">
                         <option value="">All Categories</option>
                         <option th:each="category : ${categories}" 
                                 th:value="${category.id}" 
                                 th:text="${category.name}"
-                                th:selected="${param.category != null and param.category[0] == category.id.toString()}">
+                                th:selected="${param.categoryId != null and param.categoryId[0] == category.id.toString()}">
                         </option>
                     </select>
                 </div>
@@ -63,14 +63,14 @@
                     </select>
                 </div>
 
-                <div class="filter-group">
-                    <label for="sortBy" class="filter-label">Sort by:</label>
-                    <select id="sortBy" name="sort" class="filter-select" onchange="applyFilter()">
-                        <option value="name" th:selected="${param.sort == null or param.sort[0] == 'name'}">Name</option>
-                        <option value="price" th:selected="${param.sort != null and param.sort[0] == 'price'}">Price</option>
-                        <option value="createdAt" th:selected="${param.sort != null and param.sort[0] == 'createdAt'}">Newest</option>
-                    </select>
-                </div>
+<!--                <div class="filter-group">-->
+<!--                    <label for="sortBy" class="filter-label">Sort by:</label>-->
+<!--                    <select id="sortBy" name="sort" class="filter-select" onchange="applyFilter()">-->
+<!--                        <option value="name" th:selected="${param.sort == null or param.sort[0] == 'name'}">Name</option>-->
+<!--                        <option value="price" th:selected="${param.sort != null and param.sort[0] == 'price'}">Price</option>-->
+<!--                        <option value="createdAt" th:selected="${param.sort != null and param.sort[0] == 'createdAt'}">Newest</option>-->
+<!--                    </select>-->
+<!--                </div>-->
             </div>
         </div>
 
@@ -133,7 +133,7 @@
             <h3 class="empty-title">No books found</h3>
             <p class="empty-message">Try adjusting your search criteria or browse all categories</p>
             <div class="empty-actions">
-                <a th:href="@{/books/list}" class="btn btn-outline">Browse All Books</a>
+                <a th:href="@{/books/}" class="btn btn-outline">Browse All Books</a>
                 <a th:href="@{/categories/list}" class="btn btn-outline">Browse Categories</a>
             </div>
         </div>
@@ -146,7 +146,7 @@
             
             <div class="pagination-controls">
                 <a th:if="${bookPage.hasPrevious()}" 
-                   th:href="@{/books/list(page=${bookPage.number - 1}, size=${bookPage.size}, search=${param.search}, category=${param.category}, status=${param.status}, sort=${param.sort})}"
+                   th:href="@{/books/(page=${bookPage.number + 1}, size=${bookPage.size}, name=${param.name}, categoryId=${param.categoryId}, status=${param.status}, sortBy=${param.sort})}"
                    class="pagination-btn">
                     <span class="btn-icon">←</span>
                     Previous
@@ -156,13 +156,13 @@
                     <span th:each="pageNum : ${#numbers.sequence(0, bookPage.totalPages - 1)}"
                           th:if="${pageNum >= bookPage.number - 2 and pageNum <= bookPage.number + 2}"
                           th:class="${pageNum == bookPage.number ? 'pagination-page active' : 'pagination-page'}">
-                        <a th:href="@{/books/list(page=${pageNum}, size=${bookPage.size}, search=${param.search}, category=${param.category}, status=${param.status}, sort=${param.sort})}"
+                        <a th:href="@{/books/(page=${pageNum + 1}, size=${bookPage.size}, name=${param.name}, categoryId=${param.categoryId}, status=${param.status}, sortBy=${param.sort})}"
                            th:text="${pageNum + 1}"></a>
                     </span>
                 </div>
                 
                 <a th:if="${bookPage.hasNext()}" 
-                   th:href="@{/books/list(page=${bookPage.number + 1}, size=${bookPage.size}, search=${param.search}, category=${param.category}, status=${param.status}, sort=${param.sort})}"
+                   th:href="@{/books/(page=${bookPage.number + 2}, size=${bookPage.size}, name=${param.name}, categoryId=${param.categoryId}, status=${param.status}, sortBy=${param.sort})}"
                    class="pagination-btn">
                     Next
                     <span class="btn-icon">→</span>
@@ -180,8 +180,8 @@
         
         const params = new URLSearchParams(window.location.search);
         
-        if (categoryFilter.value) params.set('category', categoryFilter.value);
-        else params.delete('category');
+        if (categoryFilter.value) params.set('categoryId', categoryFilter.value);
+        else params.delete('categoryId');
         
         if (statusFilter.value) params.set('status', statusFilter.value);
         else params.delete('status');
@@ -189,12 +189,12 @@
         if (sortBy.value) params.set('sort', sortBy.value);
         else params.delete('sort');
         
-        if (searchInput.value) params.set('search', searchInput.value);
-        else params.delete('search');
+        if (searchInput.value) params.set('name', searchInput.value);
+        else params.delete('name');
         
         params.delete('page'); // Reset to first page when filtering
         
-        window.location.href = '/books/list?' + params.toString();
+        window.location.href = '/books/?' + params.toString();
     }
     </script>
 </body>

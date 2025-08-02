@@ -35,7 +35,7 @@ public class SecurityConfiguration {
                                 "/accounts/forgot-password",
                                 "/auth/logout",
                                 "/books/{id}",
-                                "/books/list",
+                                "/books/",
                                 "/categories/list",
                                 "/categories/{id}").permitAll()
                         .requestMatchers(HttpMethod.POST,
@@ -47,7 +47,7 @@ public class SecurityConfiguration {
         http
 //                .formLogin(form -> form
 //                        .loginPage("/auth/signin")
-//                        .defaultSuccessUrl("/books/list")
+//                        .defaultSuccessUrl("/books/")
 //                        .permitAll()
 //                )
                 .logout(logout -> logout

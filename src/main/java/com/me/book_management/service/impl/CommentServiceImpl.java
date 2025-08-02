@@ -2,6 +2,7 @@ package com.me.book_management.service.impl;
 
 import com.me.book_management.annotation.comment.Create;
 import com.me.book_management.dto.request.book.comment.CreateCommentRequest;
+import com.me.book_management.dto.request.comment.ListCommentRequest;
 import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.book.Comment;
 import com.me.book_management.exception.NotFoundException;
@@ -78,6 +79,15 @@ public class CommentServiceImpl implements CommentService {
         Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
                 .orElseThrow(() -> new NotFoundException("Account not found"));
         return commentRepository.findByAccount(account);
+    }
+
+    @Override
+    public Page<Comment> findByAccount(ListCommentRequest request) {
+        log.info("(findByAccount) comment request: {}", request);
+        
+        Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
+                .orElseThrow(() -> new NotFoundException("Account not found"));
+        return commentRepository.findByAccount(account, request.getPageable());
     }
 
     @Override

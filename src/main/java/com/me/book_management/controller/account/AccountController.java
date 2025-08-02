@@ -1,6 +1,10 @@
 package com.me.book_management.controller.account;
 
+import com.me.book_management.dto.request.account.ProfileRequest;
 import com.me.book_management.dto.request.account.UpdateAccountRequest;
+import com.me.book_management.dto.request.book.ListBookRequest;
+import com.me.book_management.dto.request.cart.ListCartRequest;
+import com.me.book_management.dto.request.comment.ListCommentRequest;
 import com.me.book_management.service.AccountService;
 import com.me.book_management.service.BookService;
 import com.me.book_management.service.CartService;
@@ -25,12 +29,30 @@ public class AccountController {
     private final CommentService commentService;
 
     @GetMapping("profile")
-    public String profile(Model model) {
+    public String profile(@ModelAttribute ProfileRequest request,
+                         Model model) {
         String username = SecurityUtil.getCurrentAccount();
         model.addAttribute("account", accountService.findByUsername(username));
-        model.addAttribute("myBooks", bookService.findByAccount(PageRequest.of(1, 5)).getContent());
-        model.addAttribute("carts", cartService.list());
-        model.addAttribute("myComments", commentService.findByAccount());
+        model.addAttribute("myBooks", bookService.list(
+                ListBookRequest.builder()
+                        .myBook(true)
+                        .page(request.getBookPage())
+                        .size(request.getBookSize())
+                        .build())
+        );
+        model.addAttribute("carts", cartService.list(
+                ListCartRequest.builder()
+                        .page(request.getCartPage())
+                        .size(request.getCartSize())
+                        .build())
+        );
+        model.addAttribute("myComments", commentService.findByAccount(
+                ListCommentRequest.builder()
+                        .page(request.getCommentPage())
+                        .size(request.getCommentSize())
+                        .build())
+        );
+        model.addAttribute("activeTab", request.getTab());
         return "account/profile";
     }
 

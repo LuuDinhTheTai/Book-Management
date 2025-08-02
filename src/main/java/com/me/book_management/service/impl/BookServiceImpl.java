@@ -5,6 +5,7 @@ import com.me.book_management.annotation.book.Delete;
 import com.me.book_management.annotation.book.Update;
 import com.me.book_management.dto.request.book.CreateBookRequest;
 import com.me.book_management.dto.request.book.DeleteBookRequest;
+import com.me.book_management.dto.request.book.ListBookRequest;
 import com.me.book_management.dto.request.book.UpdateBookRequest;
 import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.book.Book;
@@ -12,6 +13,7 @@ import com.me.book_management.entity.book.Category;
 import com.me.book_management.entity.book.Detail;
 import com.me.book_management.exception.NotFoundException;
 import com.me.book_management.repository.CategoryRepository;
+import com.me.book_management.repository.account.AccountRepository;
 import com.me.book_management.repository.book.BookRepository;
 import com.me.book_management.repository.book.DetailRepository;
 import com.me.book_management.service.AccountService;
@@ -38,7 +40,7 @@ import java.util.Set;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
-    private final AccountService accountService;
+    private final AccountRepository accountRepository;
     private final DetailRepository detailRepository;
     private final CategoryRepository categoryRepository;
 
@@ -56,7 +58,8 @@ public class BookServiceImpl implements BookService {
         Detail detail = create(request.getDetail());
         book.setDetail(detail);
 
-        Account account = accountService.findByUsername(CommonUtil.getCurrentAccount());
+        Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
+                .orElseThrow(() -> new NotFoundException("Account not found"));
         book.setAccount(account);
 
         boolean hasCategoriesParam = request.getCategories() != null && !request.getCategories().isEmpty();
@@ -78,30 +81,65 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public Page<Book> list(ListBookRequest request) {
+        log.info("(list) request: {}", request);
+        
+        Pageable pageable = request.getPageable();
+
+        boolean searchMyBook = request.isMyBook();
+        if (searchMyBook) {
+            Account currentAccount = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
+                    .orElseThrow(() -> new NotFoundException("Account not found"));
+            return bookRepository.findByAccount(currentAccount, pageable);
+        }
+
+        String name = request.getName();
+        Long categoryId = request.getCategoryId();
+        String status = request.getStatus();
+
+        boolean findByCategory = categoryId != null;
+        boolean findByName = name != null && !name.trim().isEmpty();
+        boolean findByStatus = status != null && !status.trim().isEmpty();
+
+        if (findByCategory && findByName) {
+            return bookRepository.findByCategoryIdAndNameContaining(categoryId, name.trim(), pageable);
+        }
+
+        if (findByCategory && findByStatus) {
+            return bookRepository.findByCategoryIdAndStatus(categoryId, status.trim(), pageable);
+        }
+
+        if (findByName && findByStatus) {
+            return bookRepository.findByNameContainingAndStatus(name.trim(), status.trim(), pageable);
+        }
+
+        if (findByCategory) {
+            return bookRepository.findByCategoryId(categoryId, pageable);
+        }
+
+        if (findByName) {
+            return bookRepository.findByNameContaining(name.trim(), pageable);
+        }
+
+        if (findByStatus) {
+            return bookRepository.findByStatus(status.trim(), pageable);
+        }
+
+        return bookRepository.findAll(pageable);
+    }
+
+    @Override
     public Book find(Long id) {
-        log.info("(find) id: {}", id);
+        log.info("(find) book: {}", id);
 
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Book not found"));
 
-        log.info("(find) book response: {}", book);
+        if (CommonUtil.isDeleted(book)) {
+            throw new NotFoundException("Book not found");
+        }
 
         return book;
-    }
-
-    @Override
-    public List<Book> findByCategory(Long id) {
-        log.info("(find) category: {}", id);
-
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Category not found"));
-
-        return category.getBooks().stream().toList();
-    }
-
-    @Override
-    public Page<Book> list(Pageable pageable) {
-        return bookRepository.findAll(pageable);
     }
 
     @Override
@@ -126,13 +164,6 @@ public class BookServiceImpl implements BookService {
         }
 
         return bookRepository.save(book);
-    }
-
-    @Override
-    public Page<Book> findByAccount(Pageable pageable) {
-        Account account = accountService.findByUsername(CommonUtil.getCurrentAccount());
-
-        return bookRepository.findByAccount(account, pageable);
     }
 
     @Override

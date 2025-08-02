@@ -20,4 +20,22 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     Page<Book> findByAccount(Account account,
                              Pageable pageable);
+    
+    @Query("SELECT b FROM Book b WHERE b.deletedAt IS NULL AND b.deletedBy IS NULL AND b.name LIKE %:name%")
+    Page<Book> findByNameContaining(String name, Pageable pageable);
+    
+    @Query("SELECT b FROM Book b WHERE b.deletedAt IS NULL AND b.deletedBy IS NULL AND b.status = :status")
+    Page<Book> findByStatus(String status, Pageable pageable);
+    
+    @Query("SELECT b FROM Book b JOIN b.categories c WHERE b.deletedAt IS NULL AND b.deletedBy IS NULL AND c.id = :categoryId")
+    Page<Book> findByCategoryId(Long categoryId, Pageable pageable);
+    
+    @Query("SELECT b FROM Book b JOIN b.categories c WHERE b.deletedAt IS NULL AND b.deletedBy IS NULL AND c.id = :categoryId AND b.name LIKE %:name%")
+    Page<Book> findByCategoryIdAndNameContaining(Long categoryId, String name, Pageable pageable);
+    
+    @Query("SELECT b FROM Book b JOIN b.categories c WHERE b.deletedAt IS NULL AND b.deletedBy IS NULL AND c.id = :categoryId AND b.status = :status")
+    Page<Book> findByCategoryIdAndStatus(Long categoryId, String status, Pageable pageable);
+    
+    @Query("SELECT b FROM Book b WHERE b.deletedAt IS NULL AND b.deletedBy IS NULL AND b.name LIKE %:name% AND b.status = :status")
+    Page<Book> findByNameContainingAndStatus(String name, String status, Pageable pageable);
 }

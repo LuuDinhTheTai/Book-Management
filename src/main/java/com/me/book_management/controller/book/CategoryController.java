@@ -1,5 +1,6 @@
 package com.me.book_management.controller.book;
 
+import com.me.book_management.dto.request.book.ListBookRequest;
 import com.me.book_management.dto.request.book.category.CreateCategoryRequest;
 import com.me.book_management.dto.request.book.category.UpdateCategoryRequest;
 import com.me.book_management.entity.book.Category;
@@ -40,7 +41,7 @@ public class CategoryController {
         if (bindingResult.hasErrors()) {
             return "category/create-form";
         }
-        
+
         try {
             Category category = categoryService.create(request);
             redirectAttributes.addFlashAttribute("successMessage", "Category created successfully!");
@@ -67,7 +68,11 @@ public class CategoryController {
         try {
             Category category = categoryService.find(id);
             model.addAttribute("category", category);
-            model.addAttribute("books", bookService.findByCategory(id));
+            model.addAttribute("books", bookService.list(
+                    ListBookRequest.builder()
+                    .categoryId(id)
+                    .build())
+            );
             return "category/detail";
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Category not found: " + e.getMessage());
@@ -99,7 +104,7 @@ public class CategoryController {
         if (bindingResult.hasErrors()) {
             return "category/update-form";
         }
-        
+
         try {
             Category category = categoryService.update(request.getId(), request);
             redirectAttributes.addFlashAttribute("successMessage", "Category updated successfully!");

@@ -16,6 +16,11 @@
                 <h1 class="page-title">My Cart</h1>
                 <p class="page-subtitle">Review your selected books</p>
             </div>
+            <div>
+                <form th:action="@{/carts/create}" method="post">
+                    <button type="submit" class="btn btn-primary btn-large">Create a new cart</button>
+                </form>
+            </div>
         </div>
 
         <div th:if="${errorMessage}" class="alert alert-error">
@@ -39,12 +44,12 @@
                 <div class="stat-item">
                     <span class="stat-icon">📚</span>
                     <span class="stat-label">Total Items:</span>
-                    <span class="stat-value" th:text="${totalItems}"></span>
+<!--                    <span class="stat-value" th:text="${carts.cartBooks.size()}"></span>-->
                 </div>
                 <div class="stat-item">
                     <span class="stat-icon">💰</span>
                     <span class="stat-label">Total Value:</span>
-                    <span class="stat-value" th:text="'$' + ${totalValue}"></span>
+                    <span class="stat-value" th:text="'$' + ${totalPrice}"></span>
                 </div>
             </div>
         </div>
@@ -55,12 +60,10 @@
                 <div class="cart-header">
                     <div class="cart-info">
                         <h3 class="cart-title">Cart #<span th:text="${cart.id}"></span></h3>
-                        <span class="cart-date" th:text="${#temporals.format(cart.createdAt, 'MMM dd, yyyy')}"></span>
                     </div>
                     
                     <div class="cart-actions">
-                        <form th:action="@{/carts/delete}" method="post" class="delete-cart-form">
-                            <input type="hidden" name="cartId" th:value="${cart.id}"/>
+                        <form th:action="@{|/carts/delete/${cart.id}|}" method="post" class="delete-cart-form">
                             <button type="submit" class="btn btn-danger btn-small" 
                                     onclick="return confirm('Are you sure you want to delete this cart?')">
                                 <span class="btn-icon">🗑️</span>
@@ -126,14 +129,14 @@
                 <div th:if="${cart.cartBooks.size() == 0}" class="empty-cart">
                     <div class="empty-icon">🛒</div>
                     <p class="empty-text">This cart is empty</p>
-                    <a th:href="@{/books/list}" class="btn btn-outline">Browse Books</a>
+                    <a th:href="@{/books/}" class="btn btn-outline">Browse Books</a>
                 </div>
 
                 <!-- Cart Summary -->
                 <div th:if="${cart.cartBooks.size() > 0}" class="cart-total">
                     <div class="total-row">
                         <span class="total-label">Subtotal:</span>
-                        <span class="total-value" th:text="'$' + ${cartSubtotals.get(cart.id)}"></span>
+                        <span class="total-value" th:text="'$' + ${cart.totalPrice}"></span>
                     </div>
                     <div class="total-row">
                         <span class="total-label">Items:</span>
@@ -149,7 +152,7 @@
             <h3 class="empty-title">Your cart is empty</h3>
             <p class="empty-message">Start shopping to add books to your cart</p>
             <div class="empty-actions">
-                <a th:href="@{/books/list}" class="btn btn-primary">
+                <a th:href="@{/books/}" class="btn btn-primary">
                     <span class="btn-icon">📚</span>
                     Browse Books
                 </a>
@@ -174,7 +177,7 @@
             </div>
             
             <div class="checkout-actions">
-                <a th:href="@{/books/list}" class="btn btn-outline">
+                <a th:href="@{/books/}" class="btn btn-outline">
                     <span class="btn-icon">📚</span>
                     Continue Shopping
                 </a>

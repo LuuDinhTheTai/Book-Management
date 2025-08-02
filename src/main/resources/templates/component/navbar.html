@@ -2,154 +2,123 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-  <div th:fragment="navbar">
+<div th:fragment="navbar">
     <nav class="navbar">
-      <div class="navbar-container">
-        <div class="navbar-brand-section">
-          <a class="navbar-brand" th:href="@{/books/list}">
-            <span class="brand-icon">📚</span>
-            <span class="brand-text">BookStore</span>
-          </a>
+        <div class="navbar-container">
+            <div class="navbar-brand-section">
+                <a class="navbar-brand" th:href="@{/books/}">
+                    <span class="brand-icon">📚</span>
+                    <span class="brand-text">BookStore</span>
+                </a>
+            </div>
+
+            <div class="navbar-menu">
+                <ul class="navbar-links">
+
+                    <!-- User Section -->
+                    <li th:if="${#authorization.expr('isAuthenticated()')}" class="nav-item">
+                        <div class="navbar-dropdown">
+                            <button class="dropdown-toggle" onclick="toggleDropdown('userDropdown')">
+                                <span class="dropdown-icon">👤</span>
+                                My Account
+                                <span class="dropdown-arrow">▼</span>
+                            </button>
+                            <div class="dropdown-menu" id="userDropdown">
+                                <a th:href="@{/accounts/profile}" class="dropdown-item" style="color: black">
+                                    <span class="item-icon">👤</span>
+                                    Profile
+                                </a>
+                                <a th:href="@{/addresses/list}" class="dropdown-item" style="color: black">
+                                    <span class="item-icon">📍</span>
+                                    Addresses
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a th:href="@{/auth/signout}" class="dropdown-item" style="color: black">
+                                    <span class="item-icon">🚪</span>
+                                    Sign Out
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+
+                    <!-- Shopping Cart -->
+                    <li th:if="${#authorization.expr('isAuthenticated()')}" class="nav-item">
+                        <a th:href="@{/carts/list}" class="nav-link cart-link">
+                            <span class="cart-icon">🛒</span>
+                            <span class="cart-text">Cart</span>
+                            <span th:if="${cartItemCount > 0}" class="cart-badge" th:text="${cartItemCount}"></span>
+                        </a>
+                    </li>
+
+                    <!-- Auth Section for non-authenticated users -->
+                    <li th:if="${not #authorization.expr('isAuthenticated()')}" class="nav-item auth-section">
+                        <a th:href="@{/auth/signin}" class="nav-link btn-signin">
+                            <span class="auth-icon">🔑</span>
+                            Sign In
+                        </a>
+                        <a th:href="@{/auth/signup}" class="nav-link btn-signup">
+                            <span class="auth-icon">📝</span>
+                            Sign Up
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <div class="navbar-mobile-toggle" onclick="toggleMobileMenu()">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </div>
         </div>
-
-        <div class="navbar-menu">
-          <ul class="navbar-links">
-            <!-- Browse Section -->
-            <li class="nav-item">
-              <div class="navbar-dropdown">
-                <button class="dropdown-toggle" onclick="toggleDropdown('browseDropdown')">
-                  <span class="dropdown-icon">📖</span>
-                  Browse
-                  <span class="dropdown-arrow">▼</span>
-                </button>
-                <div class="dropdown-menu" id="browseDropdown">
-                  <a th:href="@{/books/list}" class="dropdown-item">
-                    <span class="item-icon">📚</span>
-                    All Books
-                  </a>
-                  <a th:href="@{/categories/list}" class="dropdown-item">
-                    <span class="item-icon">🏷️</span>
-                    Categories
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  <div class="dropdown-section-title">Popular Categories</div>
-                  <a th:each="category : ${categories}"
-                     th:href="@{/categories/{id}(id=${category.id})}"
-                     th:text="${category.name}"
-                     class="dropdown-item category-item">
-                  </a>
-                </div>
-              </div>
-            </li>
-
-            <!-- User Section -->
-            <li th:if="${#authorization.expr('isAuthenticated()')}" class="nav-item">
-              <div class="navbar-dropdown">
-                <button class="dropdown-toggle" onclick="toggleDropdown('userDropdown')">
-                  <span class="dropdown-icon">👤</span>
-                  My Account
-                  <span class="dropdown-arrow">▼</span>
-                </button>
-                <div class="dropdown-menu" id="userDropdown">
-                  <a th:href="@{/accounts/profile}" class="dropdown-item">
-                    <span class="item-icon">👤</span>
-                    Profile
-                  </a>
-                  <a th:href="@{/books/my-book}" class="dropdown-item">
-                    <span class="item-icon">📝</span>
-                    My Books
-                  </a>
-                  <a th:href="@{/addresses/list}" class="dropdown-item">
-                    <span class="item-icon">📍</span>
-                    Addresses
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  <a th:href="@{/auth/signout}" class="dropdown-item">
-                    <span class="item-icon">🚪</span>
-                    Sign Out
-                  </a>
-                </div>
-              </div>
-            </li>
-
-            <!-- Shopping Cart -->
-            <li th:if="${#authorization.expr('isAuthenticated()')}" class="nav-item">
-              <a th:href="@{/carts/list}" class="nav-link cart-link">
-                <span class="cart-icon">🛒</span>
-                <span class="cart-text">Cart</span>
-                <span th:if="${cartItemCount > 0}" class="cart-badge" th:text="${cartItemCount}"></span>
-              </a>
-            </li>
-
-            <!-- Auth Section for non-authenticated users -->
-            <li th:if="${not #authorization.expr('isAuthenticated()')}" class="nav-item auth-section">
-              <a th:href="@{/auth/signin}" class="nav-link btn-signin">
-                <span class="auth-icon">🔑</span>
-                Sign In
-              </a>
-              <a th:href="@{/auth/signup}" class="nav-link btn-signup">
-                <span class="auth-icon">📝</span>
-                Sign Up
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Mobile Menu Toggle -->
-        <div class="navbar-mobile-toggle" onclick="toggleMobileMenu()">
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-        </div>
-      </div>
     </nav>
 
     <script>
-    function toggleDropdown(dropdownId) {
-      const dropdown = document.getElementById(dropdownId);
-      const allDropdowns = document.querySelectorAll('.dropdown-menu');
-      
-      // Close all other dropdowns
-      allDropdowns.forEach(d => {
-        if (d.id !== dropdownId) {
-          d.classList.remove('show');
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            const allDropdowns = document.querySelectorAll('.dropdown-menu');
+
+            // Close all other dropdowns
+            allDropdowns.forEach(d => {
+                if (d.id !== dropdownId) {
+                    d.classList.remove('show');
+                }
+            });
+
+            // Toggle current dropdown
+            dropdown.classList.toggle('show');
         }
-      });
-      
-      // Toggle current dropdown
-      dropdown.classList.toggle('show');
-    }
 
-    function toggleMobileMenu() {
-      const navbarMenu = document.querySelector('.navbar-menu');
-      navbarMenu.classList.toggle('mobile-show');
-    }
-
-    // Close dropdowns when clicking outside
-    window.onclick = function(event) {
-      if (!event.target.matches('.dropdown-toggle') && !event.target.closest('.navbar-dropdown')) {
-        const dropdowns = document.getElementsByClassName('dropdown-menu');
-        for (let dropdown of dropdowns) {
-          dropdown.classList.remove('show');
+        function toggleMobileMenu() {
+            const navbarMenu = document.querySelector('.navbar-menu');
+            navbarMenu.classList.toggle('mobile-show');
         }
-      }
-      
-      // Close mobile menu when clicking outside
-      if (!event.target.closest('.navbar') && !event.target.matches('.navbar-mobile-toggle')) {
-        const navbarMenu = document.querySelector('.navbar-menu');
-        navbarMenu.classList.remove('mobile-show');
-      }
-    }
 
-    // Close mobile menu on window resize
-    window.addEventListener('resize', function() {
-      if (window.innerWidth > 768) {
-        const navbarMenu = document.querySelector('.navbar-menu');
-        navbarMenu.classList.remove('mobile-show');
-      }
-    });
+        // Close dropdowns when clicking outside
+        window.onclick = function (event) {
+            if (!event.target.matches('.dropdown-toggle') && !event.target.closest('.navbar-dropdown')) {
+                const dropdowns = document.getElementsByClassName('dropdown-menu');
+                for (let dropdown of dropdowns) {
+                    dropdown.classList.remove('show');
+                }
+            }
+
+            // Close mobile menu when clicking outside
+            if (!event.target.closest('.navbar') && !event.target.matches('.navbar-mobile-toggle')) {
+                const navbarMenu = document.querySelector('.navbar-menu');
+                navbarMenu.classList.remove('mobile-show');
+            }
+        }
+
+        // Close mobile menu on window resize
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 768) {
+                const navbarMenu = document.querySelector('.navbar-menu');
+                navbarMenu.classList.remove('mobile-show');
+            }
+        });
     </script>
-  </div>
+</div>
 </body>
-</html> 
+</html>
 </html> 
