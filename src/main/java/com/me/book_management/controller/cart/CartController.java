@@ -1,5 +1,8 @@
 package com.me.book_management.controller.cart;
 
+import com.me.book_management.annotation.hasPermission;
+import com.me.book_management.annotation.resourceOwner;
+import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.cart.AddItemRequest;
 import com.me.book_management.dto.request.cart.DecreaseItemRequest;
 import com.me.book_management.dto.request.cart.IncreaseItemRequest;
@@ -22,6 +25,7 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping("create")
+    @hasPermission(permission = Constants.PERMISSION.CREATE_CART)
     public String create(RedirectAttributes redirectAttributes) {
         try {
             Cart cart = cartService.create();
@@ -35,6 +39,7 @@ public class CartController {
     }
 
     @GetMapping("{id}")
+    @hasPermission(permission = Constants.PERMISSION.READ_CART)
     public String find(@Valid @PathVariable Long id, Model model) {
         try {
             Cart cart = cartService.find(id);
@@ -49,6 +54,7 @@ public class CartController {
     }
 
     @GetMapping("list")
+    @hasPermission(permission = Constants.PERMISSION.READ_CART)
     public String list(Model model) {
         try {
             List<Cart> carts = cartService.list();
@@ -63,6 +69,7 @@ public class CartController {
     }
 
     @PostMapping("delete/{id}")
+    @hasPermission(permission = Constants.PERMISSION.DELETE_CART)
     public String delete(@Valid @PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             cartService.delete(id);
@@ -75,7 +82,9 @@ public class CartController {
     }
 
     @PostMapping("add-item")
-    public String addItem(@ModelAttribute AddItemRequest request, RedirectAttributes redirectAttributes) {
+    @hasPermission(permission = Constants.PERMISSION.UPDATE_CART)
+    public String addItem(@ModelAttribute AddItemRequest request,
+                          RedirectAttributes redirectAttributes) {
         try {
             Cart cart = cartService.addItem(request);
             redirectAttributes.addFlashAttribute("successMessage", "Item added to cart successfully!");
@@ -88,11 +97,9 @@ public class CartController {
     }
 
     @PostMapping("increase-item/{id}")
-    public String increaseItem(@PathVariable
-                               Long id,
-                               @Valid
-                               @ModelAttribute
-                               IncreaseItemRequest request,
+    @hasPermission(permission = Constants.PERMISSION.UPDATE_CART)
+    public String increaseItem(@PathVariable @resourceOwner(instance = "Cart") Long id,
+                               @Valid @ModelAttribute IncreaseItemRequest request,
                                RedirectAttributes redirectAttributes) {
         try {
             Cart cart = cartService.increaseItem(id, request);
@@ -107,11 +114,9 @@ public class CartController {
     }
 
     @PostMapping("decrease-item/{id}")
-    public String decreaseItem(@PathVariable
-                               Long id,
-                               @Valid
-                               @ModelAttribute
-                               DecreaseItemRequest request,
+    @hasPermission(permission = Constants.PERMISSION.UPDATE_CART)
+    public String decreaseItem(@PathVariable @resourceOwner(instance = "Cart") Long id,
+                               @Valid @ModelAttribute DecreaseItemRequest request,
                                RedirectAttributes redirectAttributes) {
         try {
             Cart cart = cartService.decreaseItem(id, request);

@@ -4,8 +4,8 @@ import com.me.book_management.dto.request.account.address.CreateAddressRequest;
 import com.me.book_management.dto.request.account.address.UpdateAddressRequest;
 import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.account.Address;
+import com.me.book_management.exception.ForbiddenException;
 import com.me.book_management.exception.NotFoundException;
-import com.me.book_management.exception.UnauthorizedAccessException;
 import com.me.book_management.repository.account.AccountRepository;
 import com.me.book_management.repository.account.AddressRepository;
 import com.me.book_management.service.AddressService;
@@ -77,7 +77,7 @@ public class AddressServiceImpl implements AddressService {
         Address address = find(id);
 
         if (!address.getAccount().getUsername().equals(account.getUsername())) {
-            throw new UnauthorizedAccessException("You are not owner");
+            throw new ForbiddenException("You are not owner");
         }
 
         address.setStreet(request.getStreet());

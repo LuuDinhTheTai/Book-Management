@@ -7,6 +7,8 @@ import com.me.book_management.entity.rbac0.Role;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.Objects;
+
 public class CommonUtil {
 
     public static String getCurrentAccount() {
@@ -44,5 +46,9 @@ public class CommonUtil {
             return false;
         }
         return true;
+    }
+
+    public static boolean isEqual(Object o1, Object o2) {
+        return Objects.equals(o1, o2);
     }
 }

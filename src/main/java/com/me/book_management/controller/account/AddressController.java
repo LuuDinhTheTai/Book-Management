@@ -1,5 +1,8 @@
 package com.me.book_management.controller.account;
 
+import com.me.book_management.annotation.hasPermission;
+import com.me.book_management.annotation.resourceOwner;
+import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.account.address.CreateAddressRequest;
 import com.me.book_management.dto.request.account.address.UpdateAddressRequest;
 import com.me.book_management.entity.account.Address;
@@ -21,15 +24,16 @@ import java.util.List;
 public class AddressController {
 
     private final AddressService addressService;
-    private final AccountService accountService;
 
     @GetMapping("create")
+    @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
     public String createForm(Model model) {
         model.addAttribute("address", new CreateAddressRequest());
         return "address/create-form";
     }
 
     @PostMapping("create")
+    @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
     public String create(@Valid @ModelAttribute("address") CreateAddressRequest request,
                         BindingResult bindingResult,
                         Model model,
@@ -51,6 +55,7 @@ public class AddressController {
     }
 
     @GetMapping("list")
+    @hasPermission(permission = Constants.PERMISSION.READ_ACCOUNT)
     public String list(Model model) {
         try {
             List<Address> addresses = addressService.list();
@@ -64,8 +69,9 @@ public class AddressController {
     }
 
     @GetMapping("update/{id}")
-
-    public String updateForm(@PathVariable Long id, Model model) {
+    @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
+    public String updateForm(@resourceOwner(instance = "Address") @PathVariable Long id,
+                             Model model) {
         try {
             Address address = addressService.find(id);
             model.addAttribute("address", address);
@@ -78,7 +84,8 @@ public class AddressController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@PathVariable Long id,
+    @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
+    public String update(@resourceOwner(instance = "Address") @PathVariable Long id,
                         @Valid @ModelAttribute("address") UpdateAddressRequest request,
                         BindingResult bindingResult,
                         Model model,
@@ -99,7 +106,9 @@ public class AddressController {
     }
 
     @PostMapping("delete/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
+    public String delete(@resourceOwner(instance = "Address") @PathVariable Long id,
+                         RedirectAttributes redirectAttributes) {
         try {
             addressService.delete(id);
             redirectAttributes.addFlashAttribute("successMessage", "Address deleted successfully!");

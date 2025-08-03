@@ -1,6 +1,7 @@
 package com.me.book_management.controller.book;
 
-import com.me.book_management.annotation.book.CreateBookPermission;
+import com.me.book_management.annotation.hasPermission;
+import com.me.book_management.annotation.resourceOwner;
 import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.book.CreateBookRequest;
 import com.me.book_management.dto.request.book.ListBookRequest;
@@ -33,7 +34,7 @@ public class BookController {
     private final CategoryService categoryService;
 
     @GetMapping("create")
-    @CreateBookPermission
+    @hasPermission(permission = Constants.PERMISSION.CREATE_BOOK)
     public String create(Model model) {
         CreateBookRequest createBookRequest = new CreateBookRequest();
         model.addAttribute("createBookRequest", createBookRequest);
@@ -46,9 +47,8 @@ public class BookController {
     }
 
     @PostMapping("create")
-    @CreateBookPermission
-    public String create(@Valid
-                             @ModelAttribute("createBookRequest")
+    @hasPermission(permission = Constants.PERMISSION.CREATE_BOOK)
+    public String create(@Valid @ModelAttribute("createBookRequest")
                          CreateBookRequest request,
                          BindingResult bindingResult,
                          Model model) {
@@ -93,8 +93,8 @@ public class BookController {
     }
 
     @GetMapping("update/{id}")
-    public String update(
-                         @PathVariable Long id,
+    @hasPermission(permission = Constants.PERMISSION.UPDATE_BOOK)
+    public String update(@resourceOwner(instance = "Book") @PathVariable Long id,
                          Model model) {
         Book book = bookService.find(id);
         model.addAttribute("book", book);
@@ -106,12 +106,9 @@ public class BookController {
     }
 
     @PostMapping("update/{id}")
-    public String update(
-                         @PathVariable
-                         Long id,
-                         @Valid
-                         @ModelAttribute("book")
-                         UpdateBookRequest request,
+    @hasPermission(permission = Constants.PERMISSION.UPDATE_BOOK)
+    public String update(@PathVariable @resourceOwner(instance = "Book") Long id,
+                         @Valid @ModelAttribute("book") UpdateBookRequest request,
                          Model model) {
         try {
             Book book = bookService.update(id, request);
@@ -125,8 +122,8 @@ public class BookController {
     }
 
     @PostMapping("delete/{id}")
-    public String delete(@Valid
-                         @PathVariable Long id) {
+    @hasPermission(permission = Constants.PERMISSION.DELETE_BOOK)
+    public String delete(@resourceOwner(instance = "Book") @PathVariable Long id) {
         bookService.delete(id);
         return "redirect:/accounts/profile";
     }

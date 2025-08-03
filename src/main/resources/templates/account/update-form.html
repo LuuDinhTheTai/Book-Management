@@ -16,6 +16,8 @@
     </div>
 
     <form th:action="@{|/accounts/update/${account.id}|}" th:object="${account}" method="post" class="form">
+        <label for="email">Email:</label>
+        <input type="text" id="email" th:field="*{email}"/><br/>
         <label for="username">Username:</label>
         <input type="text" id="username" th:field="*{username}"/><br/>
 
@@ -33,7 +35,7 @@
 <!--            <input type="text" id="detailTitle" th:field="*{detail.title}" /><br/>-->
 <!--        </div>-->
 
-        <button type="submit">Update</button>
+        <button type="submit" disabled>Update</button>
     </form>
 </div>
 </body>

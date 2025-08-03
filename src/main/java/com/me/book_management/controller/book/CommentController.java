@@ -1,8 +1,8 @@
 package com.me.book_management.controller.book;
 
+import com.me.book_management.annotation.hasPermission;
+import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.book.comment.CreateCommentRequest;
-import com.me.book_management.repository.book.CommentRepository;
-import com.me.book_management.service.BookService;
 import com.me.book_management.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,18 +19,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class CommentController {
 
     private final CommentService commentService;
-    private final BookService bookService;
-
-    private final CommentRepository commentRepository;
 
     @PostMapping("create")
-    public String createComment(@Valid
-                                @ModelAttribute("createCommentRequest")
+    @hasPermission(permission = Constants.PERMISSION.CREATE_COMMENT)
+    public String createComment(@Valid @ModelAttribute("createCommentRequest")
                                 CreateCommentRequest request,
                                 BindingResult bindingResult,
                                 RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            // Redirect back to the book detail page with error
             redirectAttributes.addFlashAttribute("errorMessage", "Invalid comment data");
             return "redirect:/books/" + request.getBookId();
         }

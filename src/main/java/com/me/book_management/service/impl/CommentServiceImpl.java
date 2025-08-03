@@ -1,6 +1,5 @@
 package com.me.book_management.service.impl;
 
-import com.me.book_management.annotation.comment.Create;
 import com.me.book_management.dto.request.book.comment.CreateCommentRequest;
 import com.me.book_management.dto.request.comment.ListCommentRequest;
 import com.me.book_management.entity.account.Account;
@@ -9,15 +8,12 @@ import com.me.book_management.exception.NotFoundException;
 import com.me.book_management.repository.account.AccountRepository;
 import com.me.book_management.repository.book.BookRepository;
 import com.me.book_management.repository.book.CommentRepository;
-import com.me.book_management.service.AccountService;
-import com.me.book_management.service.BookService;
 import com.me.book_management.service.CommentService;
 import com.me.book_management.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

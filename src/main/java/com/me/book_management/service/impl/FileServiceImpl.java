@@ -6,7 +6,6 @@ import com.me.book_management.exception.NotFoundException;
 import com.me.book_management.repository.account.AccountRepository;
 import com.me.book_management.repository.file.FileRepository;
 import com.me.book_management.service.FileService;
-import com.me.book_management.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;

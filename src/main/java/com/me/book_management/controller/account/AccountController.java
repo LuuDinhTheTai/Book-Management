@@ -1,5 +1,8 @@
 package com.me.book_management.controller.account;
 
+import com.me.book_management.annotation.hasPermission;
+import com.me.book_management.annotation.resourceOwner;
+import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.account.ProfileRequest;
 import com.me.book_management.dto.request.account.UpdateAccountRequest;
 import com.me.book_management.dto.request.book.ListBookRequest;
@@ -28,8 +31,9 @@ public class AccountController {
     private final CommentService commentService;
 
     @GetMapping("profile")
+    @hasPermission(permission = Constants.PERMISSION.READ_ACCOUNT)
     public String profile(@ModelAttribute ProfileRequest request,
-                         Model model) {
+                          Model model) {
         String username = CommonUtil.getCurrentAccount();
         model.addAttribute("account", accountService.findByUsername(username));
         model.addAttribute("myBooks", bookService.list(
@@ -56,17 +60,17 @@ public class AccountController {
     }
 
     @GetMapping("update/{id}")
-    public String update(@PathVariable Long id,
+    @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
+    public String update(@resourceOwner(instance = "Account") @PathVariable Long id,
                          Model model) {
         model.addAttribute("account", accountService.find(id));
         return "account/update-form";
     }
 
     @PostMapping("update/{id}")
-    public String update(@PathVariable Long id,
-                         @Valid
-                         @ModelAttribute("account")
-                         UpdateAccountRequest request,
+    @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
+    public String update(@resourceOwner(instance = "Account") @PathVariable Long id,
+                         @Valid @ModelAttribute("account") UpdateAccountRequest request,
                          BindingResult bindingResult,
                          Model model) {
         if (bindingResult.hasErrors()) {
@@ -84,7 +88,8 @@ public class AccountController {
     }
 
     @PostMapping("delete/{id}")
-    public String delete(@PathVariable Long id) {
+    @hasPermission(permission = Constants.PERMISSION.DELETE_ACCOUNT)
+    public String delete(@resourceOwner(instance = "Account") @PathVariable Long id) {
         accountService.delete(id);
         return "redirect:/auth/signup";
     }

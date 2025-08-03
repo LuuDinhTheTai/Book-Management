@@ -1,9 +1,5 @@
 package com.me.book_management.service.impl;
 
-import com.me.book_management.annotation.cart.Create;
-import com.me.book_management.annotation.cart.Delete;
-import com.me.book_management.annotation.cart.Read;
-import com.me.book_management.annotation.cart.Update;
 import com.me.book_management.dto.request.cart.AddItemRequest;
 import com.me.book_management.dto.request.cart.DecreaseItemRequest;
 import com.me.book_management.dto.request.cart.IncreaseItemRequest;
@@ -18,7 +14,7 @@ import com.me.book_management.repository.book.BookRepository;
 import com.me.book_management.repository.cart.CartBookRepository;
 import com.me.book_management.repository.cart.CartRepository;
 import com.me.book_management.service.CartService;
-import com.me.book_management.util.SecurityUtil;
+import com.me.book_management.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -40,8 +36,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public Cart create() {
         log.info("(create) cart");
-        String currentUsername = SecurityUtil.getCurrentAccount();
-        Account account = accountRepository.findByUsername(currentUsername)
+        Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
                 .orElseThrow(() -> new NotFoundException("Account not found"));
 
         Cart cart = new Cart();
@@ -63,8 +58,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<Cart> list() {
-        String currentUsername = SecurityUtil.getCurrentAccount();
-        Account account = accountRepository.findByUsername(currentUsername)
+        Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
                 .orElseThrow(() -> new NotFoundException("Account not found"));
 
         return cartRepository.findByAccount(account);
@@ -74,8 +68,7 @@ public class CartServiceImpl implements CartService {
     public Page<Cart> list(ListCartRequest request) {
         log.info("(list) cart request: {}", request);
 
-        String currentUsername = SecurityUtil.getCurrentAccount();
-        Account account = accountRepository.findByUsername(currentUsername)
+        Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
                 .orElseThrow(() -> new NotFoundException("Account not found"));
 
         return cartRepository.findByAccount(account, request.getPageable());
@@ -90,7 +83,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public Cart addItem(AddItemRequest request) {
         log.info("(add) item: {}", request);
-        Account account = accountRepository.findByUsername(SecurityUtil.getCurrentAccount())
+        Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
                 .orElseThrow(() -> new NotFoundException("Account not found"));
 
         Book book = bookRepository.findById(request.getBookId())
