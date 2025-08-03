@@ -1,8 +1,5 @@
 package com.me.book_management.service.impl;
 
-import com.me.book_management.annotation.address.Create;
-import com.me.book_management.annotation.address.Delete;
-import com.me.book_management.annotation.address.Update;
 import com.me.book_management.dto.request.account.address.CreateAddressRequest;
 import com.me.book_management.dto.request.account.address.UpdateAddressRequest;
 import com.me.book_management.entity.account.Account;
@@ -28,7 +25,6 @@ public class AddressServiceImpl implements AddressService {
     private final AccountRepository accountRepository;
 
     @Override
-    @Create
     public Address create(CreateAddressRequest request) {
         log.info("(create) request: {}", request);
 
@@ -72,7 +68,6 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    @Update
     public Address update(Long id, UpdateAddressRequest request) {
         log.info("(update) id: {}, request: {}", id, request);
 
@@ -97,7 +92,6 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    @Delete
     public void delete(Long id) {
 
         addressRepository.deleteById(id);

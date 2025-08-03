@@ -32,7 +32,6 @@ public class CommentServiceImpl implements CommentService {
     private final AccountRepository accountRepository;
 
     @Override
-    @Create
     public Comment create(CreateCommentRequest request) {
         log.info("(create) comment: {}", request);
 

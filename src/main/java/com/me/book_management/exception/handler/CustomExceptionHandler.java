@@ -1,6 +1,7 @@
 package com.me.book_management.exception.handler;
 
 import com.me.book_management.exception.BadRequestException;
+import com.me.book_management.exception.ForbiddenException;
 import com.me.book_management.exception.NotFoundException;
 import com.me.book_management.exception.UnauthorizedAccessException;
 import com.me.book_management.exception.base.BaseException;
@@ -27,6 +28,14 @@ public class CustomExceptionHandler {
     public String handleBaseException(BaseException e, Model model) {
         log.error("Exception: {}", e.getMessage());
         model.addAttribute("status", e.getStatusCode());
+        return "exception/error";
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public String handleForbiddenException(ForbiddenException e, Model model) {
+        log.error("Forbidden exception: {} {}", e.getStatusCode(), e.getMessage());
+        model.addAttribute("statusCode", e.getStatusCode());
+        model.addAttribute("message", e.getMessage());
         return "exception/error";
     }
 }

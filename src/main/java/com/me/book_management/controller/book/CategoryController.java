@@ -1,8 +1,5 @@
 package com.me.book_management.controller.book;
 
-import com.me.book_management.annotation.category.Create;
-import com.me.book_management.annotation.category.Delete;
-import com.me.book_management.annotation.category.Update;
 import com.me.book_management.dto.request.book.ListBookRequest;
 import com.me.book_management.dto.request.book.category.CreateCategoryRequest;
 import com.me.book_management.dto.request.book.category.UpdateCategoryRequest;
@@ -37,7 +34,7 @@ public class CategoryController {
     }
 
     @PostMapping("create")
-    public String create(@Valid @Create @ModelAttribute("createCategoryRequest") CreateCategoryRequest request,
+    public String create(@Valid @ModelAttribute("createCategoryRequest") CreateCategoryRequest request,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes,
                          Model model) {
@@ -84,7 +81,7 @@ public class CategoryController {
     }
 
     @GetMapping("update/{id}")
-    public String updateForm(@Valid @Update @PathVariable Long id, Model model) {
+    public String updateForm(@Valid @PathVariable Long id, Model model) {
         try {
             Category category = categoryService.find(id);
             UpdateCategoryRequest request = new UpdateCategoryRequest();
@@ -100,7 +97,7 @@ public class CategoryController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@Valid @Update @PathVariable Long id,
+    public String update(@Valid @PathVariable Long id,
                          @ModelAttribute("updateCategoryRequest") UpdateCategoryRequest request,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes,
@@ -120,7 +117,7 @@ public class CategoryController {
     }
 
     @PostMapping("delete/{id}")
-    public String delete(@Valid @Delete @PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String delete(@Valid @PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             categoryService.delete(id);
             redirectAttributes.addFlashAttribute("successMessage", "Category deleted successfully!");

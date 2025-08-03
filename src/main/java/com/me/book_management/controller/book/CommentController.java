@@ -1,6 +1,5 @@
 package com.me.book_management.controller.book;
 
-import com.me.book_management.annotation.comment.Create;
 import com.me.book_management.dto.request.book.comment.CreateCommentRequest;
 import com.me.book_management.repository.book.CommentRepository;
 import com.me.book_management.service.BookService;
@@ -8,7 +7,6 @@ import com.me.book_management.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +25,6 @@ public class CommentController {
 
     @PostMapping("create")
     public String createComment(@Valid
-                                @Create
                                 @ModelAttribute("createCommentRequest")
                                 CreateCommentRequest request,
                                 BindingResult bindingResult,

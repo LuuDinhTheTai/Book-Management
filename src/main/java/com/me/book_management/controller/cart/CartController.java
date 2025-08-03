@@ -1,15 +1,9 @@
 package com.me.book_management.controller.cart;
 
-import com.me.book_management.annotation.cart.Access;
-import com.me.book_management.annotation.cart.Delete;
-import com.me.book_management.annotation.cart.Read;
 import com.me.book_management.dto.request.cart.AddItemRequest;
 import com.me.book_management.dto.request.cart.DecreaseItemRequest;
 import com.me.book_management.dto.request.cart.IncreaseItemRequest;
 import com.me.book_management.entity.cart.Cart;
-import com.me.book_management.repository.account.AccountRepository;
-import com.me.book_management.repository.cart.CartBookRepository;
-import com.me.book_management.repository.cart.CartRepository;
 import com.me.book_management.service.CartService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +35,7 @@ public class CartController {
     }
 
     @GetMapping("{id}")
-    public String find(@Valid @Read @PathVariable Long id, Model model) {
+    public String find(@Valid @PathVariable Long id, Model model) {
         try {
             Cart cart = cartService.find(id);
             model.addAttribute("cart", cart);
@@ -69,7 +63,7 @@ public class CartController {
     }
 
     @PostMapping("delete/{id}")
-    public String delete(@Valid @Delete @PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String delete(@Valid @PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             cartService.delete(id);
             redirectAttributes.addFlashAttribute("successMessage", "Cart deleted successfully!");

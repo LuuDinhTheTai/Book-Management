@@ -1,10 +1,7 @@
 package com.me.book_management.controller.book;
 
-import com.me.book_management.annotation.book.Create;
-import com.me.book_management.annotation.book.Delete;
-import com.me.book_management.annotation.book.Update;
+import com.me.book_management.annotation.book.CreateBookPermission;
 import com.me.book_management.constant.Constants;
-import com.me.book_management.annotation.book.Access;
 import com.me.book_management.dto.request.book.CreateBookRequest;
 import com.me.book_management.dto.request.book.ListBookRequest;
 import com.me.book_management.dto.request.book.BookDetailRequest;
@@ -36,6 +33,7 @@ public class BookController {
     private final CategoryService categoryService;
 
     @GetMapping("create")
+    @CreateBookPermission
     public String create(Model model) {
         CreateBookRequest createBookRequest = new CreateBookRequest();
         model.addAttribute("createBookRequest", createBookRequest);
@@ -48,9 +46,9 @@ public class BookController {
     }
 
     @PostMapping("create")
+    @CreateBookPermission
     public String create(@Valid
-                         @Create
-                         @ModelAttribute("createBookRequest")
+                             @ModelAttribute("createBookRequest")
                          CreateBookRequest request,
                          BindingResult bindingResult,
                          Model model) {
@@ -95,8 +93,7 @@ public class BookController {
     }
 
     @GetMapping("update/{id}")
-    public String update(@Access
-                         @Update
+    public String update(
                          @PathVariable Long id,
                          Model model) {
         Book book = bookService.find(id);
@@ -109,11 +106,10 @@ public class BookController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@Update
+    public String update(
                          @PathVariable
                          Long id,
                          @Valid
-                         @Update
                          @ModelAttribute("book")
                          UpdateBookRequest request,
                          Model model) {
@@ -130,7 +126,6 @@ public class BookController {
 
     @PostMapping("delete/{id}")
     public String delete(@Valid
-                         @Delete
                          @PathVariable Long id) {
         bookService.delete(id);
         return "redirect:/accounts/profile";
