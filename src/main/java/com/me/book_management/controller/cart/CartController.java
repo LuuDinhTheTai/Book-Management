@@ -98,7 +98,7 @@ public class CartController {
 
     @PostMapping("increase-item/{id}")
     @hasPermission(permission = Constants.PERMISSION.UPDATE_CART)
-    public String increaseItem(@PathVariable @resourceOwner(instance = "Cart") Long id,
+    public String increaseItem(@PathVariable @resourceOwner(instance = Constants.CLASSNAME.CART) Long id,
                                @Valid @ModelAttribute IncreaseItemRequest request,
                                RedirectAttributes redirectAttributes) {
         try {
@@ -115,7 +115,7 @@ public class CartController {
 
     @PostMapping("decrease-item/{id}")
     @hasPermission(permission = Constants.PERMISSION.UPDATE_CART)
-    public String decreaseItem(@PathVariable @resourceOwner(instance = "Cart") Long id,
+    public String decreaseItem(@PathVariable @resourceOwner(instance = Constants.CLASSNAME.CART) Long id,
                                @Valid @ModelAttribute DecreaseItemRequest request,
                                RedirectAttributes redirectAttributes) {
         try {

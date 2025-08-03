@@ -4,6 +4,21 @@ import java.util.List;
 
 public class Constants {
 
+    public static class CLASSNAME {
+
+        public static final String BOOK = "Book";
+        public static final String COMMENT = "Comment";
+        public static final String ACCOUNT = "Account";
+        public static final String CART = "Cart";
+        public static final String ROLE = "Role";
+        public static final String CATEGORY = "Category";
+        public static final String ADDRESS = "Address";
+
+        public static List<String> list() {
+            return List.of(BOOK, COMMENT, ACCOUNT, CART, ROLE, CATEGORY, ADDRESS);
+        }
+    }
+
     public static class ROLE {
 
         public static final String ADMIN = "ADMIN";
@@ -38,10 +53,6 @@ public class Constants {
         public static final String READ_CATEGORY = ACTION.READ + BRIDGE + RESOURCE.CATEGORY;
         public static final String UPDATE_CATEGORY = ACTION.UPDATE + BRIDGE + RESOURCE.CATEGORY;
         public static final String DELETE_CATEGORY = ACTION.DELETE + BRIDGE + RESOURCE.CATEGORY;
-        public static final String CREATE_ADDRESS = ACTION.CREATE + BRIDGE + RESOURCE.ADDRESS;
-        public static final String READ_ADDRESS = ACTION.READ + BRIDGE + RESOURCE.ADDRESS;
-        public static final String UPDATE_ADDRESS = ACTION.UPDATE + BRIDGE + RESOURCE.ADDRESS;
-        public static final String DELETE_ADDRESS = ACTION.DELETE + BRIDGE + RESOURCE.ADDRESS;
     }
 
     public static class ACTION {

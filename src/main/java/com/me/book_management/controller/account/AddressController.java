@@ -70,7 +70,7 @@ public class AddressController {
 
     @GetMapping("update/{id}")
     @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
-    public String updateForm(@resourceOwner(instance = "Address") @PathVariable Long id,
+    public String updateForm(@resourceOwner(instance = Constants.CLASSNAME.ADDRESS) @PathVariable Long id,
                              Model model) {
         try {
             Address address = addressService.find(id);
@@ -85,7 +85,7 @@ public class AddressController {
 
     @PostMapping("update/{id}")
     @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
-    public String update(@resourceOwner(instance = "Address") @PathVariable Long id,
+    public String update(@resourceOwner(instance = Constants.CLASSNAME.ADDRESS) @PathVariable Long id,
                         @Valid @ModelAttribute("address") UpdateAddressRequest request,
                         BindingResult bindingResult,
                         Model model,
@@ -107,7 +107,7 @@ public class AddressController {
 
     @PostMapping("delete/{id}")
     @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
-    public String delete(@resourceOwner(instance = "Address") @PathVariable Long id,
+    public String delete(@resourceOwner(instance = Constants.CLASSNAME.ADDRESS) @PathVariable Long id,
                          RedirectAttributes redirectAttributes) {
         try {
             addressService.delete(id);

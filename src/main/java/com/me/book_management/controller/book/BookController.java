@@ -94,7 +94,7 @@ public class BookController {
 
     @GetMapping("update/{id}")
     @hasPermission(permission = Constants.PERMISSION.UPDATE_BOOK)
-    public String update(@resourceOwner(instance = "Book") @PathVariable Long id,
+    public String update(@resourceOwner(instance = Constants.CLASSNAME.BOOK) @PathVariable Long id,
                          Model model) {
         Book book = bookService.find(id);
         model.addAttribute("book", book);
@@ -107,7 +107,7 @@ public class BookController {
 
     @PostMapping("update/{id}")
     @hasPermission(permission = Constants.PERMISSION.UPDATE_BOOK)
-    public String update(@PathVariable @resourceOwner(instance = "Book") Long id,
+    public String update(@PathVariable @resourceOwner(instance = Constants.CLASSNAME.BOOK) Long id,
                          @Valid @ModelAttribute("book") UpdateBookRequest request,
                          Model model) {
         try {
@@ -123,7 +123,7 @@ public class BookController {
 
     @PostMapping("delete/{id}")
     @hasPermission(permission = Constants.PERMISSION.DELETE_BOOK)
-    public String delete(@resourceOwner(instance = "Book") @PathVariable Long id) {
+    public String delete(@resourceOwner(instance = Constants.CLASSNAME.BOOK) @PathVariable Long id) {
         bookService.delete(id);
         return "redirect:/accounts/profile";
     }

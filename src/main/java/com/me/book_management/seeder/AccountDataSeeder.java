@@ -25,9 +25,7 @@ public class AccountDataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        System.out.println("AccountDataSeeder: Starting account seeding...");
         seedAccounts();
-        System.out.println("AccountDataSeeder: Completed account seeding.");
     }
 
     private void seedAccounts() {

@@ -31,16 +31,13 @@ public class BookDataSeeder implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        System.out.println("BookDataSeeder: Starting book data seeding...");
         seedBookDetails();
         seedBooks();
         linkBooksWithCategories();
-        System.out.println("BookDataSeeder: Completed book data seeding.");
     }
 
     private void seedBookDetails() {
         if (detailRepository.count() == 0) {
-            System.out.println("BookDataSeeder: Creating book details...");
             List<Detail> details = List.of(
                 createDetail("978-0132350884", "Clean Code", "A Handbook of Agile Software Craftsmanship", 
                     "Robert C. Martin", "Prentice Hall", LocalDateTime.of(2008, 8, 11, 0, 0), 
@@ -297,9 +294,7 @@ public class BookDataSeeder implements CommandLineRunner {
             );
             
             detailRepository.saveAll(details);
-            System.out.println("BookDataSeeder: Successfully created " + details.size() + " book details");
         } else {
-            System.out.println("BookDataSeeder: Book details already exist in database, skipping");
         }
     }
 
@@ -324,13 +319,10 @@ public class BookDataSeeder implements CommandLineRunner {
         if (bookRepository.count() == 0) {
             List<Detail> details = detailRepository.findAll();
             List<Account> accounts = accountRepository.findAll();
-            
-            System.out.println("BookDataSeeder: Found " + details.size() + " details and " + accounts.size() + " accounts");
-            
+
             if (!details.isEmpty() && !accounts.isEmpty()) {
                 Account defaultAccount = accounts.get(0);
-                System.out.println("BookDataSeeder: Using account: " + defaultAccount.getUsername());
-                
+
                 // Create books with varied prices and quantities
                 List<Book> books = List.of(
                     createBook("Clean Code", 45.99f, 10, Constants.BOOK_STATUS.AVAILABLE, details.get(0), defaultAccount),
@@ -386,18 +378,13 @@ public class BookDataSeeder implements CommandLineRunner {
                 );
                 
                 bookRepository.saveAll(books);
-                System.out.println("BookDataSeeder: Successfully created " + books.size() + " books");
             } else {
-                System.out.println("BookDataSeeder: Cannot create books - missing details or accounts");
                 if (details.isEmpty()) {
-                    System.out.println("BookDataSeeder: No details found in database");
                 }
                 if (accounts.isEmpty()) {
-                    System.out.println("BookDataSeeder: No accounts found in database");
                 }
             }
         } else {
-            System.out.println("BookDataSeeder: Books already exist in database, skipping");
         }
     }
 
@@ -406,12 +393,10 @@ public class BookDataSeeder implements CommandLineRunner {
         List<Category> categories = categoryRepository.findAll();
         
         if (books.isEmpty() || categories.isEmpty()) {
-            System.out.println("BookDataSeeder: Cannot link books with categories - missing books or categories");
             return;
         }
         
-        System.out.println("BookDataSeeder: Linking " + books.size() + " books with " + categories.size() + " categories");
-        
+
         // Link books with appropriate categories based on their content
         for (int i = 0; i < books.size(); i++) {
             Book book = books.get(i);
@@ -420,13 +405,11 @@ public class BookDataSeeder implements CommandLineRunner {
             if (category != null) {
                 book.getCategories().add(category);
                 category.getBooks().add(book);
-                System.out.println("BookDataSeeder: Linked book '" + book.getName() + "' with category '" + category.getName() + "'");
             }
         }
         
         bookRepository.saveAll(books);
         categoryRepository.saveAll(categories);
-        System.out.println("BookDataSeeder: Successfully linked books with categories");
     }
     
     private Category getCategoryForBook(int bookIndex, List<Category> categories) {

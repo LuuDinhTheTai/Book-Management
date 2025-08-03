@@ -24,7 +24,6 @@ public class SeederCoordinator implements CommandLineRunner {
             bookDataSeeder.run(args);
             
         } catch (Exception e) {
-            System.err.println("SeederCoordinator: Error during seeding process: " + e.getMessage());
             e.printStackTrace();
         }
     }

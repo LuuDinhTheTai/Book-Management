@@ -28,12 +28,10 @@ public class RoleDataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        System.out.println("RoleDataSeeder: Starting role and permission seeding...");
         seedActions();
         seedResources();
         seedPermissions();
         seedRoles();
-        System.out.println("RoleDataSeeder: Completed role and permission seeding.");
     }
 
     private void seedActions() {

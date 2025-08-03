@@ -18,9 +18,9 @@ public class CategoryDataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        System.out.println("CategoryDataSeeder: Starting category seeding...");
+
         seedCategories();
-        System.out.println("CategoryDataSeeder: Completed category seeding.");
+
     }
 
     private void seedCategories() {

@@ -61,7 +61,7 @@ public class AccountController {
 
     @GetMapping("update/{id}")
     @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
-    public String update(@resourceOwner(instance = "Account") @PathVariable Long id,
+    public String update(@resourceOwner(instance = Constants.CLASSNAME.ACCOUNT) @PathVariable Long id,
                          Model model) {
         model.addAttribute("account", accountService.find(id));
         return "account/update-form";
@@ -69,7 +69,7 @@ public class AccountController {
 
     @PostMapping("update/{id}")
     @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
-    public String update(@resourceOwner(instance = "Account") @PathVariable Long id,
+    public String update(@resourceOwner(instance = Constants.CLASSNAME.ACCOUNT) @PathVariable Long id,
                          @Valid @ModelAttribute("account") UpdateAccountRequest request,
                          BindingResult bindingResult,
                          Model model) {
@@ -89,7 +89,7 @@ public class AccountController {
 
     @PostMapping("delete/{id}")
     @hasPermission(permission = Constants.PERMISSION.DELETE_ACCOUNT)
-    public String delete(@resourceOwner(instance = "Account") @PathVariable Long id) {
+    public String delete(@resourceOwner(instance = Constants.CLASSNAME.ACCOUNT) @PathVariable Long id) {
         accountService.delete(id);
         return "redirect:/auth/signup";
     }
