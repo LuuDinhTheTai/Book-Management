@@ -1,14 +1,12 @@
 package com.me.book_management.service.impl;
 
-import com.me.book_management.annotation.category.Create;
-import com.me.book_management.annotation.category.Delete;
-import com.me.book_management.annotation.category.Update;
 import com.me.book_management.dto.request.book.category.CreateCategoryRequest;
 import com.me.book_management.dto.request.book.category.UpdateCategoryRequest;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.entity.book.Category;
 import com.me.book_management.exception.NotFoundException;
 import com.me.book_management.repository.CategoryRepository;
+import com.me.book_management.repository.book.BookRepository;
 import com.me.book_management.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +20,9 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final BookRepository bookRepository;
 
     @Override
-    @Create
     public Category create(CreateCategoryRequest request) {
         log.info("(create) category: {}", request);
 
@@ -53,7 +51,6 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Update
     public Category update(Long id, UpdateCategoryRequest request) {
         log.info("(update) category: {}", request);
 
@@ -67,9 +64,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Delete
     public void delete(Long id) {
         log.info("(delete) category id: {}", id);
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Category not found"));
+        List<Book> books = category.getBooks();
+        for (Book book : books) {
+            book.getCategories().remove(category);
+            bookRepository.save(book);
+        }
         categoryRepository.deleteById(id);
     }
 }

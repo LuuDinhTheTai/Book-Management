@@ -45,7 +45,6 @@ public class BookServiceImpl implements BookService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    @Create
     public Book create(CreateBookRequest request) {
         log.info("(create) request: {}", request);
 
@@ -143,7 +142,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @Update
     public Book update(Long id, UpdateBookRequest request) {
         log.info("(update) request: {}", request);
 
@@ -167,7 +165,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @Delete
     public void delete(Long id) {
         log.info("(delete) book: {}", id);
 

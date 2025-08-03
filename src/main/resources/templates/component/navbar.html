@@ -15,6 +15,13 @@
             <div class="navbar-menu">
                 <ul class="navbar-links">
 
+                    <li class="nav-item">
+                        <a th:href="@{/categories/list}" class="nav-link cart-link">
+                            <span class="cart-icon">🏷️</span>
+                            <span class="cart-text">Categories</span>
+                        </a>
+                    </li>
+
                     <!-- User Section -->
                     <li th:if="${#authorization.expr('isAuthenticated()')}" class="nav-item">
                         <div class="navbar-dropdown">

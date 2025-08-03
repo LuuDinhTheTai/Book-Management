@@ -15,7 +15,7 @@
         <p th:text="${errorMessage}"></p>
     </div>
 
-    <form th:action="@{/categories/update}" method="post" th:object="${updateCategoryRequest}">
+    <form th:action="@{|/categories/update/${}|}" method="post" th:object="${updateCategoryRequest}">
         <input type="hidden" th:field="*{id}"/>
         
         <div class="form-group">

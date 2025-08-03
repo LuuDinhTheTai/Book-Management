@@ -1,6 +1,8 @@
 package com.me.book_management.controller.book;
 
+import com.me.book_management.annotation.category.Create;
 import com.me.book_management.annotation.category.Delete;
+import com.me.book_management.annotation.category.Update;
 import com.me.book_management.dto.request.book.ListBookRequest;
 import com.me.book_management.dto.request.book.category.CreateCategoryRequest;
 import com.me.book_management.dto.request.book.category.UpdateCategoryRequest;
@@ -35,7 +37,7 @@ public class CategoryController {
     }
 
     @PostMapping("create")
-    public String create(@Valid @ModelAttribute("createCategoryRequest") CreateCategoryRequest request,
+    public String create(@Valid @Create @ModelAttribute("createCategoryRequest") CreateCategoryRequest request,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes,
                          Model model) {
@@ -82,7 +84,7 @@ public class CategoryController {
     }
 
     @GetMapping("update/{id}")
-    public String updateForm(@PathVariable Long id, Model model) {
+    public String updateForm(@Valid @Update @PathVariable Long id, Model model) {
         try {
             Category category = categoryService.find(id);
             UpdateCategoryRequest request = new UpdateCategoryRequest();
@@ -97,8 +99,9 @@ public class CategoryController {
         }
     }
 
-    @PostMapping("update")
-    public String update(@Valid @ModelAttribute("updateCategoryRequest") UpdateCategoryRequest request,
+    @PostMapping("update/{id}")
+    public String update(@Valid @Update @PathVariable Long id,
+                         @ModelAttribute("updateCategoryRequest") UpdateCategoryRequest request,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes,
                          Model model) {
@@ -107,9 +110,9 @@ public class CategoryController {
         }
 
         try {
-            Category category = categoryService.update(request.getId(), request);
+            Category category = categoryService.update(id, request);
             redirectAttributes.addFlashAttribute("successMessage", "Category updated successfully!");
-            return "redirect:/categories/" + category.getId();
+            return "redirect:/categories/list";
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "category/update-form";

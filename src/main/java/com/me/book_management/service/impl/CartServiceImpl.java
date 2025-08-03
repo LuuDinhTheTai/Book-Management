@@ -38,7 +38,6 @@ public class CartServiceImpl implements CartService {
     private final CartBookRepository cartBookRepository;
 
     @Override
-    @Create
     public Cart create() {
         log.info("(create) cart");
         String currentUsername = SecurityUtil.getCurrentAccount();
@@ -52,7 +51,6 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @Read
     public Cart find(Long id) {
         log.info("(find) cart: {}", id);
 
@@ -64,7 +62,6 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @Read
     public List<Cart> list() {
         String currentUsername = SecurityUtil.getCurrentAccount();
         Account account = accountRepository.findByUsername(currentUsername)
@@ -74,10 +71,9 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @Read
     public Page<Cart> list(ListCartRequest request) {
         log.info("(list) cart request: {}", request);
-        
+
         String currentUsername = SecurityUtil.getCurrentAccount();
         Account account = accountRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new NotFoundException("Account not found"));
@@ -86,7 +82,6 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @Delete
     public void delete(Long id) {
         log.info("(delete) cart: {}", id);
         cartRepository.deleteById(id);
@@ -137,7 +132,6 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @Update
     public Cart increaseItem(Long id, IncreaseItemRequest request) {
         CartBook cartBook = cartBookRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Cart item not found"));
@@ -155,7 +149,6 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @Update
     public Cart decreaseItem(Long id, DecreaseItemRequest request) {
         CartBook cartBook = cartBookRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Cart item not found"));

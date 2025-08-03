@@ -17,13 +17,16 @@
             <h1 class="page-title">My Cart</h1>
             <p class="page-subtitle">Review your selected books</p>
         </div>
-        <div>
+
+        <div class="header-actions">
             <form th:action="@{/carts/create}" method="post">
-                <button type="submit" class="btn btn-primary btn-large">
+                <button type="submit" class="btn btn-primary">
                     <span class="btn-icon">➕</span>
                     Create a new cart
                 </button>
             </form>
+        </div>
+        <div>
         </div>
     </div>
 

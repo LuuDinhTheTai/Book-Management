@@ -1,5 +1,8 @@
 package com.me.book_management.controller.book;
 
+import com.me.book_management.annotation.book.Create;
+import com.me.book_management.annotation.book.Delete;
+import com.me.book_management.annotation.book.Update;
 import com.me.book_management.constant.Constants;
 import com.me.book_management.annotation.book.Access;
 import com.me.book_management.dto.request.book.CreateBookRequest;
@@ -46,6 +49,7 @@ public class BookController {
 
     @PostMapping("create")
     public String create(@Valid
+                         @Create
                          @ModelAttribute("createBookRequest")
                          CreateBookRequest request,
                          BindingResult bindingResult,
@@ -92,6 +96,7 @@ public class BookController {
 
     @GetMapping("update/{id}")
     public String update(@Access
+                         @Update
                          @PathVariable Long id,
                          Model model) {
         Book book = bookService.find(id);
@@ -104,10 +109,11 @@ public class BookController {
     }
 
     @PostMapping("update/{id}")
-    public String update(@Access
+    public String update(@Update
                          @PathVariable
                          Long id,
                          @Valid
+                         @Update
                          @ModelAttribute("book")
                          UpdateBookRequest request,
                          Model model) {
@@ -123,7 +129,8 @@ public class BookController {
     }
 
     @PostMapping("delete/{id}")
-    public String delete(@Access
+    public String delete(@Valid
+                         @Delete
                          @PathVariable Long id) {
         bookService.delete(id);
         return "redirect:/accounts/profile";

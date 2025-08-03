@@ -9,6 +9,7 @@ import com.me.book_management.service.AccountService;
 import com.me.book_management.service.BookService;
 import com.me.book_management.service.CartService;
 import com.me.book_management.service.CommentService;
+import com.me.book_management.util.CommonUtil;
 import com.me.book_management.util.SecurityUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class AccountController {
     @GetMapping("profile")
     public String profile(@ModelAttribute ProfileRequest request,
                          Model model) {
-        String username = SecurityUtil.getCurrentAccount();
+        String username = CommonUtil.getCurrentAccount();
         model.addAttribute("account", accountService.findByUsername(username));
         model.addAttribute("myBooks", bookService.list(
                 ListBookRequest.builder()
