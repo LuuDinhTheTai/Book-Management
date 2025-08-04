@@ -37,6 +37,7 @@ public class CategoryController {
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to create category: ");
             return "redirect:/categories/create";
         }
         try {
@@ -69,9 +70,9 @@ public class CategoryController {
     public String update(@PathVariable Long id,
                          @Valid @ModelAttribute UpdateCategoryRequest request,
                          BindingResult bindingResult,
-                         RedirectAttributes redirectAttributes,
-                         Model model) {
+                         RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update category: ");
             return "redirect:/categories/update/" + id;
         }
 

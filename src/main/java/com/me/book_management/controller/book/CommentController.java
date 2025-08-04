@@ -27,7 +27,7 @@ public class CommentController {
                                 BindingResult bindingResult,
                                 RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Invalid comment data");
+            redirectAttributes.addFlashAttribute("errorMessage", "Invalid comment");
             return "redirect:/books/" + request.getBookId();
         }
 
@@ -36,6 +36,7 @@ public class CommentController {
             commentService.create(request);
             redirectAttributes.addFlashAttribute("successMessage", "Comment posted successfully!");
             return "redirect:/books/" + request.getBookId();
+
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/books/" + request.getBookId();
