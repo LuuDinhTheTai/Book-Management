@@ -169,12 +169,6 @@ public class BookServiceImpl implements BookService {
     public Page<Book> advancedSearch(AdvancedSearchRequest request) {
         log.info("(advancedSearch) request: {}", request);
         
-        Pageable pageable = request.getPageable();
-        
-        // For now, we'll use the existing list method with basic filtering
-        // In a real implementation, you would create custom repository methods
-        // for more complex search criteria
-        
         ListBookRequest listRequest = ListBookRequest.builder()
                 .page(request.getPage())
                 .size(request.getSize())

@@ -93,6 +93,7 @@
                 <button class="tab-btn active" onclick="showTab('books')">My Books</button>
                 <button class="tab-btn" onclick="showTab('carts')">Shopping Cart</button>
                 <button class="tab-btn" onclick="showTab('comments')">My Comments</button>
+                <button class="tab-btn" onclick="showTab('orders')">My Orders</button>
             </div>
 
             <!-- My Books Tab -->
@@ -270,6 +271,85 @@
                         
                         <a th:if="${myComments.hasNext()}" 
                            th:href="@{/accounts/profile(commentPage=${myComments.number + 2}, commentSize=${myComments.size}, tab='comments')}"
+                           class="pagination-btn">
+                            Next
+                            <span class="btn-icon">→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Orders Tab -->
+            <div id="orders-tab" class="tab-content active">
+                <div th:if="${myBooks.getContent().size() > 0}" class="books-grid">
+                    <div th:each="book : ${myBooks}" class="book-card">
+                        <div class="book-image">
+                            <div class="book-placeholder">📚</div>
+                        </div>
+
+                        <div class="book-info">
+                            <h4 class="book-title">
+                                <a th:href="@{|/books/${book.id}|}" th:text="${book.name}"></a>
+                            </h4>
+
+                            <div class="book-meta">
+                                <span class="book-price" th:text="'$' + ${book.price}"></span>
+                                <span class="book-status"
+                                      th:class="${book.status == 'Available' ? 'status-available' : 'status-soldout'}"
+                                      th:text="${book.status}"></span>
+                            </div>
+
+                            <div class="book-actions">
+                                <a th:href="@{|/books/${book.id}|}" class="btn btn-outline btn-small">View</a>
+                                <a th:href="@{|/books/update/${book.id}|}" class="btn btn-outline btn-small">Edit</a>
+                                <form th:if="${book.deletedAt == null && book.deletedBy == null}"
+                                      th:action="@{|/books/delete/${book.id}|}" method="post" class="delete-form">
+                                    <button type="submit" class="btn btn-danger"
+                                            onclick="return confirm('Are you sure you want to delete this book?')">
+                                        <span class="btn-icon">🗑️</span>
+                                        Delete
+                                    </button>
+                                </form>
+                                <label th:if="${book.deletedAt != null && book.deletedBy != null}"
+                                       th:text="'Deleted at: ' + ${book.deletedAt}">
+                                    Deleted at:
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${myBooks.getContent().size() == 0}" class="empty-tab">
+                    <div class="empty-icon">📚</div>
+                    <p class="empty-text">You haven't added any books yet</p>
+                    <a th:href="@{/books/create}" class="btn btn-primary">Add Your First Book</a>
+                </div>
+
+                <!-- Orders Pagination -->
+                <div th:if="${myBooks.totalPages > 1}" class="pagination">
+                    <div class="pagination-info">
+                        <span th:text="'Showing ' + ${myBooks.numberOfElements} + ' of ' + ${myBooks.totalElements} + ' books'"></span>
+                    </div>
+
+                    <div class="pagination-controls">
+                        <a th:if="${myBooks.hasPrevious()}"
+                           th:href="@{/accounts/profile(bookPage=${myBooks.number}, bookSize=${myBooks.size}, tab='books')}"
+                           class="pagination-btn">
+                            <span class="btn-icon">←</span>
+                            Previous
+                        </a>
+
+                        <div class="pagination-pages">
+                            <span th:each="pageNum : ${#numbers.sequence(0, myBooks.totalPages - 1)}"
+                                  th:if="${pageNum >= myBooks.number - 2 and pageNum <= myBooks.number + 2}"
+                                  th:class="${pageNum == myBooks.number ? 'pagination-page active' : 'pagination-page'}">
+                                <a th:href="@{/accounts/profile(bookPage=${pageNum + 1}, bookSize=${myBooks.size}, tab='books')}"
+                                   th:text="${pageNum + 1}"></a>
+                            </span>
+                        </div>
+
+                        <a th:if="${myBooks.hasNext()}"
+                           th:href="@{/accounts/profile(bookPage=${myBooks.number + 2}, bookSize=${myBooks.size}, tab='books')}"
                            class="pagination-btn">
                             Next
                             <span class="btn-icon">→</span>

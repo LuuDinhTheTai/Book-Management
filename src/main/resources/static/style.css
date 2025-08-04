@@ -2868,3 +2868,186 @@ button:hover {
 .btn-disabled:hover {
     background-color: #6c757d !important;
 }
+
+/* Buy Button Styles */
+.buy-form {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.buy-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.buy-options .form-group {
+    margin: 0;
+}
+
+.buy-options .form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.buy-options .form-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e1e5e9;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: white;
+    transition: border-color 0.3s ease;
+}
+
+.buy-options .form-select:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.btn-success:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.btn-success:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.order-status {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 6px;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.status-badge.completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-icon {
+    font-size: 1rem;
+}
+
+.order-details {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #155724;
+}
+
+.order-details strong {
+    color: #0f5132;
+}
+
+/* Responsive design for buy form */
+@media (max-width: 768px) {
+    .buy-options {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .buy-form {
+        padding: 1rem;
+    }
+    
+    .btn-success {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Buy Now Section Styles */
+.buy-now-section {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.buy-now-form {
+    margin: 0;
+}
+
+.buy-options-single {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.buy-options-single .form-group {
+    margin: 0;
+}
+
+.buy-options-single .form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.buy-options-single .form-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e1e5e9;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: white;
+    transition: border-color 0.3s ease;
+}
+
+.buy-options-single .form-select:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+@media (max-width: 768px) {
+    .buy-options-single {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .buy-now-section {
+        padding: 1rem;
+    }
+}

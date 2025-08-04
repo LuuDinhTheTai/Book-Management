@@ -1,15 +1,20 @@
 package com.me.book_management.service.impl;
 
 import com.me.book_management.dto.request.cart.AddItemRequest;
+import com.me.book_management.dto.request.cart.BuyRequest;
 import com.me.book_management.dto.request.cart.DecreaseItemRequest;
 import com.me.book_management.dto.request.cart.IncreaseItemRequest;
 import com.me.book_management.dto.request.cart.ListCartRequest;
+import com.me.book_management.constant.Constants;
 import com.me.book_management.entity.account.Account;
+import com.me.book_management.entity.account.Address;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.entity.cart.Cart;
 import com.me.book_management.entity.cart.CartBook;
+import com.me.book_management.exception.BadRequestException;
 import com.me.book_management.exception.NotFoundException;
 import com.me.book_management.repository.account.AccountRepository;
+import com.me.book_management.repository.account.AddressRepository;
 import com.me.book_management.repository.book.BookRepository;
 import com.me.book_management.repository.cart.CartBookRepository;
 import com.me.book_management.repository.cart.CartRepository;
@@ -32,6 +37,7 @@ public class CartServiceImpl implements CartService {
     private final BookRepository bookRepository;
     private final AccountRepository accountRepository;
     private final CartBookRepository cartBookRepository;
+    private final AddressRepository addressRepository;
 
     @Override
     public Cart create() {

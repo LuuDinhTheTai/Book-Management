@@ -131,6 +131,43 @@
                     <span class="total-label">Subtotal:</span>
                     <span class="total-value" th:text="'$' + ${cart.totalPrice}"></span>
                 </div>
+                
+                <!-- Buy Button -->
+                <div class="cart-actions">
+                    <form th:action="@{|/carts/${cart.id}/buy|}" method="post" class="buy-form">
+                        <div class="buy-options">
+                            <div class="form-group">
+                                <label for="address" class="form-label">Address:</label>
+                                <select id="address" name="address" class="form-select" required>
+                                    <option th:each="address : ${addresses}"
+                                            th:value="${address.id}"
+                                            th:text="${address.street} + '-' + ${address.city} + '-' + ${address.state} + '-' + ${address.country}"></option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="shippingMethod" class="form-label">Shipping Method:</label>
+                                <select id="shippingMethod" name="shippingMethod" class="form-select" required>
+                                    <option value="">Select shipping method</option>
+                                    <option value="COD">Cash on Delivery (COD)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="paymentMethod" class="form-label">Payment Method:</label>
+                                <select id="paymentMethod" name="paymentMethod" class="form-select" required>
+                                    <option value="">Select payment method</option>
+                                    <option value="Cash">Cash</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success btn-large">
+                            <span class="btn-icon">💳</span>
+                            Buy Now - $<span th:text="${cart.totalPrice}"></span>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

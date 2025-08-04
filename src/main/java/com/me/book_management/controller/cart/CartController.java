@@ -7,6 +7,7 @@ import com.me.book_management.dto.request.cart.AddItemRequest;
 import com.me.book_management.dto.request.cart.DecreaseItemRequest;
 import com.me.book_management.dto.request.cart.IncreaseItemRequest;
 import com.me.book_management.entity.cart.Cart;
+import com.me.book_management.service.AddressService;
 import com.me.book_management.service.CartService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import java.util.List;
 public class CartController {
 
     private final CartService cartService;
+    private final AddressService addressService;
 
     @PostMapping("create")
     @hasPermission(permission = Constants.PERMISSION.CREATE_CART)
@@ -59,6 +61,7 @@ public class CartController {
         try {
             List<Cart> carts = cartService.list();
             model.addAttribute("carts", carts);
+            model.addAttribute("addresses", addressService.list());
 
             return "cart/list";
 

@@ -28,7 +28,4 @@ public class Cart {
     private List<CartBook> cartBooks = new ArrayList<>();
     
     private float totalPrice = 0;
-    // address id
-    private String shippingMethod;
-    private String paymentMethod;
 }

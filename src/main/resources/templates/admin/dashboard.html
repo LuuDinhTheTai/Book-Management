@@ -309,16 +309,6 @@
                 </div>
             </div>
             
-            <div class="stat-card users">
-                <div class="stat-header">
-                    <div>
-                        <div class="stat-value" th:text="${totalUsers}">0</div>
-                        <div class="stat-label">Registered Users</div>
-                    </div>
-                    <div class="stat-icon">👥</div>
-                </div>
-            </div>
-            
             <div class="stat-card orders">
                 <div class="stat-header">
                     <div>
@@ -375,108 +365,6 @@
                             <h3 class="action-title">View Orders</h3>
                             <p class="action-description">Check customer orders</p>
                         </a>
-                        
-                        <a th:href="@{/accounts/profile}" class="action-card">
-                            <span class="action-icon">⚙️</span>
-                            <h3 class="action-title">System Settings</h3>
-                            <p class="action-description">Configure system options</p>
-                        </a>
-                        
-                        <a th:href="@{/books/list}" class="action-card">
-                            <span class="action-icon">📊</span>
-                            <h3 class="action-title">View Reports</h3>
-                            <p class="action-description">Generate system reports</p>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activity -->
-            <div class="section-card">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <span>🕒</span>
-                        Recent Activity
-                    </h2>
-                </div>
-                <div class="section-content">
-                    <div class="recent-activity">
-                        <div class="activity-item">
-                            <div class="activity-icon" style="background: rgba(40, 167, 69, 0.1);">📚</div>
-                            <div class="activity-content">
-                                <p class="activity-text">New book "The Great Gatsby" added</p>
-                                <p class="activity-time">2 minutes ago</p>
-                            </div>
-                        </div>
-                        
-                        <div class="activity-item">
-                            <div class="activity-icon" style="background: rgba(0, 123, 255, 0.1);">👤</div>
-                            <div class="activity-content">
-                                <p class="activity-text">New user registration: john.doe@email.com</p>
-                                <p class="activity-time">15 minutes ago</p>
-                            </div>
-                        </div>
-                        
-                        <div class="activity-item">
-                            <div class="activity-icon" style="background: rgba(255, 193, 7, 0.1);">🛒</div>
-                            <div class="activity-content">
-                                <p class="activity-text">Order #12345 completed</p>
-                                <p class="activity-time">1 hour ago</p>
-                            </div>
-                        </div>
-                        
-                        <div class="activity-item">
-                            <div class="activity-icon" style="background: rgba(220, 53, 69, 0.1);">🏷️</div>
-                            <div class="activity-content">
-                                <p class="activity-text">Category "Fiction" updated</p>
-                                <p class="activity-time">2 hours ago</p>
-                            </div>
-                        </div>
-                        
-                        <div class="activity-item">
-                            <div class="activity-icon" style="background: rgba(102, 126, 234, 0.1);">📊</span></div>
-                            <div class="activity-content">
-                                <p class="activity-text">Monthly report generated</p>
-                                <p class="activity-time">3 hours ago</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- System Status -->
-        <div class="section-card">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <span>🔧</span>
-                    System Status
-                </h2>
-            </div>
-            <div class="section-content">
-                <div class="system-status">
-                    <div class="status-card">
-                        <span class="status-indicator status-online"></span>
-                        <strong>Database</strong>
-                        <p>Online</p>
-                    </div>
-                    
-                    <div class="status-card">
-                        <span class="status-indicator status-online"></span>
-                        <strong>File Storage</strong>
-                        <p>Online</p>
-                    </div>
-                    
-                    <div class="status-card">
-                        <span class="status-indicator status-online"></span>
-                        <strong>Authentication</strong>
-                        <p>Online</p>
-                    </div>
-                    
-                    <div class="status-card">
-                        <span class="status-indicator status-warning"></span>
-                        <strong>Backup System</strong>
-                        <p>Last backup: 2 hours ago</p>
                     </div>
                 </div>
             </div>

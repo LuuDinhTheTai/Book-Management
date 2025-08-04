@@ -55,6 +55,7 @@ public class AccountController {
                         .size(request.getCommentSize())
                         .build())
         );
+        model.addAttribute("orders", null);
         model.addAttribute("activeTab", request.getTab());
         return "account/profile";
     }
