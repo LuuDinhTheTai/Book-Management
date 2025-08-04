@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>BM - Addresses</title>
@@ -16,7 +16,6 @@
     <div th:if="${successMessage}" class="success">
         <p th:text="${successMessage}"></p>
     </div>
-
     <div th:if="${errorMessage}" class="error">
         <p th:text="${errorMessage}"></p>
     </div>
@@ -30,7 +29,7 @@
         <a th:href="@{/addresses/create}" class="btn-link">Add Address</a>
     </div>
 
-    <div th:if="${!#lists.isEmpty(addresses)}" class="addresses-section">
+    <div class="addresses-section">
         <div th:each="address : ${addresses}" class="address-card">
             <div class="address-details">
                 <p><strong>Street:</strong> <span th:text="${address.street}"></span></p>
@@ -40,8 +39,8 @@
                 <p><strong>Postal Code:</strong> <span th:text="${address.postalCode}"></span></p>
             </div>
             <div class="address-actions">
-                <a th:href="@{/addresses/update/{id}(id=${address.id})}" class="btn-small">Edit</a>
-                <form th:action="@{/addresses/delete/{id}(id=${address.id})}" method="post" style="display: inline;">
+                <a th:href="@{|/addresses/update/${address.id}|}" class="btn-small">Edit</a>
+                <form th:action="@{|/addresses/delete/${address.id}|}" method="post" style="display: inline;">
                     <button type="submit" class="btn-small btn-danger"
                             onclick="return confirm('Are you sure you want to delete this address?')">Delete
                     </button>

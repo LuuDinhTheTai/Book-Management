@@ -6,7 +6,6 @@ import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.account.address.CreateAddressRequest;
 import com.me.book_management.dto.request.account.address.UpdateAddressRequest;
 import com.me.book_management.entity.account.Address;
-import com.me.book_management.service.AccountService;
 import com.me.book_management.service.AddressService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +34,8 @@ public class AddressController {
     @PostMapping("create")
     @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
     public String create(@Valid @ModelAttribute("address") CreateAddressRequest request,
-                        BindingResult bindingResult,
-                        Model model,
-                        RedirectAttributes redirectAttributes) {
+                         BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "address/create-form";
         }
@@ -49,23 +47,17 @@ public class AddressController {
             return "redirect:/addresses/list";
 
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Failed to create address: " + e.getMessage());
-            return "address/create-form";
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to create address: " + e.getMessage());
+            return "redirect:/addresses/create";
         }
     }
 
     @GetMapping("list")
     @hasPermission(permission = Constants.PERMISSION.READ_ACCOUNT)
     public String list(Model model) {
-        try {
-            List<Address> addresses = addressService.list();
-            model.addAttribute("addresses", addresses);
-            return "address/list";
-
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", "Failed to load addresses: " + e.getMessage());
-            return "address/list";
-        }
+        List<Address> addresses = addressService.list();
+        model.addAttribute("addresses", addresses);
+        return "address/list";
     }
 
     @GetMapping("update/{id}")
@@ -86,10 +78,9 @@ public class AddressController {
     @PostMapping("update/{id}")
     @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
     public String update(@resourceOwner(instance = Constants.CLASSNAME.ADDRESS) @PathVariable Long id,
-                        @Valid @ModelAttribute("address") UpdateAddressRequest request,
-                        BindingResult bindingResult,
-                        Model model,
-                        RedirectAttributes redirectAttributes) {
+                         @Valid @ModelAttribute UpdateAddressRequest request,
+                         BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "address/update-form";
         }
@@ -100,8 +91,8 @@ public class AddressController {
             return "redirect:/addresses/list";
 
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Failed to update address: " + e.getMessage());
-            return "address/update-form";
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update address: " + e.getMessage());
+            return "redirect:/addresses/update/" + id;
         }
     }
 
