@@ -80,17 +80,49 @@
                     <span class="label-icon">🔐</span>
                     Permissions
                 </label>
-                <div class="category-selection">
-                    <div th:each="permission : ${permissions}" class="category-checkbox">
-                        <input type="checkbox" 
-                               th:id="'permission-' + ${permission.id}"
-                               th:value="${permission.id}"
-                               th:field="*{permission}"
-                               th:name="permission">
-                        <label th:for="'permission-' + ${permission.id}">
-                            <strong th:text="${permission.name}"></strong>
-                            <span th:text="${permission.description}"></span>
-                        </label>
+                <div class="permissions-matrix-container">
+                    <div class="permissions-matrix-header">
+                        <div class="matrix-controls">
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="selectAllPermissions()">
+                                <span class="btn-icon">☑️</span>
+                                Select All
+                            </button>
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="deselectAllPermissions()">
+                                <span class="btn-icon">☐</span>
+                                Deselect All
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="permissions-matrix-wrapper">
+                        <table class="permissions-matrix">
+                            <thead>
+                                <tr>
+                                    <th class="resource-header">Resource</th>
+                                    <th class="action-header" th:each="action : ${actions}">
+                                        <span class="action-name" th:text="${action.name}"></span>
+                                        <span class="action-description" th:text="${action.description}"></span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="resource : ${resources}" class="resource-row">
+                                    <td class="resource-cell">
+                                        <span class="resource-name" th:text="${resource.name}"></span>
+                                        <span class="resource-description" th:text="${resource.description}"></span>
+                                    </td>
+                                    <td th:each="action : ${actions}" class="permission-cell">
+                                        <input type="checkbox" 
+                                               th:id="'permission-' + ${resource.id} + '-' + ${action.id}"
+                                               th:value="${resource.id + '-' + action.id}"
+                                               th:field="*{permission}"
+                                               th:name="permission"
+                                               class="permission-checkbox">
+                                        <label th:for="'permission-' + ${resource.id} + '-' + ${action.id}" class="checkbox-label"></label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <span th:if="${#fields.hasErrors('permission')}" class="form-error" th:errors="*{permission}"></span>
@@ -108,6 +140,157 @@
             </div>
         </form>
     </div>
+
+    <style>
+        /* Permissions Matrix Styles */
+        .permissions-matrix-container {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .permissions-matrix-header {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .matrix-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .permissions-matrix-wrapper {
+            max-height: 500px;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        .permissions-matrix {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+            min-width: 600px;
+        }
+
+        .permissions-matrix th {
+            background: #f8f9fa;
+            padding: 0.75rem;
+            text-align: center;
+            font-weight: 600;
+            color: #495057;
+            border: 1px solid #dee2e6;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            min-width: 100px;
+        }
+
+        .permissions-matrix td {
+            padding: 0.75rem;
+            border: 1px solid #e9ecef;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .permissions-matrix tr:hover {
+            background: #f8f9fa;
+        }
+
+        .resource-header {
+            width: 200px;
+            text-align: left;
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            background: #f8f9fa;
+        }
+
+        .action-header {
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .resource-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            text-align: left;
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            background: white;
+        }
+
+        .resource-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .resource-description {
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+
+        .action-name {
+            font-weight: 600;
+            color: #2c3e50;
+            display: block;
+        }
+
+        .action-description {
+            font-size: 0.75rem;
+            color: #6c757d;
+            display: block;
+        }
+
+        .permission-cell {
+            text-align: center;
+            position: relative;
+        }
+
+        .permission-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .checkbox-label {
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .permissions-matrix-wrapper {
+                max-height: 400px;
+            }
+
+            .permissions-matrix {
+                font-size: 0.75rem;
+                min-width: 500px;
+            }
+
+            .permissions-matrix th,
+            .permissions-matrix td {
+                padding: 0.5rem;
+            }
+
+            .resource-header {
+                width: 150px;
+            }
+
+            .action-header {
+                min-width: 100px;
+            }
+        }
+    </style>
 
     <script>
         // Form validation
@@ -138,7 +321,7 @@
                 // Validate permissions (at least one selected)
                 const permissionCheckboxes = document.querySelectorAll('input[name="permission"]:checked');
                 if (permissionCheckboxes.length === 0) {
-                    const permissionSection = document.querySelector('.category-selection');
+                    const permissionSection = document.querySelector('.permissions-matrix-container');
                     showSectionError(permissionSection, 'Please select at least one permission');
                     isValid = false;
                 } else {
@@ -182,6 +365,22 @@
                 }
             }
         });
+
+        // Select All Permissions
+        function selectAllPermissions() {
+            const checkboxes = document.querySelectorAll('input[name="permission"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+        }
+
+        // Deselect All Permissions
+        function deselectAllPermissions() {
+            const checkboxes = document.querySelectorAll('input[name="permission"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        }
     </script>
 </body>
 </html>

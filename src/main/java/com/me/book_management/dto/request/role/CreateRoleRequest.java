@@ -17,5 +17,5 @@ public class CreateRoleRequest {
     private String name;
     @NotBlank(message = "Description cannot be blank")
     private String description;
-    private List<Long> permission = new ArrayList<>();
+    private List<String> permission = new ArrayList<>();
 }

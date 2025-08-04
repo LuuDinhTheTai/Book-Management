@@ -8,10 +8,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class ResourceServiceImpl implements ResourceService {
 
     private final ResourceRepository resourceRepository;
+
+    @Override
+    public List<Resource> list() {
+        return resourceRepository.findAll();
+    }
 }
