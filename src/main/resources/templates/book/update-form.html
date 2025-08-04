@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>BM - Create Book</title>
+    <title>BM - Update Book</title>
     <link rel="stylesheet" th:href="@{/style.css}"/>
     <link rel="icon"
           href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
@@ -17,7 +17,7 @@
         <p th:text="${errorMessage}"></p>
     </div>
 
-    <form th:action="@{/books/create}" th:object="${createBookRequest}" method="post" class="form">
+    <form th:action="@{|/books/update/${book.id}|}" th:object="${book}" method="post" class="form">
         <label>Name:</label>
         <input th:field="*{name}" type="text"/>
         <div th:if="${#fields.hasErrors('name')}" class="error" th:errors="*{name}"></div>

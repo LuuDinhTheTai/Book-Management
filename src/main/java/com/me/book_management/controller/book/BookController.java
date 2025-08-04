@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/books/")
@@ -52,6 +53,7 @@ public class BookController {
     public String create(@Valid @ModelAttribute("createBookRequest")
                          CreateBookRequest request,
                          BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes,
                          Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("statuses", Constants.BOOK_STATUS.list());
@@ -62,16 +64,12 @@ public class BookController {
         }
         try {
             Book book = bookService.create(request);
-            model.addAttribute("book", book);
+            redirectAttributes.addFlashAttribute("successMessage", "Book created successfully!");
             return "redirect:/books/" + book.getId();
 
         } catch (InputException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            model.addAttribute("statuses", Constants.BOOK_STATUS.list());
-            model.addAttribute("languages", Constants.BOOK_LANGUAGE.list());
-            model.addAttribute("formats", Constants.BOOK_FORMAT.list());
-            model.addAttribute("categories", categoryService.list());
-            return "book/creation-form";
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to create book: " + e.getMessage());
+            return "redirect:/books/create";
         }
     }
 
@@ -109,16 +107,16 @@ public class BookController {
     @PostMapping("update/{id}")
     @hasPermission(permission = Constants.PERMISSION.UPDATE_BOOK)
     public String update(@PathVariable @resourceOwner(instance = Constants.CLASSNAME.BOOK) Long id,
-                         @Valid @ModelAttribute("book") UpdateBookRequest request,
-                         Model model) {
+                         @Valid @ModelAttribute UpdateBookRequest request,
+                         RedirectAttributes redirectAttributes) {
         try {
             Book book = bookService.update(id, request);
-            model.addAttribute("book", book);
+            redirectAttributes.addFlashAttribute("successMessage", "Book updated successfully!");
             return "redirect:/books/" + book.getId();
 
         } catch (InputException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "book/update-form";
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update book: " + e.getMessage());
+            return "redirect:/books/update/" + id;
         }
     }
 
