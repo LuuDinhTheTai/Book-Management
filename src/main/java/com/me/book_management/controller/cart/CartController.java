@@ -40,35 +40,16 @@ public class CartController {
         }
     }
 
-    @GetMapping("{id}")
-    @hasPermission(permission = Constants.PERMISSION.READ_CART)
-    public String find(@Valid @PathVariable Long id, Model model) {
-        try {
-            Cart cart = cartService.find(id);
-            model.addAttribute("cart", cart);
-            model.addAttribute("totalPrice", cart.getTotalPrice());
-            return "cart/detail";
-
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", "Cart not found: " + e.getMessage());
-            return "cart/detail";
-        }
-    }
-
     @GetMapping("list")
     @hasPermission(permission = Constants.PERMISSION.READ_CART)
     public String list(Model model) {
-        try {
             List<Cart> carts = cartService.list();
             model.addAttribute("carts", carts);
             model.addAttribute("addresses", addressService.list());
+            model.addAttribute("shippingMethods", Constants.SHIPPING_METHOD.list());
+            model.addAttribute("paymentMethods", Constants.PAYMENT_METHOD.list());
 
             return "cart/list";
-
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", "Failed to load cart: " + e.getMessage());
-            return "cart/list";
-        }
     }
 
     @PostMapping("delete/{id}")

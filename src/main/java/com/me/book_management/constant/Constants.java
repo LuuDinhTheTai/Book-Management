@@ -119,11 +119,18 @@ public class Constants {
     public static class PAYMENT_METHOD {
 
         public static final String CASH = "Cash";
+
+        public static List<String> list() {
+            return List.of(CASH);
+        }
     }
 
     public static class SHIPPING_METHOD {
 
         public static final String COD = "COD";
-        public static final String TRANSFER = "Transfer";
+
+        public static List<String> list() {
+            return List.of(COD);
+        }
     }
 }

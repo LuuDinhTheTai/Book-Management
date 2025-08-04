@@ -141,23 +141,31 @@
                                 <select id="address" name="address" class="form-select" required>
                                     <option th:each="address : ${addresses}"
                                             th:value="${address.id}"
-                                            th:text="${address.street} + '-' + ${address.city} + '-' + ${address.state} + '-' + ${address.country}"></option>
+                                            th:text="${address.street} + ' - ' + ${address.city} + ' - ' + ${address.state} + ' - ' + ${address.country}">
+
+                                    </option>
                                 </select>
                             </div>
 
                             <div class="form-group">
                                 <label for="shippingMethod" class="form-label">Shipping Method:</label>
                                 <select id="shippingMethod" name="shippingMethod" class="form-select" required>
-                                    <option value="">Select shipping method</option>
-                                    <option value="COD">Cash on Delivery (COD)</option>
+                                    <option th:each="shippingMethod : ${shippingMethods}"
+                                            th:value="${shippingMethod} + ''"
+                                            th:text="${shippingMethod}">
+
+                                    </option>
                                 </select>
                             </div>
                             
                             <div class="form-group">
                                 <label for="paymentMethod" class="form-label">Payment Method:</label>
                                 <select id="paymentMethod" name="paymentMethod" class="form-select" required>
-                                    <option value="">Select payment method</option>
-                                    <option value="Cash">Cash</option>
+                                    <option th:each="paymentMethod : ${paymentMethods}"
+                                            th:value="${paymentMethod} + ''"
+                                            th:text="${paymentMethod}">
+
+                                    </option>
                                 </select>
                             </div>
                         </div>
