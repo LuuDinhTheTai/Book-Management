@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roles - BookStore</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+    <!-- Include Navbar -->
+    <div th:replace="~{component/navbar :: navbar}"></div>
+
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a th:href="@{/books/list}" class="breadcrumb-link">Home</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current">Roles</span>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="header-content">
+                <h1 class="page-title">Roles Management</h1>
+                <p class="page-subtitle">Manage user roles and permissions</p>
+            </div>
+            <div class="header-actions">
+                <a th:href="@{/roles/create}" class="btn btn-primary">
+                    <span class="btn-icon">➕</span>
+                    Create New Role
+                </a>
+            </div>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="summary-stats">
+            <div class="stat-item">
+                <span class="stat-icon">👥</span>
+                <div class="stat-content">
+                    <div class="stat-value" th:text="${#lists.size(roles)}">0</div>
+                    <div class="stat-label">Total Roles</div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">🔐</span>
+                <div class="stat-content">
+                    <div class="stat-value" th:text="${totalPermissions}">0</div>
+                    <div class="stat-label">Total Permissions</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Messages -->
+        <div th:if="${errorMessage}" class="alert alert-error">
+            <span class="alert-icon">⚠️</span>
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <div th:if="${successMessage}" class="alert alert-success">
+            <span class="alert-icon">✅</span>
+            <span th:text="${successMessage}"></span>
+        </div>
+
+        <!-- Roles List -->
+        <div th:if="${not #lists.isEmpty(roles)}">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Permissions</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="role : ${roles}">
+                            <td th:text="${role.id}"></td>
+                            <td>
+                                <strong th:text="${role.name}"></strong>
+                            </td>
+                            <td th:text="${role.description}"></td>
+                            <td>
+                                <div class="permission-cell">
+                                    <div class="permission-count" th:if="${not #lists.isEmpty(role.permissions)}">
+                                        <span class="count-badge" th:text="${#lists.size(role.permissions)}"></span>
+                                        <span class="count-text">permission<span th:if="${#lists.size(role.permissions) != 1}">s</span></span>
+                                    </div>
+                                    <div class="roles-list">
+                                        <span th:each="permission : ${role.permissions}" 
+                                              class="role-badge"
+                                              th:text="${permission.name}"
+                                              th:title="${permission.description != null ? permission.description : permission.name}"></span>
+                                        <span th:if="${#lists.isEmpty(role.permissions)}" 
+                                              class="role-badge role-badge-empty"
+                                              title="This role has no permissions assigned">No permissions</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="book-actions">
+                                    <a th:href="@{/roles/update/{id}(id=${role.id})}" 
+                                       class="btn btn-small btn-outline">
+                                        <span class="btn-icon">✏️</span>
+                                        Edit
+                                    </a>
+                                    <form th:action="@{/roles/delete/{id}(id=${role.id})}"
+                                          method="post" 
+                                          style="display: inline;"
+                                          onsubmit="return confirm('Are you sure you want to delete this role?')">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button type="submit" class="btn btn-small btn-danger">
+                                            <span class="btn-icon">🗑️</span>
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${#lists.isEmpty(roles)}" class="empty-state">
+            <div class="empty-icon">👥</div>
+            <h2 class="empty-title">No Roles Found</h2>
+            <p class="empty-message">There are no roles created yet. Create your first role to get started.</p>
+            <div class="empty-actions">
+                <a th:href="@{/roles/create}" class="btn btn-primary">
+                    <span class="btn-icon">➕</span>
+                    Create First Role
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-hide alerts after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    alert.style.opacity = '0';
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 300);
+                }, 5000);
+            });
+
+            // Confirm delete action
+            const deleteForms = document.querySelectorAll('form[method="post"]');
+            deleteForms.forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    if (!confirm('Are you sure you want to delete this role? This action cannot be undone.')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            // Enhanced tooltips for permission badges
+            const permissionBadges = document.querySelectorAll('.role-badge');
+            permissionBadges.forEach(function(badge) {
+                const text = badge.textContent.trim();
+                const title = badge.getAttribute('title');
+                
+                // Show full text on hover for truncated badges
+                if (text.length > 15) {
+                    badge.addEventListener('mouseenter', function() {
+                        this.style.maxWidth = 'none';
+                        this.style.overflow = 'visible';
+                        this.style.zIndex = '1000';
+                        this.style.position = 'relative';
+                    });
+                    
+                    badge.addEventListener('mouseleave', function() {
+                        this.style.maxWidth = '';
+                        this.style.overflow = '';
+                        this.style.zIndex = '';
+                        this.style.position = '';
+                    });
+                }
+            });
+
+            // Add click to copy functionality for permission names
+            permissionBadges.forEach(function(badge) {
+                if (!badge.classList.contains('role-badge-empty')) {
+                    badge.style.cursor = 'pointer';
+                    badge.addEventListener('click', function() {
+                        const text = this.textContent.trim();
+                        navigator.clipboard.writeText(text).then(function() {
+                            // Show a brief feedback
+                            const originalText = badge.textContent;
+                            badge.textContent = 'Copied!';
+                            badge.style.background = '#28a745';
+                            setTimeout(function() {
+                                badge.textContent = originalText;
+                                badge.style.background = '';
+                            }, 1000);
+                        }).catch(function() {
+                            // Fallback for browsers that don't support clipboard API
+                            console.log('Copy to clipboard not supported');
+                        });
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

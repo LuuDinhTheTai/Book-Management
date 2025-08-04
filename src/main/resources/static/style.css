@@ -1673,6 +1673,7 @@ button:hover {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
+    padding-bottom: 20px;
 }
 
 .stat-item {
@@ -2013,16 +2014,99 @@ button:hover {
 
 .roles-list {
     display: flex;
-    gap: 8px;
+    gap: 6px;
+    flex-wrap: wrap;
+    max-width: 300px;
 }
 
 .role-badge {
     background: #007bff;
     color: #fff;
-    padding: 4px 8px;
+    padding: 3px 8px;
     border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+    display: inline-block;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all 0.2s ease;
+}
+
+.role-badge:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.role-badge-empty {
+    background: #f8d7da;
+    color: #721c24;
+    font-style: italic;
+    border: 1px solid #f5c6cb;
+}
+
+/* Permission column specific styles */
+.table td:nth-child(4) {
+    max-width: 320px;
+    min-width: 200px;
+}
+
+.permission-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.permission-count {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     font-size: 0.8rem;
+    color: #666;
+}
+
+.count-badge {
+    background: #6c757d;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.7rem;
     font-weight: bold;
+    min-width: 16px;
+    text-align: center;
+}
+
+.count-text {
+    font-weight: 500;
+}
+
+/* Responsive adjustments for permission column */
+@media (max-width: 768px) {
+    .roles-list {
+        max-width: 200px;
+    }
+    
+    .role-badge {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+        max-width: 80px;
+    }
+    
+    .table td:nth-child(4) {
+        max-width: 200px;
+        min-width: 150px;
+    }
+    
+    .permission-count {
+        font-size: 0.75rem;
+    }
+    
+    .count-badge {
+        font-size: 0.65rem;
+        padding: 1px 5px;
+    }
 }
 
 .profile-actions {

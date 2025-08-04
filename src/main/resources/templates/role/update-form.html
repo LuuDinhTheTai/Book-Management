@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Role - BookStore</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+    <!-- Include Navbar -->
+    <div th:replace="~{component/navbar :: navbar}"></div>
+
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a th:href="@{/books/}" class="breadcrumb-link">Home</a>
+            <span class="breadcrumb-separator">/</span>
+            <a th:href="@{/roles/list}" class="breadcrumb-link">Roles</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current">Update Role</span>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="header-content">
+                <h1 class="page-title">Update Role</h1>
+                <p class="page-subtitle">Edit role information and permissions</p>
+            </div>
+            <div class="header-actions">
+                <a th:href="@{/roles/list}" class="btn btn-outline">
+                    <span class="btn-icon">←</span>
+                    Back to Roles
+                </a>
+            </div>
+        </div>
+
+        <!-- Alert Messages -->
+        <div th:if="${errorMessage}" class="alert alert-error">
+            <span class="alert-icon">⚠️</span>
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <div th:if="${successMessage}" class="alert alert-success">
+            <span class="alert-icon">✅</span>
+            <span th:text="${successMessage}"></span>
+        </div>
+
+        <!-- Role Info Display -->
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <span style="font-size: 3rem;">👥</span>
+                </div>
+                <div class="profile-info">
+                    <h2 class="profile-name" th:text="${role.name}">Role Name</h2>
+                    <p class="profile-username" th:text="${role.description}">Role Description</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update Role Form -->
+        <form th:action="@{/roles/update/{id}(id=${role.id})}" 
+              th:object="${updateRoleRequest}" 
+              method="post" 
+              class="auth-form">
+            
+            <div class="form-group">
+                <label for="name" class="form-label">
+                    <span class="label-icon">🏷️</span>
+                    Role Name
+                </label>
+                <input type="text" 
+                       id="name" 
+                       th:field="*{name}" 
+                       class="form-input" 
+                       placeholder="Enter role name"
+                       th:value="${role.name}"
+                       required>
+                <span th:if="${#fields.hasErrors('name')}" class="form-error" th:errors="*{name}"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="description" class="form-label">
+                    <span class="label-icon">📝</span>
+                    Description
+                </label>
+                <textarea id="description" 
+                          th:field="*{description}" 
+                          class="form-input" 
+                          placeholder="Enter role description"
+                          rows="3"
+                          th:text="${role.description}"
+                          required></textarea>
+                <span th:if="${#fields.hasErrors('description')}" class="form-error" th:errors="*{description}"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    <span class="label-icon">🔐</span>
+                    Permissions
+                </label>
+                <div class="category-selection">
+                    <div th:each="permission : ${permissions}" class="category-checkbox">
+                        <input type="checkbox" 
+                               th:id="'permission-' + ${permission.id}"
+                               th:value="${permission.id}"
+                               th:field="*{permission}"
+                               th:name="permission"
+                               th:checked="${role.permissions.contains(permission)}">
+                        <label th:for="'permission-' + ${permission.id}">
+                            <strong th:text="${permission.name}"></strong>
+                            <span th:text="${permission.description}"></span>
+                        </label>
+                    </div>
+                </div>
+                <span th:if="${#fields.hasErrors('permission')}" class="form-error" th:errors="*{permission}"></span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-full">
+                    <span class="btn-icon">💾</span>
+                    Update Role
+                </button>
+                <a th:href="@{/roles/list}" class="btn btn-outline btn-full">
+                    <span class="btn-icon">❌</span>
+                    Cancel
+                </a>
+            </div>
+        </form>
+
+        <!-- Current Permissions Summary -->
+        <div class="profile-container">
+            <h3>Current Permissions</h3>
+            <div class="roles-list">
+                <span th:each="permission : ${role.permissions}" 
+                      class="role-badge"
+                      th:text="${permission.name}"></span>
+                <span th:if="${#lists.isEmpty(role.permissions)}" 
+                      class="role-badge role-badge-empty">No permissions assigned</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const nameInput = document.getElementById('name');
+            const descriptionInput = document.getElementById('description');
+
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+
+                // Validate name
+                if (!nameInput.value.trim()) {
+                    showError(nameInput, 'Role name is required');
+                    isValid = false;
+                } else {
+                    clearError(nameInput);
+                }
+
+                // Validate description
+                if (!descriptionInput.value.trim()) {
+                    showError(descriptionInput, 'Description is required');
+                    isValid = false;
+                } else {
+                    clearError(descriptionInput);
+                }
+
+                // Validate permissions (at least one selected)
+                const permissionCheckboxes = document.querySelectorAll('input[name="permission"]:checked');
+                if (permissionCheckboxes.length === 0) {
+                    const permissionSection = document.querySelector('.category-selection');
+                    showSectionError(permissionSection, 'Please select at least one permission');
+                    isValid = false;
+                } else {
+                    clearSectionError(permissionSection);
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+
+            function showError(input, message) {
+                clearError(input);
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'form-error';
+                errorDiv.textContent = message;
+                input.parentNode.appendChild(errorDiv);
+                input.classList.add('form-input-error');
+            }
+
+            function clearError(input) {
+                const existingError = input.parentNode.querySelector('.form-error');
+                if (existingError) {
+                    existingError.remove();
+                }
+                input.classList.remove('form-input-error');
+            }
+
+            function showSectionError(section, message) {
+                clearSectionError(section);
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'form-error';
+                errorDiv.textContent = message;
+                section.parentNode.appendChild(errorDiv);
+            }
+
+            function clearSectionError(section) {
+                const existingError = section.parentNode.querySelector('.form-error');
+                if (existingError) {
+                    existingError.remove();
+                }
+            }
+
+            // Auto-hide alerts after 5 seconds
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    alert.style.opacity = '0';
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 300);
+                }, 5000);
+            });
+        });
+    </script>
+</body>
+</html>
