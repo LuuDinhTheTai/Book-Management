@@ -103,7 +103,7 @@ public class CartController {
                                RedirectAttributes redirectAttributes) {
         try {
             Cart cart = cartService.increaseItem(id, request);
-            redirectAttributes.addFlashAttribute("successMessage", "Thêm số lượng thành công!");
+            redirectAttributes.addFlashAttribute("successMessage", "Item increased successfully!");
 
             return "redirect:/carts/list";
 
@@ -120,7 +120,7 @@ public class CartController {
                                RedirectAttributes redirectAttributes) {
         try {
             Cart cart = cartService.decreaseItem(id, request);
-            redirectAttributes.addFlashAttribute("successMessage", "Giảm số lượng thành công!");
+            redirectAttributes.addFlashAttribute("successMessage", "Item decreased successfully!");
 
             return "redirect:/carts/list";
 
