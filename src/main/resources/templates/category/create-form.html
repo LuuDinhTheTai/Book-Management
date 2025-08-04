@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>BM</title>
+    <title>BM - Create Category</title>
     <link rel="stylesheet" th:href="@{/style.css}"/>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 </head>
 <body>
 <div th:replace="component/navbar :: navbar"></div>
@@ -18,15 +19,26 @@
     <form th:action="@{/categories/create}" method="post" th:object="${createCategoryRequest}">
         <div class="form-group">
             <label for="name">Category Name:</label>
-            <input type="text" id="name" name="name" th:field="*{name}" required 
-                   placeholder="Enter category name" maxlength="100"/>
+            <input type="text"
+                   id="name"
+                   name="name"
+                   th:field="*{name}"
+                   required
+                   placeholder="Enter category name" maxlength="100"
+            />
             <span class="form-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
         </div>
 
         <div class="form-group">
             <label for="description">Description:</label>
-            <textarea id="description" name="description" th:field="*{description}" 
-                      placeholder="Enter category description" rows="4" maxlength="500"></textarea>
+            <textarea id="description"
+                      name="description"
+                      th:field="*{description}"
+                      placeholder="Enter category description"
+                      rows="4"
+                      maxlength="500">
+
+            </textarea>
             <span class="form-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
         </div>
 

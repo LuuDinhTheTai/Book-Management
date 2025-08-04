@@ -27,99 +27,62 @@ public class CategoryController {
     @GetMapping("create")
     @hasPermission(permission = Constants.PERMISSION.CREATE_CATEGORY)
     public String create(Model model) {
-        try {
-            model.addAttribute("createCategoryRequest", new CreateCategoryRequest());
-            return "category/create-form";
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "category/create-form";
-        }
+        model.addAttribute("createCategoryRequest", new CreateCategoryRequest());
+        return "category/create-form";
     }
 
     @PostMapping("create")
     @hasPermission(permission = Constants.PERMISSION.CREATE_CATEGORY)
     public String create(@Valid @ModelAttribute("createCategoryRequest") CreateCategoryRequest request,
                          BindingResult bindingResult,
-                         RedirectAttributes redirectAttributes,
-                         Model model) {
+                         RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            return "category/create-form";
+            return "redirect:/categories/create";
         }
-
         try {
             Category category = categoryService.create(request);
             redirectAttributes.addFlashAttribute("successMessage", "Category created successfully!");
-            return "redirect:/categories/" + category.getId();
+            return "redirect:/categories/list";
+
         } catch (Exception e) {
-            model.addAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to create category: " + e.getMessage());
             return "category/create-form";
         }
     }
 
     @GetMapping("list")
     public String list(Model model) {
-        try {
-            model.addAttribute("categories", categoryService.list());
-            return "category/list";
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", "Failed to load categories: " + e.getMessage());
-            return "category/list";
-        }
-    }
-
-    @GetMapping("{id}")
-    public String find(@PathVariable Long id, Model model) {
-        try {
-            Category category = categoryService.find(id);
-            model.addAttribute("category", category);
-            model.addAttribute("books", bookService.list(
-                    ListBookRequest.builder()
-                    .categoryId(id)
-                    .build())
-            );
-            return "category/list";
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", "Category not found: " + e.getMessage());
-            return "category/list";
-        }
+        model.addAttribute("categories", categoryService.list());
+        return "category/list";
     }
 
     @GetMapping("update/{id}")
     @hasPermission(permission = Constants.PERMISSION.UPDATE_CATEGORY)
     public String updateForm(@PathVariable Long id, Model model) {
-        try {
-            Category category = categoryService.find(id);
-            UpdateCategoryRequest request = new UpdateCategoryRequest();
-            request.setId(category.getId());
-            request.setName(category.getName());
-            request.setDescription(category.getDescription());
-
-            model.addAttribute("updateCategoryRequest", request);
-            return "category/update-form";
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", "Category not found: " + e.getMessage());
-            return "category/update-form";
-        }
+        Category category = categoryService.find(id);
+        model.addAttribute("category", category);
+        return "category/update-form";
     }
 
     @PostMapping("update/{id}")
     @hasPermission(permission = Constants.PERMISSION.UPDATE_CATEGORY)
     public String update(@PathVariable Long id,
-                         @ModelAttribute("updateCategoryRequest") UpdateCategoryRequest request,
+                         @Valid @ModelAttribute UpdateCategoryRequest request,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes,
                          Model model) {
         if (bindingResult.hasErrors()) {
-            return "category/update-form";
+            return "redirect:/categories/update/" + id;
         }
 
         try {
             Category category = categoryService.update(id, request);
             redirectAttributes.addFlashAttribute("successMessage", "Category updated successfully!");
             return "redirect:/categories/list";
+
         } catch (Exception e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "category/update-form";
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update category: " + e.getMessage());
+            return "redirect:/categories/update" + id;
         }
     }
 
@@ -129,6 +92,7 @@ public class CategoryController {
         try {
             categoryService.delete(id);
             redirectAttributes.addFlashAttribute("successMessage", "Category deleted successfully!");
+
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete category: " + e.getMessage());
         }
