@@ -70,4 +70,15 @@ public class AccountServiceImpl implements AccountService {
 
         accountRepository.save(account);
     }
+
+    @Override
+    public long count() {
+        log.info("(count) accounts request");
+        
+        long count = accountRepository.count();
+        
+        log.info("(count) accounts response: {}", count);
+        
+        return count;
+    }
 }

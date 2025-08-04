@@ -31,48 +31,25 @@
                 <form th:action="@{/books/}" method="get" class="search-form">
                     <div class="search-input-group">
                         <span class="search-icon">🔍</span>
-                        <input type="text" 
-                               name="name" 
+                        <input type="text"
+                               name="name"
                                th:value="${param.name}"
-                               class="search-input" 
+                               class="search-input"
                                placeholder="Search books by title, author, or category...">
                         <button type="submit" class="search-btn">Search</button>
                     </div>
                 </form>
             </div>
 
-            <div class="filter-options">
-                <div class="filter-group">
-                    <label for="categoryFilter" class="filter-label">Category:</label>
-                                            <select id="categoryFilter" name="categoryId" class="filter-select" onchange="applyFilter()">
-                        <option value="">All Categories</option>
-                        <option th:each="category : ${categories}" 
-                                th:value="${category.id}" 
-                                th:text="${category.name}"
-                                th:selected="${param.categoryId != null and param.categoryId[0] == category.id.toString()}">
-                        </option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="statusFilter" class="filter-label">Status:</label>
-                    <select id="statusFilter" name="status" class="filter-select" onchange="applyFilter()">
-                        <option value="">All Status</option>
-                        <option value="Available" th:selected="${param.status != null and param.status[0] == 'Available'}">Available</option>
-                        <option value="Sold out" th:selected="${param.status != null and param.status[0] == 'Sold out'}">Sold Out</option>
-                    </select>
-                </div>
-
-<!--                <div class="filter-group">-->
-<!--                    <label for="sortBy" class="filter-label">Sort by:</label>-->
-<!--                    <select id="sortBy" name="sort" class="filter-select" onchange="applyFilter()">-->
-<!--                        <option value="name" th:selected="${param.sort == null or param.sort[0] == 'name'}">Name</option>-->
-<!--                        <option value="price" th:selected="${param.sort != null and param.sort[0] == 'price'}">Price</option>-->
-<!--                        <option value="createdAt" th:selected="${param.sort != null and param.sort[0] == 'createdAt'}">Newest</option>-->
-<!--                    </select>-->
-<!--                </div>-->
+            <!--        Advance Search-->
+            <div class="header-actions">
+                <a th:href="@{/books/search}" class="btn btn-secondary">
+                    <span class="btn-icon">🔍</span>
+                    Advanced Search
+                </a>
             </div>
         </div>
+
 
         <!-- Results Summary -->
         <div class="results-summary">

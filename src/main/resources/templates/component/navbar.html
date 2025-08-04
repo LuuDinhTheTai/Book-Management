@@ -22,6 +22,14 @@
                         </a>
                     </li>
 
+                    <!-- Admin Dashboard -->
+                    <li th:if="${#authorization.expr('hasRole(''ADMIN'')')}" class="nav-item">
+                        <a th:href="@{/admin/dashboard}" class="nav-link cart-link">
+                            <span class="cart-icon">📊</span>
+                            <span class="cart-text">Admin Dashboard</span>
+                        </a>
+                    </li>
+
                     <!-- User Section -->
                     <li th:if="${#authorization.expr('isAuthenticated()')}" class="nav-item">
                         <div class="navbar-dropdown">

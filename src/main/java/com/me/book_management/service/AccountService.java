@@ -10,4 +10,5 @@ public interface AccountService {
     Account findByUsername(String username);
     AccountResponse update(Long id, UpdateAccountRequest request);
     void delete(Long id);
+    long count();
 }

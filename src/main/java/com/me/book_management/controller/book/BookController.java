@@ -5,6 +5,7 @@ import com.me.book_management.annotation.resourceOwner;
 import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.book.CreateBookRequest;
 import com.me.book_management.dto.request.book.ListBookRequest;
+import com.me.book_management.dto.request.book.AdvancedSearchRequest;
 import com.me.book_management.dto.request.book.BookDetailRequest;
 import com.me.book_management.dto.request.book.comment.CreateCommentRequest;
 import com.me.book_management.dto.request.book.UpdateBookRequest;
@@ -126,5 +127,16 @@ public class BookController {
     public String delete(@resourceOwner(instance = Constants.CLASSNAME.BOOK) @PathVariable Long id) {
         bookService.delete(id);
         return "redirect:/accounts/profile";
+    }
+
+    @GetMapping("search")
+    public String advancedSearch(@ModelAttribute AdvancedSearchRequest request, Model model) {
+        model.addAttribute("searchRequest", request);
+        model.addAttribute("bookPage", bookService.advancedSearch(request));
+        model.addAttribute("statuses", Constants.BOOK_STATUS.list());
+        model.addAttribute("languages", Constants.BOOK_LANGUAGE.list());
+        model.addAttribute("formats", Constants.BOOK_FORMAT.list());
+        model.addAttribute("categories", categoryService.list());
+        return "search/advance-search";
     }
 }

@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Search - BookStore</title>
+    <link rel="stylesheet" th:href="@{/style.css}"/>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+</head>
+<body>
+    <div th:replace="component/navbar :: navbar"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <div class="header-content">
+                <h1 class="page-title">Advanced Search</h1>
+                <p class="page-subtitle">Find books with precise filters</p>
+            </div>
+            
+            <div class="header-actions">
+                <a th:href="@{/books/}" class="btn btn-secondary">
+                    <span class="btn-icon">📚</span>
+                    Browse All Books
+                </a>
+            </div>
+        </div>
+
+        <!-- Advanced Search Form -->
+        <div class="advanced-search-section">
+            <form th:action="@{/books/search}" method="get" class="advanced-search-form">
+                <div class="search-grid">
+                    <!-- Basic Search -->
+                    <div class="search-group">
+                        <label for="name" class="form-label">Book Title</label>
+                        <input type="text" 
+                               id="name" 
+                               name="name" 
+                               th:value="${searchRequest.name}"
+                               class="form-input" 
+                               placeholder="Enter book title...">
+                    </div>
+
+                    <div class="search-group">
+                        <label for="author" class="form-label">Author</label>
+                        <input type="text" 
+                               id="author" 
+                               name="author" 
+                               th:value="${searchRequest.author}"
+                               class="form-input" 
+                               placeholder="Enter author name...">
+                    </div>
+
+                    <div class="search-group">
+                        <label for="description" class="form-label">Description</label>
+                        <input type="text" 
+                               id="description" 
+                               name="description" 
+                               th:value="${searchRequest.description}"
+                               class="form-input" 
+                               placeholder="Search in description...">
+                    </div>
+
+                    <div class="search-group">
+                        <label for="categoryId" class="form-label">Category</label>
+                        <select id="categoryId" name="categoryId" class="form-select">
+                            <option value="">All Categories</option>
+                            <option th:each="category : ${categories}" 
+                                    th:value="${category.id}" 
+                                    th:text="${category.name}"
+                                    th:selected="${searchRequest.categoryId != null and searchRequest.categoryId == category.id}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="search-group">
+                        <label for="status" class="form-label">Status</label>
+                        <select id="status" name="status" class="form-select">
+                            <option value="">All Status</option>
+                            <option th:each="status : ${statuses}" 
+                                    th:value="${status}" 
+                                    th:text="${status}"
+                                    th:selected="${searchRequest.status != null and searchRequest.status == status}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="search-group">
+                        <label for="language" class="form-label">Language</label>
+                        <select id="language" name="language" class="form-select">
+                            <option value="">All Languages</option>
+                            <option th:each="lang : ${languages}" 
+                                    th:value="${lang}" 
+                                    th:text="${lang}"
+                                    th:selected="${searchRequest.language != null and searchRequest.language == lang}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="search-group">
+                        <label for="format" class="form-label">Format</label>
+                        <select id="format" name="format" class="form-select">
+                            <option value="">All Formats</option>
+                            <option th:each="fmt : ${formats}" 
+                                    th:value="${fmt}" 
+                                    th:text="${fmt}"
+                                    th:selected="${searchRequest.format != null and searchRequest.format == fmt}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Price Range -->
+                    <div class="search-group price-range">
+                        <label class="form-label">Price Range</label>
+                        <div class="price-inputs">
+                            <input type="number" 
+                                   name="minPrice" 
+                                   th:value="${searchRequest.minPrice}"
+                                   class="form-input price-input" 
+                                   placeholder="Min price"
+                                   step="0.01" 
+                                   min="0">
+                            <span class="price-separator">to</span>
+                            <input type="number" 
+                                   name="maxPrice" 
+                                   th:value="${searchRequest.maxPrice}"
+                                   class="form-input price-input" 
+                                   placeholder="Max price"
+                                   step="0.01" 
+                                   min="0">
+                        </div>
+                    </div>
+
+                    <!-- Sort Options -->
+                    <div class="search-group">
+                        <label for="sortBy" class="form-label">Sort By</label>
+                        <select id="sortBy" name="sortBy" class="form-select">
+                            <option value="name" th:selected="${searchRequest.sortBy == null or searchRequest.sortBy == 'name'}">Name</option>
+                            <option value="price" th:selected="${searchRequest.sortBy != null and searchRequest.sortBy == 'price'}">Price</option>
+                            <option value="createdAt" th:selected="${searchRequest.sortBy != null and searchRequest.sortBy == 'createdAt'}">Newest</option>
+                        </select>
+                    </div>
+
+                    <div class="search-group">
+                        <label for="sortDirection" class="form-label">Sort Direction</label>
+                        <select id="sortDirection" name="sortDirection" class="form-select">
+                            <option value="asc" th:selected="${searchRequest.sortDirection == null or searchRequest.sortDirection == 'asc'}">Ascending</option>
+                            <option value="desc" th:selected="${searchRequest.sortDirection != null and searchRequest.sortDirection == 'desc'}">Descending</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Search Actions -->
+                <div class="search-actions">
+                    <button type="submit" class="btn btn-primary search-btn">
+                        <span class="btn-icon">🔍</span>
+                        Search
+                    </button>
+                    <a th:href="@{/books/search}" class="btn btn-secondary clear-btn">
+                        <span class="btn-icon">🔄</span>
+                        Clear Filters
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Section -->
+        <div th:if="${bookPage != null}" class="results-section">
+            <!-- Results Summary -->
+            <div class="results-summary">
+                <span class="results-count" th:text="${bookPage.totalElements} + ' books found'"></span>
+                <span class="results-page" th:text="'Page ' + ${bookPage.number + 1} + ' of ' + ${bookPage.totalPages}"></span>
+            </div>
+
+            <!-- Books Grid -->
+            <div th:if="${bookPage.content.size() > 0}" class="books-grid">
+                <div th:each="book : ${bookPage.content}" class="book-card">
+                    <div class="book-image">
+                        <div class="book-placeholder">📚</div>
+                    </div>
+                    
+                    <div class="book-info">
+                        <h3 class="book-title">
+                            <a th:href="@{|/books/${book.id}|}" th:text="${book.name}"></a>
+                        </h3>
+                        
+                        <div class="book-meta">
+                            <span class="book-price" th:text="'$' + ${book.price}"></span>
+                            <span class="book-status" th:class="${book.status == 'Available' ? 'status-available' : 'status-soldout'}" 
+                                  th:text="${book.status}"></span>
+                        </div>
+                        
+                        <div class="book-details" th:if="${book.detail != null}">
+                            <p class="book-author" th:if="${book.detail.author != null}" th:text="'By ' + ${book.detail.author}"></p>
+                            <p class="book-language" th:if="${book.detail.language != null}" th:text="'Language: ' + ${book.detail.language}"></p>
+                            <p class="book-format" th:if="${book.detail.format != null}" th:text="'Format: ' + ${book.detail.format}"></p>
+                        </div>
+                        
+                        <div class="book-categories" th:if="${book.categories != null and book.categories.size() > 0}">
+                            <span th:each="category : ${book.categories}" class="category-tag" th:text="${category.name}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- No Results -->
+            <div th:if="${bookPage.content.size() == 0}" class="no-results">
+                <div class="no-results-content">
+                    <div class="no-results-icon">🔍</div>
+                    <h3>No books found</h3>
+                    <p>Try adjusting your search criteria or browse all books</p>
+                    <a th:href="@{/books/}" class="btn btn-primary">Browse All Books</a>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div th:if="${bookPage.totalPages > 1}" class="pagination">
+                <div class="pagination-info">
+                    <span th:text="'Showing ' + ${bookPage.numberOfElements} + ' of ' + ${bookPage.totalElements} + ' results'"></span>
+                </div>
+                
+                <div class="pagination-controls">
+                    <a th:if="${bookPage.hasPrevious()}" 
+                       th:href="@{/books/search(page=${bookPage.number}, size=${bookPage.size}, name=${searchRequest.name}, author=${searchRequest.author}, description=${searchRequest.description}, categoryId=${searchRequest.categoryId}, status=${searchRequest.status}, language=${searchRequest.language}, format=${searchRequest.format}, minPrice=${searchRequest.minPrice}, maxPrice=${searchRequest.maxPrice}, sortBy=${searchRequest.sortBy}, sortDirection=${searchRequest.sortDirection})}"
+                       class="pagination-btn">Previous</a>
+                    
+                    <span class="pagination-current" th:text="${bookPage.number + 1}"></span>
+                    
+                    <a th:if="${bookPage.hasNext()}" 
+                       th:href="@{/books/search(page=${bookPage.number + 2}, size=${bookPage.size}, name=${searchRequest.name}, author=${searchRequest.author}, description=${searchRequest.description}, categoryId=${searchRequest.categoryId}, status=${searchRequest.status}, language=${searchRequest.language}, format=${searchRequest.format}, minPrice=${searchRequest.minPrice}, maxPrice=${searchRequest.maxPrice}, sortBy=${searchRequest.sortBy}, sortDirection=${searchRequest.sortDirection})}"
+                       class="pagination-btn">Next</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .advanced-search-section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .advanced-search-form {
+            width: 100%;
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .form-input, .form-select {
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .price-range {
+            grid-column: span 2;
+        }
+
+        .price-inputs {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .price-input {
+            flex: 1;
+        }
+
+        .price-separator {
+            font-weight: 600;
+            color: #666;
+        }
+
+        .search-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            padding-top: 1rem;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .search-btn, .clear-btn {
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+        }
+
+        .search-btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .clear-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+        }
+
+        .clear-btn:hover {
+            background: #545b62;
+            transform: translateY(-2px);
+        }
+
+        .results-section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .results-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .results-count {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .results-page {
+            color: #666;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .book-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .book-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .book-image {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .book-placeholder {
+            font-size: 3rem;
+            color: #007bff;
+        }
+
+        .book-title {
+            margin: 0 0 1rem 0;
+            font-size: 1.25rem;
+        }
+
+        .book-title a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .book-title a:hover {
+            color: #007bff;
+        }
+
+        .book-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .book-price {
+            font-weight: 600;
+            color: #28a745;
+            font-size: 1.1rem;
+        }
+
+        .book-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .status-available {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-soldout {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .book-details {
+            margin-bottom: 1rem;
+        }
+
+        .book-author, .book-language, .book-format {
+            margin: 0.25rem 0;
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .book-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .category-tag {
+            background: #e9ecef;
+            color: #495057;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .no-results-content {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .no-results-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .no-results h3 {
+            margin: 0 0 1rem 0;
+            color: #333;
+        }
+
+        .no-results p {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 2rem;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .pagination-info {
+            color: #666;
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .pagination-btn {
+            padding: 0.5rem 1rem;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .pagination-btn:hover {
+            background: #0056b3;
+        }
+
+        .pagination-current {
+            font-weight: 600;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .price-range {
+                grid-column: span 1;
+            }
+
+            .price-inputs {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .search-actions {
+                flex-direction: column;
+            }
+
+            .books-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pagination {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - BookStore</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 32px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .dashboard-title {
+            font-size: 2.5rem;
+            margin: 0 0 8px 0;
+            font-weight: 700;
+        }
+        
+        .dashboard-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border-left: 4px solid #667eea;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+        }
+        
+        .stat-card.books { border-left-color: #28a745; }
+        .stat-card.users { border-left-color: #007bff; }
+        .stat-card.orders { border-left-color: #ffc107; }
+        .stat-card.revenue { border-left-color: #dc3545; }
+        
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .stat-icon {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .stat-card.books .stat-icon { background: rgba(40, 167, 69, 0.1); }
+        .stat-card.users .stat-icon { background: rgba(0, 123, 255, 0.1); }
+        .stat-card.orders .stat-icon { background: rgba(255, 193, 7, 0.1); }
+        .stat-card.revenue .stat-icon { background: rgba(220, 53, 69, 0.1); }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin: 0;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 4px 0 0 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .dashboard-sections {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+        
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: #f8f9fa;
+            padding: 20px 24px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-content {
+            padding: 24px;
+        }
+        
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        
+        .action-card {
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .action-card:hover {
+            border-color: #667eea;
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .action-title {
+            font-weight: 600;
+            margin: 0 0 4px 0;
+            color: #333;
+        }
+        
+        .action-description {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 0;
+        }
+        
+        .recent-activity {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-text {
+            font-size: 0.9rem;
+            color: #333;
+            margin: 0 0 2px 0;
+        }
+        
+        .activity-time {
+            font-size: 0.8rem;
+            color: #666;
+            margin: 0;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(45deg, #f8f9fa 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f8f9fa 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f8f9fa 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f8f9fa 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .system-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .status-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .status-online { background: #28a745; }
+        .status-warning { background: #ffc107; }
+        .status-offline { background: #dc3545; }
+        
+        @media (max-width: 768px) {
+            .dashboard-sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            
+            .quick-actions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Include Navbar -->
+    <div th:replace="~{component/navbar :: navbar}"></div>
+
+    <div class="dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Admin Dashboard</h1>
+            <p class="dashboard-subtitle">Welcome back! Here's an overview of your book management system.</p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card books">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" th:text="${totalBooks}">0</div>
+                        <div class="stat-label">Total Books</div>
+                    </div>
+                    <div class="stat-icon">📚</div>
+                </div>
+            </div>
+            
+            <div class="stat-card users">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" th:text="${totalUsers}">0</div>
+                        <div class="stat-label">Registered Users</div>
+                    </div>
+                    <div class="stat-icon">👥</div>
+                </div>
+            </div>
+            
+            <div class="stat-card orders">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" th:text="${totalOrders}">0</div>
+                        <div class="stat-label">Total Orders</div>
+                    </div>
+                    <div class="stat-icon">🛒</div>
+                </div>
+            </div>
+            
+            <div class="stat-card revenue">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" th:text="${totalRevenue}">$0</div>
+                        <div class="stat-label">Total Revenue</div>
+                    </div>
+                    <div class="stat-icon">💰</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Sections -->
+        <div class="dashboard-sections">
+            <!-- Quick Actions -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span>⚡</span>
+                        Quick Actions
+                    </h2>
+                </div>
+                <div class="section-content">
+                    <div class="quick-actions-grid">
+                        <a th:href="@{/books/create}" class="action-card">
+                            <span class="action-icon">📖</span>
+                            <h3 class="action-title">Add New Book</h3>
+                            <p class="action-description">Create a new book entry</p>
+                        </a>
+                        
+                        <a th:href="@{/categories/list}" class="action-card">
+                            <span class="action-icon">🏷️</span>
+                            <h3 class="action-title">Manage Categories</h3>
+                            <p class="action-description">Organize book categories</p>
+                        </a>
+                        
+                        <a th:href="@{/roles/list}" class="action-card">
+                            <span class="action-icon">👥</span>
+                            <h3 class="action-title">User Roles</h3>
+                            <p class="action-description">Manage user permissions</p>
+                        </a>
+                        
+                        <a th:href="@{/carts/list}" class="action-card">
+                            <span class="action-icon">🛒</span>
+                            <h3 class="action-title">View Orders</h3>
+                            <p class="action-description">Check customer orders</p>
+                        </a>
+                        
+                        <a th:href="@{/accounts/profile}" class="action-card">
+                            <span class="action-icon">⚙️</span>
+                            <h3 class="action-title">System Settings</h3>
+                            <p class="action-description">Configure system options</p>
+                        </a>
+                        
+                        <a th:href="@{/books/list}" class="action-card">
+                            <span class="action-icon">📊</span>
+                            <h3 class="action-title">View Reports</h3>
+                            <p class="action-description">Generate system reports</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span>🕒</span>
+                        Recent Activity
+                    </h2>
+                </div>
+                <div class="section-content">
+                    <div class="recent-activity">
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: rgba(40, 167, 69, 0.1);">📚</div>
+                            <div class="activity-content">
+                                <p class="activity-text">New book "The Great Gatsby" added</p>
+                                <p class="activity-time">2 minutes ago</p>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: rgba(0, 123, 255, 0.1);">👤</div>
+                            <div class="activity-content">
+                                <p class="activity-text">New user registration: john.doe@email.com</p>
+                                <p class="activity-time">15 minutes ago</p>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: rgba(255, 193, 7, 0.1);">🛒</div>
+                            <div class="activity-content">
+                                <p class="activity-text">Order #12345 completed</p>
+                                <p class="activity-time">1 hour ago</p>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: rgba(220, 53, 69, 0.1);">🏷️</div>
+                            <div class="activity-content">
+                                <p class="activity-text">Category "Fiction" updated</p>
+                                <p class="activity-time">2 hours ago</p>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: rgba(102, 126, 234, 0.1);">📊</span></div>
+                            <div class="activity-content">
+                                <p class="activity-text">Monthly report generated</p>
+                                <p class="activity-time">3 hours ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Status -->
+        <div class="section-card">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <span>🔧</span>
+                    System Status
+                </h2>
+            </div>
+            <div class="section-content">
+                <div class="system-status">
+                    <div class="status-card">
+                        <span class="status-indicator status-online"></span>
+                        <strong>Database</strong>
+                        <p>Online</p>
+                    </div>
+                    
+                    <div class="status-card">
+                        <span class="status-indicator status-online"></span>
+                        <strong>File Storage</strong>
+                        <p>Online</p>
+                    </div>
+                    
+                    <div class="status-card">
+                        <span class="status-indicator status-online"></span>
+                        <strong>Authentication</strong>
+                        <p>Online</p>
+                    </div>
+                    
+                    <div class="status-card">
+                        <span class="status-indicator status-warning"></span>
+                        <strong>Backup System</strong>
+                        <p>Last backup: 2 hours ago</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Chart -->
+        <div class="chart-container">
+            <h3 style="margin: 0 0 20px 0; color: #333;">Sales Analytics</h3>
+            <div class="chart-placeholder">
+                Chart visualization would be displayed here
+                <br>
+                <small>Integration with Chart.js or similar library recommended</small>
+            </div>
+        </div>
+
+        <!-- Alert Messages -->
+        <div th:if="${errorMessage}" class="alert alert-error">
+            <span class="alert-icon">⚠️</span>
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <div th:if="${successMessage}" class="alert alert-success">
+            <span class="alert-icon">✅</span>
+            <span th:text="${successMessage}"></span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-hide alerts after 5 seconds
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    alert.style.opacity = '0';
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 300);
+                }, 5000);
+            });
+
+            // Add hover effects to stat cards
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach(function(card) {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-4px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Add click effects to action cards
+            const actionCards = document.querySelectorAll('.action-card');
+            actionCards.forEach(function(card) {
+                card.addEventListener('click', function() {
+                    // Add a brief click effect
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+
+            // Simulate real-time updates (for demo purposes)
+            setInterval(function() {
+                const activityItems = document.querySelectorAll('.activity-item');
+                if (activityItems.length > 0) {
+                    const lastItem = activityItems[0];
+                    const newItem = lastItem.cloneNode(true);
+                    newItem.querySelector('.activity-text').textContent = 'System health check completed';
+                    newItem.querySelector('.activity-time').textContent = 'Just now';
+                    
+                    const container = lastItem.parentNode;
+                    container.insertBefore(newItem, container.firstChild);
+                    
+                    // Remove oldest item if more than 5
+                    if (activityItems.length >= 5) {
+                        container.removeChild(container.lastChild);
+                    }
+                }
+            }, 30000); // Update every 30 seconds
+
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Ctrl/Cmd + 1: Go to books
+                if ((e.ctrlKey || e.metaKey) && e.key === '1') {
+                    e.preventDefault();
+                    window.location.href = '/books/list';
+                }
+                
+                // Ctrl/Cmd + 2: Go to categories
+                if ((e.ctrlKey || e.metaKey) && e.key === '2') {
+                    e.preventDefault();
+                    window.location.href = '/categories/list';
+                }
+                
+                // Ctrl/Cmd + 3: Go to roles
+                if ((e.ctrlKey || e.metaKey) && e.key === '3') {
+                    e.preventDefault();
+                    window.location.href = '/roles/list';
+                }
+            });
+
+            // Add tooltips for keyboard shortcuts
+            const actionCards = document.querySelectorAll('.action-card');
+            actionCards.forEach(function(card, index) {
+                const shortcuts = ['Ctrl+1', 'Ctrl+2', 'Ctrl+3', 'Ctrl+4', 'Ctrl+5', 'Ctrl+6'];
+                if (shortcuts[index]) {
+                    card.title = `Keyboard shortcut: ${shortcuts[index]}`;
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
