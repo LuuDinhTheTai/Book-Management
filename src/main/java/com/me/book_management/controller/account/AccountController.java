@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/accounts/")
@@ -36,7 +37,7 @@ public class AccountController {
                           Model model) {
         String username = CommonUtil.getCurrentAccount();
         model.addAttribute("account", accountService.findByUsername(username));
-        model.addAttribute("myBooks", bookService.list(
+        model.addAttribute("books", bookService.list(
                 ListBookRequest.builder()
                         .myBook(true)
                         .page(request.getBookPage())
@@ -49,14 +50,13 @@ public class AccountController {
                         .size(request.getCartSize())
                         .build())
         );
-        model.addAttribute("myComments", commentService.findByAccount(
+        model.addAttribute("comments", commentService.findByAccount(
                 ListCommentRequest.builder()
                         .page(request.getCommentPage())
                         .size(request.getCommentSize())
                         .build())
         );
         model.addAttribute("orders", null);
-        model.addAttribute("activeTab", request.getTab());
         return "account/profile";
     }
 
@@ -73,18 +73,19 @@ public class AccountController {
     public String update(@resourceOwner(instance = Constants.CLASSNAME.ACCOUNT) @PathVariable Long id,
                          @Valid @ModelAttribute("account") UpdateAccountRequest request,
                          BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes,
                          Model model) {
         if (bindingResult.hasErrors()) {
             return "account/update-form";
         }
         try {
-            request.validate();
             accountService.update(id, request);
+            redirectAttributes.addFlashAttribute("successMessage", "Account updated successfully!");
             return "redirect:/accounts/profile";
 
         } catch (Exception e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "account/update-form";
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update account: " + e.getMessage());
+            return "redirect:/accounts/profile";
         }
     }
 

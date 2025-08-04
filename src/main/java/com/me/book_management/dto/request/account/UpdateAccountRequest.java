@@ -9,7 +9,4 @@ import lombok.*;
 @ToString
 public class UpdateAccountRequest {
 
-    public void validate() {
-
-    }
 }
