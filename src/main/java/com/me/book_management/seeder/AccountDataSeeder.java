@@ -6,17 +6,17 @@ import com.me.book_management.entity.rbac0.Role;
 import com.me.book_management.repository.account.AccountRepository;
 import com.me.book_management.repository.rbac0.RoleRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class AccountDataSeeder implements CommandLineRunner {
 
     private final AccountRepository accountRepository;
@@ -25,23 +25,29 @@ public class AccountDataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        log.info("Starting AccountDataSeeder...");
         seedAccounts();
+        log.info("AccountDataSeeder completed successfully!");
     }
 
     private void seedAccounts() {
-        List<AccountData> accountsToSeed = Arrays.asList(
-            new AccountData("admin", "admin@bookmanagement.com", "admin", Constants.ROLE.ADMIN),
-            new AccountData("user", "user@bookmanagement.com", "user", Constants.ROLE.USER)
+        log.info("Seeding accounts...");
+        List<AccountData> accountsToSeed = List.of(
+                new AccountData("admin", "admin@bookmanagement.com", "admin123", Constants.ROLE.ADMIN),
+                new AccountData("user", "user@bookmanagement.com", "user123", Constants.ROLE.USER)
         );
-        
+
         for (AccountData accountData : accountsToSeed) {
             if (!accountRepository.existsByUsername(accountData.username)) {
                 Account account = createAccount(accountData);
                 accountRepository.save(account);
+                log.info("Created account: {}", accountData.username);
+            } else {
+                log.info("Account already exists: {}", accountData.username);
             }
         }
     }
-    
+
     private Account createAccount(AccountData accountData) {
         Account account = new Account();
         account.setEmail(accountData.email);
@@ -49,19 +55,17 @@ public class AccountDataSeeder implements CommandLineRunner {
         account.setPassword(passwordEncoder.encode(accountData.password));
         
         Optional<Role> role = roleRepository.findByName(accountData.roleName);
-        if (role.isPresent()) {
-            account.getRoles().add(role.get());
-        }
+        role.ifPresent(value -> account.getRoles().add(value));
         
         return account;
     }
-    
+
     private static class AccountData {
         private final String username;
         private final String email;
         private final String password;
         private final String roleName;
-        
+
         public AccountData(String username, String email, String password, String roleName) {
             this.username = username;
             this.email = email;

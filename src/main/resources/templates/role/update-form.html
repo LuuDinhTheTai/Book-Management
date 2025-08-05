@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Role - BookStore</title>
+    <title>Update Role - BookStore</title>
     <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
@@ -45,8 +45,8 @@
         <span th:text="${successMessage}"></span>
     </div>
 
-    <!-- Create Role Form -->
-    <form th:action="@{/roles/create}" th:object="${createRoleRequest}" method="post" class="auth-form">
+    <!-- Update Role Form -->
+    <form th:action="@{|/roles/update/${role.id}|}" th:object="${role}" method="post" class="auth-form">
         <div class="form-group">
             <label for="name" class="form-label">
                 <span class="label-icon">🏷️</span>
@@ -101,10 +101,12 @@
                             <div th:each="action : ${actions}">
                                 <td>
                                     <input type="checkbox"
-                                           th:id="${action.name + resource.name}"
-                                           th:name="${action.name + resource.name}"
-                                           th:field="*{permissions}"
-                                           th:value="${action.id + '-' + resource.id}"
+                                           th:id="${resource.name + '_' + action.name}"
+                                           th:name="permissions"
+                                           th:value="${resource.id + ',' + action.id}"
+                                           class="permission-checkbox"
+                                           data-resource-id="${resource.id}"
+                                           data-action-id="${action.id}"
                                     />
                                 </td>
                             </div>
@@ -119,7 +121,7 @@
         <div class="form-actions">
             <button type="submit" class="btn btn-primary btn-full">
                 <span class="btn-icon">➕</span>
-                Create Role
+                Update Role
             </button>
             <a th:href="@{/roles/list}" class="btn btn-outline btn-full">
                 <span class="btn-icon">❌</span>
@@ -129,14 +131,20 @@
     </form>
 </div>
 
-<script>
-    // Form validation
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.querySelector('form');
-        const nameInput = document.getElementById('name');
-        const descriptionInput = document.getElementById('description');
+    <script th:inline="javascript">
+        // Get role permissions from Thymeleaf
+        const rolePermissions = /*[[${role.permissions}]]*/ [];
+        
+        // Form validation
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form');
+            const nameInput = document.getElementById('name');
+            const descriptionInput = document.getElementById('description');
+            
+            // Pre-check checkboxes based on existing permissions
+            preCheckPermissions();
 
-        form.addEventListener('submit', function (e) {
+            form.addEventListener('submit', function (e) {
             let isValid = true;
 
             // Validate name
@@ -233,6 +241,25 @@
             if (existingError) {
                 existingError.remove();
             }
+        }
+
+        function preCheckPermissions() {
+            // Get all permission checkboxes
+            const checkboxes = document.querySelectorAll('input[name="permissions"]');
+            
+            checkboxes.forEach(checkbox => {
+                const value = checkbox.value;
+                const [resourceId, actionId] = value.split(',');
+                
+                // Check if this permission exists in role permissions
+                const hasPermission = rolePermissions.some(permission => 
+                    permission.resource.id == resourceId && permission.action.id == actionId
+                );
+                
+                if (hasPermission) {
+                    checkbox.checked = true;
+                }
+            });
         }
     });
 </script>

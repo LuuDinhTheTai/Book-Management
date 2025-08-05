@@ -1,6 +1,9 @@
 package com.me.book_management.dto.request.role;
 
+import com.me.book_management.entity.rbac0.Permission;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -17,5 +20,5 @@ public class CreateRoleRequest {
     private String name;
     @NotBlank(message = "Description cannot be blank")
     private String description;
-    private List<String> permission = new ArrayList<>();
+    private List<String> permissions = new ArrayList<>();
 }

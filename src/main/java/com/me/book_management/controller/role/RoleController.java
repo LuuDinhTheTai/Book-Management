@@ -56,7 +56,7 @@ public class RoleController {
     public String list(Model model) {
         try {
             model.addAttribute("roles", roleService.list());
-            model.addAttribute("totalPermissions", permissionService.findAll().size());
+            model.addAttribute("totalPermissions", permissionService.list().size());
             return "role/list";
         } catch (Exception e) {
 
@@ -76,16 +76,6 @@ public class RoleController {
         return "role/update-form";
     }
 
-    // Helper method to check if role has permission
-    private boolean hasPermission(com.me.book_management.entity.rbac0.Role role, 
-                                com.me.book_management.entity.rbac0.Resource resource, 
-                                com.me.book_management.entity.rbac0.Action action) {
-        return role.getPermissions().stream()
-                .anyMatch(permission -> 
-                    permission.getResource().getId().equals(resource.getId()) && 
-                    permission.getAction().getId().equals(action.getId()));
-    }
-
     @PostMapping("update/{id}")
     @hasPermission(permission = Constants.PERMISSION.UPDATE_ROLE)
     public String update(@PathVariable Long id,
@@ -94,6 +84,11 @@ public class RoleController {
                          RedirectAttributes redirectAttributes,
                          Model model) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("role", roleService.find(id));
+            model.addAttribute("resources", resourceService.list());
+            model.addAttribute("actions", actionService.list());
+            model.addAttribute("updateRoleRequest", request);
+            redirectAttributes.addAttribute("errorMessage", "Failed to update role");
             return "role/update-form";
         }
 
@@ -104,7 +99,7 @@ public class RoleController {
 
         } catch (InputException e) {
             redirectAttributes.addAttribute("errorMessage", e.getMessage());
-            return "redirect:roles/" + id;
+            return "redirect:/roles/update/" + id;
         }
     }
 

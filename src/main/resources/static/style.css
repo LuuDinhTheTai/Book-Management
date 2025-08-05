@@ -3051,3 +3051,121 @@ button:hover {
         padding: 1rem;
     }
 }
+
+/* Permissions Matrix Styles */
+.permissions-matrix-container {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+    margin-top: 1rem;
+}
+
+.permissions-matrix-wrapper {
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.permissions-matrix {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    min-width: 600px;
+    background: white;
+}
+
+.permissions-matrix th {
+    background: #f8f9fa;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    font-weight: 600;
+    color: #495057;
+    border: 1px solid #dee2e6;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    min-width: 120px;
+}
+
+.permissions-matrix td {
+    padding: 1rem 0.75rem;
+    border: 1px solid #e9ecef;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.permissions-matrix tr:hover {
+    background: #f8f9fa;
+}
+
+.resource-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    text-align: left;
+    position: sticky;
+    left: 0;
+    z-index: 5;
+    background: white;
+    padding: 1rem 0.75rem;
+    font-weight: 600;
+    color: #2c3e50;
+    min-width: 150px;
+}
+
+.action-header {
+    min-width: 120px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.permission-cell {
+    text-align: center;
+    position: relative;
+    min-width: 120px;
+}
+
+.permission-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    margin: 0;
+    accent-color: #007bff;
+}
+
+.checkbox-label {
+    display: none;
+}
+
+.checkbox-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Responsive Design for Permissions Matrix */
+@media (max-width: 768px) {
+    .permissions-matrix-wrapper {
+        max-height: 400px;
+    }
+
+    .permissions-matrix {
+        font-size: 0.75rem;
+        min-width: 500px;
+    }
+
+    .permissions-matrix th,
+    .permissions-matrix td {
+        padding: 0.5rem;
+    }
+
+    .resource-cell {
+        width: 120px;
+        min-width: 120px;
+    }
+
+    .action-header {
+        min-width: 100px;
+    }
+}

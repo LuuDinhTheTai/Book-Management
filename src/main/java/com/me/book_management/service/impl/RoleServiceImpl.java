@@ -6,6 +6,7 @@ import com.me.book_management.entity.rbac0.Action;
 import com.me.book_management.entity.rbac0.Permission;
 import com.me.book_management.entity.rbac0.Resource;
 import com.me.book_management.entity.rbac0.Role;
+import com.me.book_management.exception.BadRequestException;
 import com.me.book_management.exception.InputException;
 import com.me.book_management.exception.NotFoundException;
 import com.me.book_management.repository.rbac0.ActionRepository;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -54,27 +56,27 @@ public class RoleServiceImpl implements RoleService {
         Role role = new Role();
         role.setName(request.getName());
         role.setDescription(request.getDescription());
-        
-        for (String permissionString : request.getPermission()) {
-            String[] parts = permissionString.split("-");
-            if (parts.length != 2) {
-                throw new InputException("Invalid permission format: " + permissionString);
-            }
-            
-            Long resourceId = Long.parseLong(parts[0]);
-            Long actionId = Long.parseLong(parts[1]);
-            
-            Resource resource = resourceRepository.findById(resourceId)
-                    .orElseThrow(() -> new InputException("Resource not found with id: " + resourceId));
-            Action action = actionRepository.findById(actionId)
-                    .orElseThrow(() -> new InputException("Action not found with id: " + actionId));
-            
-            Permission permission = permissionRepository.findByResourceAndAction(resource, action)
-                    .orElseThrow(() -> new InputException("Permission not found for resource: " + resource.getName() + " and action: " + action.getName()));
-            
-            role.getPermissions().add(permission);
-        }
+
+        role.setPermissions(toPermissions(request.getPermissions()));
         roleRepository.save(role);
+        
+        log.info("(create) role response: {}", role);
+    }
+
+    private List<Permission> toPermissions(List<String> permissions) {
+        List<Permission> rs = new ArrayList<>();
+        for (String permissionString : permissions) {
+            String[] parts = permissionString.split("-");
+            if (parts.length == 2) {
+                Long actionId = Long.parseLong(parts[0]);
+                Long resourceId = Long.parseLong(parts[1]);
+
+                Permission permission = permissionRepository.findByActionIdAndResourceId(actionId, resourceId)
+                        .orElseThrow(() -> new NotFoundException("Permission not found"));
+                rs.add(permission);
+            }
+        }
+        return rs;
     }
 
     @Override
@@ -91,26 +93,29 @@ public class RoleServiceImpl implements RoleService {
         role.setName(request.getName());
         role.setDescription(request.getDescription());
 
+        // Find existing permissions based on permissions list
         List<Permission> permissions = new ArrayList<>();
-        for (String permissionString : request.getPermission()) {
-            String[] parts = permissionString.split("-");
-            if (parts.length != 2) {
-                throw new InputException("Invalid permission format: " + permissionString);
+        if (request.getPermissions() != null) {
+            for (String permissionString : request.getPermissions()) {
+                String[] parts = permissionString.split(",");
+                if (parts.length == 2) {
+                    Long resourceId = Long.parseLong(parts[0]);
+                    Long actionId = Long.parseLong(parts[1]);
+                    
+                    Resource resource = resourceRepository.findById(resourceId)
+                            .orElseThrow(() -> new InputException("Resource not found with id: " + resourceId));
+                    Action action = actionRepository.findById(actionId)
+                            .orElseThrow(() -> new InputException("Action not found with id: " + actionId));
+                    
+                    // Find existing permission for this resource-action combination
+                    Permission permission = permissionRepository.findByResourceAndAction(resource, action)
+                            .orElseThrow(() -> new InputException("Permission not found for resource: " + resource.getName() + " and action: " + action.getName()));
+                    
+                    permissions.add(permission);
+                }
             }
-            
-            Long resourceId = Long.parseLong(parts[0]);
-            Long actionId = Long.parseLong(parts[1]);
-            
-            Resource resource = resourceRepository.findById(resourceId)
-                    .orElseThrow(() -> new InputException("Resource not found with id: " + resourceId));
-            Action action = actionRepository.findById(actionId)
-                    .orElseThrow(() -> new InputException("Action not found with id: " + actionId));
-            
-            Permission permission = permissionRepository.findByResourceAndAction(resource, action)
-                    .orElseThrow(() -> new InputException("Permission not found for resource: " + resource.getName() + " and action: " + action.getName()));
-            
-            permissions.add(permission);
         }
+
         role.setPermissions(permissions);
 
         roleRepository.save(role);

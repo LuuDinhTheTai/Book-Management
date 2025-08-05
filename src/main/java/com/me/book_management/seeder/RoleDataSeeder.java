@@ -10,15 +10,15 @@ import com.me.book_management.repository.rbac0.PermissionRepository;
 import com.me.book_management.repository.rbac0.ResourceRepository;
 import com.me.book_management.repository.rbac0.RoleRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class RoleDataSeeder implements CommandLineRunner {
 
     private final RoleRepository roleRepository;
@@ -28,127 +28,90 @@ public class RoleDataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        log.info("Starting RoleDataSeeder...");
         seedActions();
         seedResources();
         seedPermissions();
         seedRoles();
+        log.info("RoleDataSeeder completed successfully!");
     }
 
     private void seedActions() {
-        List<String> actions = Arrays.asList(
-            Constants.ACTION.CREATE,
-            Constants.ACTION.READ,
-            Constants.ACTION.UPDATE,
-            Constants.ACTION.DELETE
-        );
-        
-        for (String actionName : actions) {
-            if (!actionRepository.existsByName(actionName)) {
-                actionRepository.save(new Action(actionName));
+        log.info("Seeding actions...");
+        for (String actionName : Constants.ACTION.list()) {
+            if (actionRepository.findByName(actionName).isEmpty()) {
+                Action action = new Action();
+                action.setName(actionName);
+                action.setDescription("Action for " + actionName.toLowerCase());
+                actionRepository.save(action);
+                log.info("Created action: {}", actionName);
             }
         }
     }
 
     private void seedResources() {
-        List<String> resources = Arrays.asList(
-            Constants.RESOURCE.ROLE,
-            Constants.RESOURCE.BOOK,
-            Constants.RESOURCE.COMMENT,
-            Constants.RESOURCE.ACCOUNT,
-            Constants.RESOURCE.CART,
-            Constants.RESOURCE.CATEGORY
-        );
-        
-        for (String resourceName : resources) {
-            if (!resourceRepository.existsByName(resourceName)) {
-                resourceRepository.save(new Resource(resourceName));
+        log.info("Seeding resources...");
+        for (String resourceName : Constants.RESOURCE.list()) {
+            if (resourceRepository.findByName(resourceName).isEmpty()) {
+                Resource resource = new Resource();
+                resource.setName(resourceName);
+                resource.setDescription("Resource for " + resourceName.toLowerCase());
+                resourceRepository.save(resource);
+                log.info("Created resource: {}", resourceName);
             }
         }
     }
 
     private void seedPermissions() {
-        List<String> permissions = Arrays.asList(
-            Constants.PERMISSION.CREATE_BOOK,
-            Constants.PERMISSION.READ_BOOK,
-            Constants.PERMISSION.UPDATE_BOOK,
-            Constants.PERMISSION.DELETE_BOOK,
-            Constants.PERMISSION.CREATE_COMMENT,
-            Constants.PERMISSION.READ_COMMENT,
-            Constants.PERMISSION.UPDATE_COMMENT,
-            Constants.PERMISSION.DELETE_COMMENT,
-            Constants.PERMISSION.CREATE_ACCOUNT,
-            Constants.PERMISSION.READ_ACCOUNT,
-            Constants.PERMISSION.UPDATE_ACCOUNT,
-            Constants.PERMISSION.DELETE_ACCOUNT,
-            Constants.PERMISSION.CREATE_CART,
-            Constants.PERMISSION.READ_CART,
-            Constants.PERMISSION.UPDATE_CART,
-            Constants.PERMISSION.DELETE_CART,
-            Constants.PERMISSION.CREATE_ROLE,
-            Constants.PERMISSION.READ_ROLE,
-            Constants.PERMISSION.UPDATE_ROLE,
-            Constants.PERMISSION.DELETE_ROLE,
-            Constants.PERMISSION.CREATE_CATEGORY,
-            Constants.PERMISSION.READ_CATEGORY,
-            Constants.PERMISSION.UPDATE_CATEGORY,
-            Constants.PERMISSION.DELETE_CATEGORY
-        );
+        log.info("Seeding permissions...");
+        List<Action> actions = actionRepository.findAll();
+        List<Resource> resources = resourceRepository.findAll();
         
-        for (String permissionName : permissions) {
-            if (permissionRepository.findByName(permissionName).isEmpty()) {
-                String[] parts = permissionName.split(Constants.PERMISSION.BRIDGE);
-                String actionName = parts[0];
-                String resourceName = parts[1];
-                
-                Action action = actionRepository.findByName(actionName).orElse(null);
-                Resource resource = resourceRepository.findByName(resourceName).orElse(null);
-                
-                if (action != null && resource != null) {
-                    permissionRepository.save(new Permission(permissionName, action, resource));
+        for (Resource resource : resources) {
+            for (Action action : actions) {
+                String permissionName = action.getName() + resource.getName();
+                if (permissionRepository.findByName(permissionName).isEmpty()) {
+                    Permission permission = new Permission();
+                    permission.setName(permissionName);
+                    permission.setDescription("Permission to " + action.getName().toLowerCase() + " " + resource.getName().toLowerCase());
+                    permission.setResource(resource);
+                    permission.setAction(action);
+                    permissionRepository.save(permission);
+                    log.info("Created permission: {}", permissionName);
                 }
             }
         }
     }
 
     private void seedRoles() {
-        seedRole(Constants.ROLE.ADMIN, true);
-        seedRole(Constants.ROLE.USER, false);
+        log.info("Seeding roles...");
+        seedRole(Constants.ROLE.ADMIN, "Administrator with full access", true);
+        seedRole(Constants.ROLE.USER, "Regular user with limited access", false);
     }
 
-    private void seedRole(String roleName, boolean isAdmin) {
-        if (roleRepository.findByName(roleName).isPresent()) {
-            return;
-        }
-        
-        Role role = new Role();
-        role.setName(roleName);
+    private void seedRole(String roleName, String description, boolean isAdmin) {
+        if (roleRepository.findByName(roleName).isEmpty()) {
+            Role role = new Role();
+            role.setName(roleName);
+            role.setDescription(description);
 
-        if (isAdmin) {
-            // Admin gets all permissions
-            permissionRepository.findAll().forEach(role.getPermissions()::add);
-        } else {
-            // User gets limited permissions
-            List<String> userPermissions = Arrays.asList(
-                Constants.PERMISSION.CREATE_BOOK,
-                Constants.PERMISSION.READ_BOOK,
-                Constants.PERMISSION.UPDATE_BOOK,
-                Constants.PERMISSION.DELETE_BOOK,
-                Constants.PERMISSION.CREATE_COMMENT,
-                Constants.PERMISSION.READ_COMMENT,
-                Constants.PERMISSION.CREATE_ACCOUNT,
-                Constants.PERMISSION.READ_ACCOUNT,
-                Constants.PERMISSION.UPDATE_ACCOUNT,
-                Constants.PERMISSION.CREATE_CART,
-                Constants.PERMISSION.READ_CART,
-                Constants.PERMISSION.UPDATE_CART,
-                Constants.PERMISSION.DELETE_CART
-            );
+            List<Permission> allPermissions = permissionRepository.findAll();
             
-            for (String permissionName : userPermissions) {
-                permissionRepository.findByName(permissionName).ifPresent(role.getPermissions()::add);
+            if (isAdmin) {
+                // Admin gets all permissions
+                role.getPermissions().addAll(allPermissions);
+                log.info("Created admin role with {} permissions", allPermissions.size());
+            } else {
+                // User gets only READ permissions
+                allPermissions.stream()
+                        .filter(p -> p.getName().startsWith(Constants.ACTION.READ))
+                        .forEach(role.getPermissions()::add);
+                log.info("Created user role with {} read permissions", 
+                        role.getPermissions().size());
             }
+
+            roleRepository.save(role);
+            log.info("Created role: {}", roleName);
         }
-        
-        roleRepository.save(role);
     }
 }

@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface PermissionService {
 
-    List<Permission> findAll();
+    List<Permission> list();
 }
