@@ -134,7 +134,7 @@
                 
                 <!-- Buy Button -->
                 <div class="cart-actions">
-                    <form th:action="@{|/carts/${cart.id}/buy|}" method="post" class="buy-form">
+                    <form th:action="@{|/carts/buy/${cart.id}|}" method="post" class="buy-form">
                         <div class="buy-options">
                             <div class="form-group">
                                 <label for="address" class="form-label">Address:</label>

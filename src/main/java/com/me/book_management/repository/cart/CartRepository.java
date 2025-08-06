@@ -16,7 +16,9 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
 
     List<Cart> findByAccount(Account account);
 
-    Page<Cart> findByAccount(Account account, Pageable pageable);
+    Page<Cart> findByAccountAndStatusNot(Account account, String status, Pageable pageable);
 
     Optional<Cart> findByAccountAndId(Account account, Long id);
+
+    Page<Cart> findByStatusNot(String status, Pageable pageable);
 }

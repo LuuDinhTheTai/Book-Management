@@ -1,5 +1,6 @@
 package com.me.book_management.entity.cart;
 
+import com.me.book_management.constant.Constants;
 import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.book.Book;
 import jakarta.persistence.*;
@@ -28,4 +29,6 @@ public class Cart {
     private List<CartBook> cartBooks = new ArrayList<>();
     
     private float totalPrice = 0;
+
+    private String status = Constants.CART_STATUS.PENDING;
 }

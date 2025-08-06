@@ -133,6 +133,7 @@ public class Constants {
     public static class CART_STATUS {
 
         public static final String PENDING = "Pending";
+        public static final String PROCESSING = "Processing";
         public static final String COMPLETED = "Completed";
     }
 

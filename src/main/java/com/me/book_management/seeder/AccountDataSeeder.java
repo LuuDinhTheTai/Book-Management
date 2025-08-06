@@ -33,8 +33,8 @@ public class AccountDataSeeder implements CommandLineRunner {
     private void seedAccounts() {
         log.info("Seeding accounts...");
         List<AccountData> accountsToSeed = List.of(
-                new AccountData("admin", "admin@bookmanagement.com", "admin123", Constants.ROLE.ADMIN),
-                new AccountData("user", "user@bookmanagement.com", "user123", Constants.ROLE.USER)
+                new AccountData("admin", "admin@bookmanagement.com", "admin", Constants.ROLE.ADMIN),
+                new AccountData("user", "user@bookmanagement.com", "user", Constants.ROLE.USER)
         );
 
         for (AccountData accountData : accountsToSeed) {

@@ -3,405 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orders - BookStore</title>
+    <title>My Orders - BookStore</title>
     <link rel="stylesheet" th:href="@{/style.css}"/>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 </head>
 <body>
-    <div th:replace="component/navbar :: navbar"></div>
+<div th:replace="component/navbar :: navbar"></div>
 
-    <div class="container">
-        <div class="page-header">
-            <div class="header-content">
-                <h1 class="page-title">My Orders</h1>
-                <p class="page-subtitle">Track your book purchases</p>
-            </div>
-            
-            <div class="header-actions">
-                <a th:href="@{/carts/list}" class="btn btn-secondary">
-                    <span class="btn-icon">🛒</span>
-                    View Cart
-                </a>
-            </div>
+<div class="container">
+    <div class="page-header">
+        <div class="header-content">
+            <h1 class="page-title">My Orders</h1>
+            <p class="page-subtitle">Review your completed orders</p>
         </div>
 
-        <!-- Success/Error Messages -->
-        <div th:if="${successMessage}" class="alert alert-success">
-            <span class="alert-icon">✅</span>
-            <span th:text="${successMessage}"></span>
+        <div class="header-actions">
+            <a th:href="@{/carts/list}" class="btn btn-primary">
+                <span class="btn-icon">🛒</span>
+                View Active Carts
+            </a>
         </div>
-        
-        <div th:if="${errorMessage}" class="alert alert-error">
-            <span class="alert-icon">❌</span>
-            <span th:text="${errorMessage}"></span>
-        </div>
+    </div>
 
-        <!-- Orders List -->
-        <div th:if="${orders != null and orders.size() > 0}" class="orders-section">
-            <div class="orders-grid">
-                <div th:each="order : ${orders}" class="order-card">
-                    <div class="order-header">
-                        <div class="order-info">
-                            <h3 class="order-title">Order #<span th:text="${order.id}"></span></h3>
-                            <div class="order-meta">
-                                <span class="order-date" th:text="${#temporals.format(order.createdAt, 'MMM dd, yyyy')}"></span>
-                                <span class="order-time" th:text="${#temporals.format(order.createdAt, 'HH:mm')}"></span>
-                            </div>
-                        </div>
-                        <div class="order-status">
-                            <span class="status-badge completed">
-                                <span class="status-icon">✅</span>
-                                Completed
-                            </span>
-                        </div>
-                    </div>
+    <div th:if="${errorMessage}" class="alert alert-error">
+        <span class="alert-icon">⚠️</span>
+        <span th:text="${errorMessage}"></span>
+    </div>
 
-                    <div class="order-details">
-                        <div class="detail-row">
-                            <span class="detail-label">Total Amount:</span>
-                            <span class="detail-value" th:text="'$' + ${order.totalPrice}"></span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Shipping Method:</span>
-                            <span class="detail-value" th:text="${order.shippingMethod}"></span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Payment Method:</span>
-                            <span class="detail-value" th:text="${order.paymentMethod}"></span>
-                        </div>
-                    </div>
+    <div th:if="${successMessage}" class="alert alert-success">
+        <span class="alert-icon">✅</span>
+        <span th:text="${successMessage}"></span>
+    </div>
 
-                    <div class="order-address">
-                        <h4 class="address-title">Shipping Address</h4>
-                        <div class="address-content">
-                            <p class="address-line" th:text="${order.address.fullName}"></p>
-                            <p class="address-line" th:text="${order.address.phone}"></p>
-                            <p class="address-line" th:text="${order.address.address}"></p>
-                            <p class="address-line" th:text="${order.address.city + ', ' + order.address.state + ' ' + order.address.zipCode}"></p>
-                        </div>
-                    </div>
-
-                    <div class="order-items">
-                        <h4 class="items-title">Order Items</h4>
-                        <div class="items-list">
-                            <div th:each="orderItem : ${order.orderItems}" class="item-card">
-                                <div class="item-image">
-                                    <img th:if="${orderItem.book.image != null}" 
-                                         th:src="${orderItem.book.image}" 
-                                         th:alt="${orderItem.book.name}"
-                                         class="book-cover">
-                                    <div th:unless="${orderItem.book.image != null}" class="book-placeholder">
-                                        <span class="placeholder-text">📚</span>
-                                    </div>
-                                </div>
-                                <div class="item-info">
-                                    <h5 class="item-title" th:text="${orderItem.book.name}"></h5>
-                                    <p class="item-author" th:text="${orderItem.book.author}"></p>
-                                    <div class="item-meta">
-                                        <span class="item-qty" th:text="'Qty: ' + ${orderItem.qty}"></span>
-                                        <span class="item-price" th:text="'$' + ${orderItem.price}"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- No Orders -->
-        <div th:if="${orders == null or orders.size() == 0}" class="no-orders">
-            <div class="no-orders-content">
-                <div class="no-orders-icon">📦</div>
-                <h3>No Orders Yet</h3>
-                <p>You haven't placed any orders yet. Start shopping to see your order history here!</p>
-                <a th:href="@{/books/}" class="btn btn-primary">
-                    <span class="btn-icon">📚</span>
-                    Browse Books
-                </a>
+    <!-- Orders Summary -->
+    <div th:object="${orders}" class="orders-summary-section">
+        <div class="summary-stats">
+            <div class="stat-item">
+                <span class="stat-icon">📦</span>
+                <span class="stat-label">Total Orders:</span>
+                <span class="stat-value" th:text="${orders.totalElements}"></span>
             </div>
         </div>
     </div>
 
-    <style>
-        /* Orders Styles */
-        .orders-section {
-            margin-top: 2rem;
-        }
+    <!-- Orders List -->
+    <div th:if="${orders.content.size() > 0}" class="orders-container">
+        <div th:each="order : ${orders.content}" class="order-card">
+            <div class="order-header">
+                <div class="order-info">
+                    <h3 class="order-title">Order #<span th:text="${order.id}"></span></h3>
+                    <div class="order-meta">
+                        <span class="order-status" 
+                              th:class="${order.status == 'Completed' ? 'status-completed' : 'status-processing'}"
+                              th:text="${order.status}"></span>
+                    </div>
+                </div>
+            </div>
 
-        .orders-grid {
-            display: grid;
-            gap: 2rem;
-        }
+            <!-- Order Items -->
+            <div th:if="${order.cartBooks.size() > 0}" class="order-items">
+                <div th:each="orderItem : ${order.cartBooks}" class="order-item">
+                    <div class="item-image">
+                        <div class="book-placeholder-small">📚</div>
+                    </div>
 
-        .order-card {
-            background: white;
-            border: 1px solid #e9ecef;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
+                    <div class="item-info">
+                        <h4 class="item-title">
+                            <a th:href="@{|/books/${orderItem.book.id}|}" th:text="${orderItem.book.name}"></a>
+                        </h4>
 
-        .order-card:hover {
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-            transform: translateY(-2px);
-        }
+                        <div class="item-meta">
+                            <span class="item-price" th:text="'$' + ${orderItem.book.price}"></span>
+                            <span class="item-quantity" th:text="'Qty: ' + ${orderItem.qty}"></span>
+                        </div>
+                    </div>
 
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #e9ecef;
-        }
+                    <div class="item-total">
+                        <span class="total-amount" th:text="'$' + ${orderItem.qty * orderItem.book.price}"></span>
+                    </div>
+                </div>
+            </div>
 
-        .order-title {
-            margin: 0 0 0.5rem 0;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #2c3e50;
-        }
+            <!-- Empty Order -->
+            <div th:if="${order.cartBooks.size() == 0}" class="empty-order">
+                <div class="empty-icon">📦</div>
+                <p class="empty-text">This order is empty</p>
+            </div>
 
-        .order-meta {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
+            <!-- Order Summary -->
+            <div th:if="${order.cartBooks.size() > 0}" class="order-total">
+                <div class="total-row">
+                    <span class="total-label">Items:</span>
+                    <span class="total-value" th:text="${order.cartBooks.size()} + ' books'"></span>
+                </div>
+                <div class="total-row">
+                    <span class="total-label">Total Amount:</span>
+                    <span class="total-value" th:text="'$' + ${order.totalPrice}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        .order-date, .order-time {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
+    <!-- Empty State -->
+    <div th:if="${orders.content.size() == 0}" class="empty-state">
+        <div class="empty-icon">📦</div>
+        <h3 class="empty-title">No orders found</h3>
+        <p class="empty-message">You haven't placed any orders yet</p>
+        <div class="empty-actions">
+            <a th:href="@{/books/}" class="btn btn-primary">
+                <span class="btn-icon">📚</span>
+                Browse Books
+            </a>
+            <a th:href="@{/carts/list}" class="btn btn-outline">
+                <span class="btn-icon">🛒</span>
+                View Carts
+            </a>
+        </div>
+    </div>
 
-        .order-status {
-            text-align: right;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .status-badge.completed {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .status-icon {
-            font-size: 1rem;
-        }
-
-        .order-details {
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .detail-row:last-child {
-            margin-bottom: 0;
-        }
-
-        .detail-label {
-            font-weight: 600;
-            color: #495057;
-        }
-
-        .detail-value {
-            font-weight: 500;
-            color: #2c3e50;
-        }
-
-        .order-address {
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-
-        .address-title {
-            margin: 0 0 0.75rem 0;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .address-content {
-            color: #495057;
-        }
-
-        .address-line {
-            margin: 0.25rem 0;
-            line-height: 1.4;
-        }
-
-        .order-items {
-            border-top: 1px solid #e9ecef;
-            padding-top: 1.5rem;
-        }
-
-        .items-title {
-            margin: 0 0 1rem 0;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .items-list {
-            display: grid;
-            gap: 1rem;
-        }
-
-        .item-card {
-            display: flex;
-            gap: 1rem;
-            padding: 1rem;
-            background: white;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-        }
-
-        .item-image {
-            flex-shrink: 0;
-            width: 80px;
-            height: 100px;
-        }
-
-        .book-cover {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-
-        .book-placeholder {
-            width: 100%;
-            height: 100%;
-            background: #f8f9fa;
-            border: 2px dashed #dee2e6;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .placeholder-text {
-            font-size: 2rem;
-            color: #adb5bd;
-        }
-
-        .item-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .item-title {
-            margin: 0 0 0.25rem 0;
-            font-size: 1rem;
-            font-weight: 600;
-            color: #2c3e50;
-            line-height: 1.3;
-        }
-
-        .item-author {
-            margin: 0 0 0.5rem 0;
-            font-size: 0.875rem;
-            color: #6c757d;
-        }
-
-        .item-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.875rem;
-        }
-
-        .item-qty {
-            color: #6c757d;
-        }
-
-        .item-price {
-            font-weight: 600;
-            color: #28a745;
-        }
-
-        .no-orders {
-            text-align: center;
-            padding: 4rem 2rem;
-        }
-
-        .no-orders-content {
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .no-orders-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
-
-        .no-orders h3 {
-            margin: 0 0 1rem 0;
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .no-orders p {
-            margin: 0 0 2rem 0;
-            color: #6c757d;
-            line-height: 1.5;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .order-header {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
-            }
-
-            .order-status {
-                text-align: left;
-            }
-
-            .item-card {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .item-image {
-                width: 100%;
-                height: 120px;
-            }
-
-            .item-meta {
-                justify-content: center;
-                gap: 1rem;
-            }
-        }
-    </style>
+    <!-- Pagination -->
+    <div th:if="${orders.totalPages > 1}" class="pagination">
+        <div class="pagination-info">
+            <span>Showing page <span th:text="${orders.number + 1}"></span> of <span th:text="${orders.totalPages}"></span></span>
+        </div>
+        
+        <div class="pagination-controls">
+            <a th:if="${orders.hasPrevious()}" 
+               th:href="@{/orders/list(page=${orders.number - 1}, size=${orders.size})}" 
+               class="btn btn-outline btn-small">Previous</a>
+            
+            <span th:each="pageNum : ${#numbers.sequence(0, orders.totalPages - 1)}" 
+                  th:if="${pageNum >= orders.number - 2 and pageNum <= orders.number + 2}">
+                <a th:href="@{/orders/list(page=${pageNum}, size=${orders.size})}" 
+                   th:text="${pageNum + 1}"
+                   th:class="${pageNum == orders.number ? 'btn btn-primary btn-small' : 'btn btn-outline btn-small'}"></a>
+            </span>
+            
+            <a th:if="${orders.hasNext()}" 
+               th:href="@{/orders/list(page=${orders.number + 1}, size=${orders.size})}" 
+               class="btn btn-outline btn-small">Next</a>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -4,6 +4,7 @@ import com.me.book_management.annotation.hasPermission;
 import com.me.book_management.annotation.resourceOwner;
 import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.cart.AddItemRequest;
+import com.me.book_management.dto.request.cart.BuyRequest;
 import com.me.book_management.dto.request.cart.DecreaseItemRequest;
 import com.me.book_management.dto.request.cart.IncreaseItemRequest;
 import com.me.book_management.entity.cart.Cart;
@@ -110,6 +111,22 @@ public class CartController {
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to decrease item: " + e.getMessage());
+            return "redirect:/carts/list";
+        }
+    }
+
+    @PostMapping("buy/{id}")
+    public String buy(@PathVariable Long id,
+                      @Valid @ModelAttribute BuyRequest request,
+                      RedirectAttributes redirectAttributes,
+                      Model model) {
+        try {
+            cartService.buy(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Order placed successfully!");
+            return "redirect:/orders/list";
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to place order: " + e.getMessage());
             return "redirect:/carts/list";
         }
     }
