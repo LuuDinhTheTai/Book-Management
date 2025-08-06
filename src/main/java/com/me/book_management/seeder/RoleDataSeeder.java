@@ -37,7 +37,7 @@ public class RoleDataSeeder implements CommandLineRunner {
     }
 
     private void seedActions() {
-        log.info("Seeding actions...");
+        log.info("Seeding actions from Constants.ACTION...");
         for (String actionName : Constants.ACTION.list()) {
             if (actionRepository.findByName(actionName).isEmpty()) {
                 Action action = new Action();
@@ -45,12 +45,14 @@ public class RoleDataSeeder implements CommandLineRunner {
                 action.setDescription("Action for " + actionName.toLowerCase());
                 actionRepository.save(action);
                 log.info("Created action: {}", actionName);
+            } else {
+                log.info("Action already exists: {}", actionName);
             }
         }
     }
 
     private void seedResources() {
-        log.info("Seeding resources...");
+        log.info("Seeding resources from Constants.RESOURCE...");
         for (String resourceName : Constants.RESOURCE.list()) {
             if (resourceRepository.findByName(resourceName).isEmpty()) {
                 Resource resource = new Resource();
@@ -58,12 +60,14 @@ public class RoleDataSeeder implements CommandLineRunner {
                 resource.setDescription("Resource for " + resourceName.toLowerCase());
                 resourceRepository.save(resource);
                 log.info("Created resource: {}", resourceName);
+            } else {
+                log.info("Resource already exists: {}", resourceName);
             }
         }
     }
 
     private void seedPermissions() {
-        log.info("Seeding permissions...");
+        log.info("Seeding permissions from Constants.PERMISSION...");
         List<Action> actions = actionRepository.findAll();
         List<Resource> resources = resourceRepository.findAll();
         
@@ -78,15 +82,17 @@ public class RoleDataSeeder implements CommandLineRunner {
                     permission.setAction(action);
                     permissionRepository.save(permission);
                     log.info("Created permission: {}", permissionName);
+                } else {
+                    log.info("Permission already exists: {}", permissionName);
                 }
             }
         }
     }
 
     private void seedRoles() {
-        log.info("Seeding roles...");
-        seedRole(Constants.ROLE.ADMIN, "Administrator with full access", true);
-        seedRole(Constants.ROLE.USER, "Regular user with limited access", false);
+        log.info("Seeding roles from Constants.ROLE...");
+        seedRole(Constants.ROLE.ADMIN, "Administrator with full access to all resources", true);
+        seedRole(Constants.ROLE.USER, "Regular user with limited access to resources", false);
     }
 
     private void seedRole(String roleName, String description, boolean isAdmin) {
@@ -98,11 +104,11 @@ public class RoleDataSeeder implements CommandLineRunner {
             List<Permission> allPermissions = permissionRepository.findAll();
             
             if (isAdmin) {
-                // Admin gets all permissions
+                // Admin gets all permissions defined in Constants.PERMISSION
                 role.getPermissions().addAll(allPermissions);
                 log.info("Created admin role with {} permissions", allPermissions.size());
             } else {
-                // User gets only READ permissions
+                // User gets only READ permissions for all resources
                 allPermissions.stream()
                         .filter(p -> p.getName().startsWith(Constants.ACTION.READ))
                         .forEach(role.getPermissions()::add);
@@ -112,6 +118,8 @@ public class RoleDataSeeder implements CommandLineRunner {
 
             roleRepository.save(role);
             log.info("Created role: {}", roleName);
+        } else {
+            log.info("Role already exists: {}", roleName);
         }
     }
 }

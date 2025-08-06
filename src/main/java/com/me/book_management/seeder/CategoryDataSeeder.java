@@ -1,5 +1,6 @@
 package com.me.book_management.seeder;
 
+import com.me.book_management.constant.Constants;
 import com.me.book_management.entity.book.Category;
 import com.me.book_management.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class CategoryDataSeeder implements CommandLineRunner {
     }
 
     private void seedCategories() {
-        log.info("Seeding categories...");
+        log.info("Seeding book categories...");
         List<CategoryData> categoriesToSeed = List.of(
                 new CategoryData("Programming", "Books about programming languages, frameworks, and software development"),
                 new CategoryData("Computer Science", "Books covering algorithms, data structures, and computer science fundamentals"),
@@ -48,15 +49,22 @@ public class CategoryDataSeeder implements CommandLineRunner {
                 new CategoryData("UI/UX Design", "Books about user interface design, user experience, and design principles")
         );
         
+        int createdCount = 0;
+        int existingCount = 0;
+        
         for (CategoryData categoryData : categoriesToSeed) {
             if (!categoryRepository.existsByName(categoryData.name)) {
                 Category category = createCategory(categoryData);
                 categoryRepository.save(category);
                 log.info("Created category: {}", categoryData.name);
+                createdCount++;
             } else {
                 log.info("Category already exists: {}", categoryData.name);
+                existingCount++;
             }
         }
+        
+        log.info("Category seeding completed - Created: {}, Existing: {}", createdCount, existingCount);
     }
 
     private Category createCategory(CategoryData data) {

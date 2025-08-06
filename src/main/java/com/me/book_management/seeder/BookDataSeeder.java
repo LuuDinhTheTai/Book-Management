@@ -40,7 +40,7 @@ public class BookDataSeeder implements CommandLineRunner {
     }
 
     private void seedBookDetails() {
-        log.info("Seeding book details...");
+        log.info("Seeding book details using Constants.BOOK_LANGUAGE and Constants.BOOK_FORMAT...");
         if (detailRepository.count() == 0) {
             List<Detail> details = List.of(
                     createDetail("978-0132350884", "Clean Code", "A Handbook of Agile Software Craftsmanship",
@@ -121,20 +121,25 @@ public class BookDataSeeder implements CommandLineRunner {
     }
 
     private void seedBooks() {
-        log.info("Seeding books...");
+        log.info("Seeding books using Constants.BOOK_STATUS...");
         if (bookRepository.count() == 0) {
             List<Detail> details = detailRepository.findAll();
             Optional<Account> adminOpt = accountRepository.findByUsername("admin");
             
             if (adminOpt.isPresent()) {
                 Account admin = adminOpt.get();
+                int createdCount = 0;
+                
                 for (int i = 0; i < details.size(); i++) {
                     Detail detail = details.get(i);
                     Book book = createBook(detail.getTitle(), 29.99f + i * 5, 50 + i * 5, 
-                                         Constants.BOOK_STATUS.ACTIVE, detail, admin);
+                                         Constants.BOOK_STATUS.AVAILABLE, detail, admin);
                     bookRepository.save(book);
-                    log.info("Created book: {}", detail.getTitle());
+                    log.info("Created book: {} with status: {}", detail.getTitle(), Constants.BOOK_STATUS.AVAILABLE);
+                    createdCount++;
                 }
+                
+                log.info("Created {} books with status: {}", createdCount, Constants.BOOK_STATUS.AVAILABLE);
             } else {
                 log.warn("Admin account not found, skipping book creation");
             }
@@ -160,13 +165,16 @@ public class BookDataSeeder implements CommandLineRunner {
         List<Category> categories = categoryRepository.findAll();
         
         if (!books.isEmpty() && !categories.isEmpty()) {
+            int linkedCount = 0;
             for (int i = 0; i < books.size(); i++) {
                 Book book = books.get(i);
                 Category category = getCategoryForBook(i, categories);
                 book.getCategories().add(category);
                 bookRepository.save(book);
                 log.info("Linked book '{}' with category '{}'", book.getName(), category.getName());
+                linkedCount++;
             }
+            log.info("Linked {} books with categories", linkedCount);
         } else {
             log.warn("No books or categories found for linking");
         }
