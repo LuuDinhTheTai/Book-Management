@@ -37,7 +37,11 @@
                 <div class="book-main-info">
                     <div class="book-image-section">
                         <div class="book-image">
-                            <div class="book-placeholder-large">📚</div>
+                            <img th:if="${book.files != null and !book.files.empty and book.files.?[fileType == 'Book Cover'].size() > 0}" 
+                                 th:src="${book.files.?[fileType == 'Book Cover'][0].fileUrl}" 
+                                 th:alt="${book.name} + ' Cover'"
+                                 class="book-cover-image"/>
+                            <div th:unless="${book.files != null and !book.files.empty and book.files.?[fileType == 'Book Cover'].size() > 0}" class="book-placeholder-large">📚</div>
                         </div>
                     </div>
                     
@@ -171,6 +175,48 @@
                     
                     <div th:unless="${book.detail}" class="no-details">
                         <p class="no-details-text">No additional details available for this book.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Files Section -->
+        <div th:if="${book.files != null and !book.files.empty}" class="files-section">
+            <h2 class="section-title">Files</h2>
+            <div class="files-grid">
+                <!-- Cover Image -->
+                <div th:each="file : ${book.files}" th:if="${file.fileType == 'Book Cover'}" class="file-item">
+                    <div class="file-info">
+                        <h3 class="file-title">Cover Image</h3>
+                        <div class="file-preview">
+                            <img th:src="${file.fileUrl}" th:alt="${book.name} + ' Cover'" class="cover-preview"/>
+                        </div>
+                        <div class="file-details">
+                            <span class="file-name" th:text="${file.fileName}"></span>
+                            <span class="file-size" th:text="${file.fileSize + ' bytes'}"></span>
+                        </div>
+                        <a th:href="${file.fileUrl}" target="_blank" class="btn btn-outline btn-small">
+                            <span class="btn-icon">👁️</span>
+                            View Full Size
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Book PDF -->
+                <div th:each="file : ${book.files}" th:if="${file.fileType == 'Book Pdf'}" class="file-item">
+                    <div class="file-info">
+                        <h3 class="file-title">Book PDF</h3>
+                        <div class="file-preview">
+                            <div class="pdf-preview">📄</div>
+                        </div>
+                        <div class="file-details">
+                            <span class="file-name" th:text="${file.fileName}"></span>
+                            <span class="file-size" th:text="${file.fileSize + ' bytes'}"></span>
+                        </div>
+                        <a th:href="${file.fileUrl}" target="_blank" class="btn btn-outline btn-small">
+                            <span class="btn-icon">📖</span>
+                            Download PDF
+                        </a>
                     </div>
                 </div>
             </div>

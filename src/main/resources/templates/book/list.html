@@ -61,7 +61,11 @@
         <div th:if="${bookPage.content.size() > 0}" class="books-grid">
             <div th:each="book : ${bookPage.content}" class="book-card">
                 <div class="book-image">
-                    <div class="book-placeholder">📚</div>
+                    <img th:if="${book.files != null and !book.files.empty and book.files.?[fileType == 'Book Cover'].size() > 0}" 
+                         th:src="${book.files.?[fileType == 'Book Cover'][0].fileUrl}" 
+                         th:alt="${book.name} + ' Cover'"
+                         class="book-cover-image"/>
+                    <div th:unless="${book.files != null and !book.files.empty and book.files.?[fileType == 'Book Cover'].size() > 0}" class="book-placeholder">📚</div>
                 </div>
                 
                 <div class="book-info">

@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,6 +28,11 @@ public class CreateBookRequest {
     @NotBlank(message = "Status cannot be blank")
     private String status;
     private Set<Long> categories;
+    
+    // File upload fields
+    private MultipartFile coverImageFile;
+    private MultipartFile bookFile;
+    
     @Valid
     private Detail detail = new Detail();
 

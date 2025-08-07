@@ -9,6 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MultipartException;
+import org.apache.tomcat.util.http.fileupload.impl.FileCountLimitExceededException;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
+import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 
 @ControllerAdvice
 @Slf4j
@@ -43,6 +47,38 @@ public class CustomExceptionHandler {
         log.error("Forbidden exception: {} {}", e.getStatusCode(), e.getMessage());
         model.addAttribute("status", e.getStatusCode());
         model.addAttribute("message", e.getMessage());
+        return "exception/error";
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    public String handleMultipartException(MultipartException e, Model model) {
+        log.error("Multipart exception: {}", e.getMessage());
+        model.addAttribute("status", HttpStatus.BAD_REQUEST.value());
+        model.addAttribute("message", "File upload error: " + e.getMessage());
+        return "exception/error";
+    }
+
+    @ExceptionHandler(FileCountLimitExceededException.class)
+    public String handleFileCountLimitExceededException(FileCountLimitExceededException e, Model model) {
+        log.error("File count limit exceeded: {}", e.getMessage());
+        model.addAttribute("status", HttpStatus.BAD_REQUEST.value());
+        model.addAttribute("message", "Too many files uploaded. Maximum allowed: " + e.getLimit());
+        return "exception/error";
+    }
+
+    @ExceptionHandler(FileSizeLimitExceededException.class)
+    public String handleFileSizeLimitExceededException(FileSizeLimitExceededException e, Model model) {
+        log.error("File size limit exceeded: {}", e.getMessage());
+        model.addAttribute("status", HttpStatus.BAD_REQUEST.value());
+        model.addAttribute("message", "File too large. Maximum size allowed: " + e.getPermittedSize() + " bytes");
+        return "exception/error";
+    }
+
+    @ExceptionHandler(SizeLimitExceededException.class)
+    public String handleSizeLimitExceededException(SizeLimitExceededException e, Model model) {
+        log.error("Request size limit exceeded: {}", e.getMessage());
+        model.addAttribute("status", HttpStatus.BAD_REQUEST.value());
+        model.addAttribute("message", "Request too large. Maximum size allowed: " + e.getPermittedSize() + " bytes");
         return "exception/error";
     }
 }

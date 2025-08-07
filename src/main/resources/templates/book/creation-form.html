@@ -17,28 +17,29 @@
         <p th:text="${errorMessage}"></p>
     </div>
 
-    <form th:action="@{/books/create}" th:object="${createBookRequest}" method="post" class="form">
+    <form th:action="@{/books/create}" th:object="${createBookRequest}" method="post" class="form" enctype="multipart/form-data">
         <label>Name:</label>
-        <input th:field="*{name}" type="text"/>
+        <input name="name" type="text" th:value="${name}"/>
         <div th:if="${#fields.hasErrors('name')}" class="error" th:errors="*{name}"></div>
         <br>
 
         <label>Price:</label>
-        <input th:field="*{price}" type="number"/>
+        <input name="price" type="number" step="0.01" th:value="${createBookRequest?.price}"/>
         <div th:if="${#fields.hasErrors('price')}" class="error" th:errors="*{price}"></div>
         <br>
 
         <label>Quantity:</label>
-        <input th:field="*{qty}" type="number"/>
+        <input name="qty" type="number" th:value="${createBookRequest?.qty}"/>
         <div th:if="${#fields.hasErrors('qty')}" class="error" th:errors="*{qty}"></div>
         <br>
 
         <label>Status:</label>
-        <select th:field="*{status}">
+        <select name="status">
             <option value="" disabled selected>Choose status</option>
             <option th:each="status : ${statuses}"
                     th:value="${status}"
-                    th:text="${status}">
+                    th:text="${status}"
+                    th:selected="${createBookRequest?.status == status}">
             </option>
         </select>
         <div th:if="${#fields.hasErrors('status')}" class="error" th:errors="*{status}"></div>
@@ -48,7 +49,7 @@
         <div class="category-selection">
             <div th:each="category : ${categories}" class="category-checkbox">
                 <input type="checkbox"
-                       th:name="categories"
+                       name="categories"
                        th:value="${category.id}"
                        th:id="'category-' + ${category.id}"/>
                 <label th:for="'category-' + ${category.id}" th:text="${category.name}"></label>
@@ -56,6 +57,18 @@
         </div>
         <div th:if="${#fields.hasErrors('categories')}" class="error" th:errors="*{categories}"></div>
         <br>
+
+        <div class="file-upload-section">
+            <label>Cover Image:</label>
+            <input name="coverImageFile" type="file" accept="image/*"/>
+            <small>Upload a cover image for the book (JPG, PNG, GIF)</small>
+        </div>
+
+        <div class="file-upload-section">
+            <label>Book PDF:</label>
+            <input name="bookFile" type="file" accept="application/pdf"/>
+            <small>Upload the book PDF file</small>
+        </div>
 
         <fieldset>
             <legend>Detail</legend>
@@ -91,7 +104,7 @@
             <br>
 
             <label>Description:</label>
-            <input th:field="*{detail.description}" type="text"/>
+            <textarea th:field="*{detail.description}" rows="4" cols="50"></textarea>
             <div th:if="${#fields.hasErrors('detail.description')}" class="error"
                  th:errors="*{detail.description}"></div>
             <br>

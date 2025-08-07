@@ -921,6 +921,36 @@ button:hover {
     position: relative;
 }
 
+.book-cover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.current-cover {
+    margin-top: 10px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.current-cover label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.current-cover img {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: block;
+    margin: 0 auto;
+}
+
 .book-placeholder {
     font-size: 4rem;
     color: rgba(255, 255, 255, 0.8);
@@ -2121,6 +2151,8 @@ button:hover {
     background: #f9f9f9;
     cursor: pointer;
     transition: all 0.3s ease;
+    width: 100%;
+    max-width: 400px;
 }
 
 .form-input[type="file"]:hover {
@@ -2132,6 +2164,32 @@ button:hover {
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.file-upload-section {
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.file-upload-section label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.file-upload-section small {
+    display: block;
+    margin-top: 5px;
+    color: #666;
+    font-size: 0.875rem;
+}
+
+.file-upload-section input[type="file"] {
+    margin-bottom: 10px;
 }
 
 .form-help {
@@ -3167,5 +3225,118 @@ button:hover {
 
     .action-header {
         min-width: 100px;
+    }
+}
+
+/* Files Section Styles */
+.files-section {
+    margin-top: 32px;
+    padding: 24px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.files-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-top: 16px;
+}
+
+.file-item {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    background: #f8f9fa;
+    transition: all 0.2s ease;
+}
+
+.file-item:hover {
+    border-color: #007bff;
+    box-shadow: 0 4px 12px rgba(0,123,255,0.15);
+}
+
+.file-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.file-title {
+    margin: 0 0 12px 0;
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.file-preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 120px;
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    overflow: hidden;
+}
+
+.cover-preview {
+    max-width: 100%;
+    max-height: 120px;
+    object-fit: contain;
+}
+
+.pdf-preview {
+    font-size: 3rem;
+    color: #dc3545;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 120px;
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+}
+
+.file-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.file-name {
+    font-weight: 500;
+    color: #495057;
+    word-break: break-all;
+}
+
+.file-size {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.file-item .btn {
+    align-self: flex-start;
+    margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+    .files-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .file-item {
+        padding: 16px;
+    }
+    
+    .file-preview {
+        min-height: 100px;
+    }
+    
+    .pdf-preview {
+        height: 100px;
+        font-size: 2.5rem;
     }
 }

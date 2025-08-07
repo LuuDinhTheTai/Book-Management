@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -70,6 +71,10 @@ public class BookController {
         } catch (InputException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to create book: " + e.getMessage());
             return "redirect:/books/create";
+        } catch (Exception e) {
+            log.error("Error creating book: {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to create book: " + e.getMessage());
+            return "redirect:/books/create";
         }
     }
 
@@ -115,6 +120,10 @@ public class BookController {
             return "redirect:/books/" + book.getId();
 
         } catch (InputException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update book: " + e.getMessage());
+            return "redirect:/books/update/" + id;
+        } catch (Exception e) {
+            log.error("Error updating book: {}", e.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to update book: " + e.getMessage());
             return "redirect:/books/update/" + id;
         }

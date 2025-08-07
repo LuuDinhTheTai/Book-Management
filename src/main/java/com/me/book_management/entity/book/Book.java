@@ -2,6 +2,7 @@ package com.me.book_management.entity.book;
 
 import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.base.EntityWithUpdater;
+import com.me.book_management.entity.file.File;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString(exclude = {"detail", "account", "categories"})
+@ToString(exclude = {"detail", "account", "categories", "files"})
 public class Book extends EntityWithUpdater {
 
     @Id
@@ -37,4 +38,7 @@ public class Book extends EntityWithUpdater {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Category> categories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<File> files = new ArrayList<>();
 }

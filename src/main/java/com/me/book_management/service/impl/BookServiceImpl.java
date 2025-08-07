@@ -8,18 +8,21 @@ import com.me.book_management.entity.account.Account;
 import com.me.book_management.entity.book.Book;
 import com.me.book_management.entity.book.Category;
 import com.me.book_management.entity.book.Detail;
+import com.me.book_management.entity.file.File;
 import com.me.book_management.exception.NotFoundException;
 import com.me.book_management.repository.CategoryRepository;
 import com.me.book_management.repository.account.AccountRepository;
 import com.me.book_management.repository.book.BookRepository;
 import com.me.book_management.repository.book.DetailRepository;
 import com.me.book_management.service.BookService;
+import com.me.book_management.service.FileService;
 import com.me.book_management.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -33,6 +36,7 @@ public class BookServiceImpl implements BookService {
     private final AccountRepository accountRepository;
     private final DetailRepository detailRepository;
     private final CategoryRepository categoryRepository;
+    private final FileService fileService;
 
     @Override
     public Book create(CreateBookRequest request) {
@@ -50,6 +54,9 @@ public class BookServiceImpl implements BookService {
         Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
                 .orElseThrow(() -> new NotFoundException("Account not found"));
         book.setAccount(account);
+
+        // Handle file uploads
+        handleFileUploads(request, book, account);
 
         boolean hasCategoriesParam = request.getCategories() != null && !request.getCategories().isEmpty();
         if (hasCategoriesParam) {
@@ -139,8 +146,15 @@ public class BookServiceImpl implements BookService {
 
         UpdateBookRequest.toBook(request, book);
 
+        // Handle file uploads for updates
+        Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
+                .orElseThrow(() -> new NotFoundException("Account not found"));
+        handleFileUploads(request, book, account);
+
         boolean hasCategoriesParam = request.getCategories() != null && !request.getCategories().isEmpty();
         if (hasCategoriesParam) {
+            // Clear existing categories and add new ones
+            book.getCategories().clear();
             for (Long categoryId : request.getCategories()) {
                 Optional<Category> category = categoryRepository.findById(categoryId);
                 if (category.isEmpty()) {
@@ -148,7 +162,6 @@ public class BookServiceImpl implements BookService {
                 }
                 book.getCategories().add(category.get());
             }
-
         }
 
         return bookRepository.save(book);
@@ -199,5 +212,34 @@ public class BookServiceImpl implements BookService {
 
         log.info("(create) detail response: {}", detailEntity);
         return detailEntity;
+    }
+
+    private void handleFileUploads(CreateBookRequest request, Book book, Account account) {
+        try {
+            // Handle cover image upload
+            if (request.getCoverImageFile() != null && !request.getCoverImageFile().isEmpty()) {
+                // Remove existing cover image if any
+                book.getFiles().removeIf(file -> file.getFileType().equals(File.FileType.BookCover));
+                
+                File coverFile = fileService.addFile(request.getCoverImageFile(), File.FileType.BookCover, account.getId());
+                coverFile.setBook(book);
+                book.getFiles().add(coverFile);
+                log.info("Cover image uploaded for book: {}", book.getName());
+            }
+
+            // Handle book PDF upload
+            if (request.getBookFile() != null && !request.getBookFile().isEmpty()) {
+                // Remove existing PDF if any
+                book.getFiles().removeIf(file -> file.getFileType().equals(File.FileType.BookPdf));
+                
+                File bookPdfFile = fileService.addFile(request.getBookFile(), File.FileType.BookPdf, account.getId());
+                bookPdfFile.setBook(book);
+                book.getFiles().add(bookPdfFile);
+                log.info("Book PDF uploaded for book: {}", book.getName());
+            }
+        } catch (Exception e) {
+            log.error("Error uploading files for book: {}", e.getMessage());
+            throw new RuntimeException("Failed to upload files: " + e.getMessage());
+        }
     }
 }

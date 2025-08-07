@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "files")
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString(exclude = {"account"})
+@Builder
 public class File extends EntityWithUpdater {
 
     @Id
@@ -22,9 +24,6 @@ public class File extends EntityWithUpdater {
 
     @Column(nullable = false)
     private String fileName;
-
-    @Column(nullable = false)
-    private String originalFileName;
 
     @Column(nullable = false)
     private String fileExtension;
@@ -36,7 +35,8 @@ public class File extends EntityWithUpdater {
     private Long fileSize;
 
     @Column(nullable = false)
-    private String bucketName;
+    @Builder.Default
+    private String bucketName = "data";
 
     @Column(nullable = false)
     private String objectKey;
@@ -47,52 +47,28 @@ public class File extends EntityWithUpdater {
     @Column(name = "file_path")
     private String filePath;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "file_type")
-    private FileType fileType = FileType.BOOK;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "file_status")
-    private FileStatus fileStatus = FileStatus.UPLOADED;
-
-    @Column(name = "upload_date")
-    private LocalDateTime uploadDate = LocalDateTime.now();
-
-    @Column(name = "last_accessed")
-    private LocalDateTime lastAccessed;
-
-    @Column(name = "access_count")
-    private Long accessCount = 0L;
+    @Builder.Default
+    private String fileType = FileType.BookCover;
 
     @Column(name = "is_public")
+    @Builder.Default
     private Boolean isPublic = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
-    @Column(name = "checksum")
-    private String checksum;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id")
+    private com.me.book_management.entity.book.Book book;
 
-    @Column(name = "description")
-    private String description;
+    public static class FileType {
+        public static final String BookCover = "Book Cover";
+        public static final String BookPdf = "Book Pdf";
 
-    public enum FileType {
-        BOOK,
-        BOOK_COVER,
-        BOOK_PDF,
-        BOOK_EPUB,
-        BOOK_MOBI,
-        USER_AVATAR,
-        OTHER
-    }
-
-    public enum FileStatus {
-        UPLOADING,
-        UPLOADED,
-        PROCESSING,
-        PROCESSED,
-        FAILED,
-        DELETED
+        public static List<String> list() {
+            return List.of(BookCover, BookPdf);
+        }
     }
 } 
