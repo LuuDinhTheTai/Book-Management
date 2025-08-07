@@ -3,6 +3,8 @@ package com.me.book_management.configuration.security;
 import com.me.book_management.configuration.security.impl.BearerTokenResolverImpl;
 import com.me.book_management.configuration.security.impl.JwtAuthenticationConverterImpl;
 import com.me.book_management.configuration.security.impl.JwtDecoderImpl;
+import com.me.book_management.configuration.security.impl.OAuth2AuthenticationSuccessHandlerImpl;
+import com.me.book_management.configuration.security.impl.OAuth2UserServiceImpl;
 import com.me.book_management.configuration.security.impl.UserDetailsServiceImpl;
 import com.me.book_management.constant.Constants;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +26,15 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
+    private final OAuth2UserServiceImpl oAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandlerImpl oAuth2AuthenticationSuccessHandlerImpl;
+
+    public SecurityConfiguration(OAuth2UserServiceImpl oAuth2UserService, 
+                              OAuth2AuthenticationSuccessHandlerImpl oAuth2AuthenticationSuccessHandlerImpl) {
+        this.oAuth2UserService = oAuth2UserService;
+        this.oAuth2AuthenticationSuccessHandlerImpl = oAuth2AuthenticationSuccessHandlerImpl;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(
@@ -37,20 +48,16 @@ public class SecurityConfiguration {
                                 "/books/{id}",
                                 "/books/",
                                 "/categories/list",
-                                "/categories/{id}").permitAll()
+                                "/categories/{id}",
+                                "/oauth2/authorization/google",
+                                "/login/oauth2/code/google").permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/auth/signup",
                                 "/auth/signin",
                                 "/accounts/forgot-password").permitAll()
                         .anyRequest().authenticated()
         );
-        http
-//                .formLogin(form -> form
-//                        .loginPage("/auth/signin")
-//                        .defaultSuccessUrl("/books/")
-//                        .permitAll()
-//                )
-                .logout(logout -> logout
+        http.logout(logout -> logout
                         .logoutUrl("/auth/signout")
                         .logoutSuccessUrl("/auth/signin")
                         .invalidateHttpSession(true)           // Hủy session
@@ -65,7 +72,15 @@ public class SecurityConfiguration {
                                         .decoder(jwtDecoder())
                         )
                         .bearerTokenResolver(bearerTokenResolver())
-        );
+        )
+                                 .oauth2Login(
+                         oauth2 -> oauth2
+                                 .loginPage("/oauth2/authorization/google")
+                                 .successHandler(oAuth2AuthenticationSuccessHandlerImpl)
+                                 .userInfoEndpoint(userInfo -> userInfo
+                                         .userService(oAuth2UserService)
+                                 )
+                 );
         http.csrf(
                 c -> c.disable()
         );

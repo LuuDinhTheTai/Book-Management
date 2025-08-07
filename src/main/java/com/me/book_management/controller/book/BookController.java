@@ -18,6 +18,7 @@ import com.me.book_management.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -49,7 +50,7 @@ public class BookController {
         return "book/creation-form";
     }
 
-    @PostMapping("create")
+    @PostMapping(value = "create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @hasPermission(permission = Constants.PERMISSION.CREATE_BOOK)
     public String create(@Valid @ModelAttribute("createBookRequest")
                          CreateBookRequest request,
