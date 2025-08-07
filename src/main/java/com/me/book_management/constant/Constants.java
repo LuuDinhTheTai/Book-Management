@@ -154,4 +154,10 @@ public class Constants {
             return List.of(COD);
         }
     }
+
+    public static class PATH {
+
+        public static final String Book = "book/";
+        public static final String Cover = "cover/";
+    }
 }

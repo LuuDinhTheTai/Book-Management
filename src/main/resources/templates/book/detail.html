@@ -181,11 +181,11 @@
         </div>
 
         <!-- Files Section -->
-        <div th:if="${book.files != null and !book.files.empty}" class="files-section">
+        <div th:if="${files != null and !files.empty}" class="files-section">
             <h2 class="section-title">Files</h2>
             <div class="files-grid">
                 <!-- Cover Image -->
-                <div th:each="file : ${book.files}" th:if="${file.fileType == 'Book Cover'}" class="file-item">
+                <div th:each="file : ${files}" th:if="${file.fileType == 'Book Cover'}" class="file-item">
                     <div class="file-info">
                         <h3 class="file-title">Cover Image</h3>
                         <div class="file-preview">
@@ -203,7 +203,7 @@
                 </div>
                 
                 <!-- Book PDF -->
-                <div th:each="file : ${book.files}" th:if="${file.fileType == 'Book Pdf'}" class="file-item">
+                <div th:each="file : ${files}" th:if="${file.fileType == 'Book Pdf'}" class="file-item">
                     <div class="file-info">
                         <h3 class="file-title">Book PDF</h3>
                         <div class="file-preview">
@@ -213,7 +213,7 @@
                             <span class="file-name" th:text="${file.fileName}"></span>
                             <span class="file-size" th:text="${file.fileSize + ' bytes'}"></span>
                         </div>
-                        <a th:href="${file.fileUrl}" target="_blank" class="btn btn-outline btn-small">
+                        <a th:href="@{/attachments/download/{fileId}(fileId=${file.id})}" class="btn btn-outline btn-small">
                             <span class="btn-icon">📖</span>
                             Download PDF
                         </a>

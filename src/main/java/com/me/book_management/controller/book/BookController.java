@@ -18,12 +18,16 @@ import com.me.book_management.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/books/")
@@ -49,10 +53,9 @@ public class BookController {
         return "book/creation-form";
     }
 
-    @PostMapping("create")
+    @PostMapping(value = "create")
     @hasPermission(permission = Constants.PERMISSION.CREATE_BOOK)
-    public String create(@Valid @ModelAttribute("createBookRequest")
-                         CreateBookRequest request,
+    public String create(@Valid @ModelAttribute("createBookRequest") CreateBookRequest request,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes,
                          Model model) {
@@ -65,12 +68,14 @@ public class BookController {
         }
         try {
             Book book = bookService.create(request);
+
             redirectAttributes.addFlashAttribute("successMessage", "Book created successfully!");
             return "redirect:/books/" + book.getId();
 
         } catch (InputException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to create book: " + e.getMessage());
             return "redirect:/books/create";
+
         } catch (Exception e) {
             log.error("Error creating book: {}", e.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to create book: " + e.getMessage());
@@ -109,13 +114,15 @@ public class BookController {
         return "book/update-form";
     }
 
-    @PostMapping("update/{id}")
+    @PostMapping(value = "update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @hasPermission(permission = Constants.PERMISSION.UPDATE_BOOK)
     public String update(@PathVariable @resourceOwner(instance = Constants.CLASSNAME.BOOK) Long id,
                          @Valid @ModelAttribute UpdateBookRequest request,
+                         @RequestParam(value = "files", required = false) List<MultipartFile> files,
                          RedirectAttributes redirectAttributes) {
         try {
             Book book = bookService.update(id, request);
+
             redirectAttributes.addFlashAttribute("successMessage", "Book updated successfully!");
             return "redirect:/books/" + book.getId();
 

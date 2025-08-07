@@ -17,9 +17,9 @@
         <p th:text="${errorMessage}"></p>
     </div>
 
-    <form th:action="@{/books/create}" th:object="${createBookRequest}" method="post" class="form" enctype="multipart/form-data">
+    <form th:action="@{/books/create}" th:object="${createBookRequest}" method="post" class="form" id="bookForm">
         <label>Name:</label>
-        <input name="name" type="text" th:value="${name}"/>
+        <input name="name" type="text" th:value="${createBookRequest?.name}"/>
         <div th:if="${#fields.hasErrors('name')}" class="error" th:errors="*{name}"></div>
         <br>
 
@@ -58,17 +58,46 @@
         <div th:if="${#fields.hasErrors('categories')}" class="error" th:errors="*{categories}"></div>
         <br>
 
+        <!-- Cover Image -->
         <div class="file-upload-section">
             <label>Cover Image:</label>
-            <input name="coverImageFile" type="file" accept="image/*"/>
+            <input id="coverImageFile" type="file" accept="image/*"
+                   onchange="uploadFile(this, 'coverImageFileId', 'Book Cover')"/>
             <small>Upload a cover image for the book (JPG, PNG, GIF)</small>
+
+            <div id="coverImagePreview" class="file-preview" style="display: none;">
+                <img id="coverImagePreviewImg" src="" alt="Cover Preview"/>
+                <div class="file-info">
+                    <span id="coverImageFileName"></span>
+                    <span id="coverImageFileSize"></span>
+                </div>
+            </div>
+
+            <input type="hidden" name="coverImageFileId" id="coverImageFileId"/>
+            <div th:if="${#fields.hasErrors('coverImageFileId')}"
+                 class="error" th:errors="*{coverImageFileId}"></div>
         </div>
 
+        <!-- Book PDF -->
         <div class="file-upload-section">
             <label>Book PDF:</label>
-            <input name="bookFile" type="file" accept="application/pdf"/>
+            <input id="bookFile" type="file" accept="application/pdf"
+                   onchange="uploadFile(this, 'bookFileId', 'Book Pdf')"/>
             <small>Upload the book PDF file</small>
+
+            <div id="bookFilePreview" class="file-preview" style="display: none;">
+                <div class="pdf-preview">📄</div>
+                <div class="file-info">
+                    <span id="bookFileName"></span>
+                    <span id="bookFileSize"></span>
+                </div>
+            </div>
+
+            <input type="hidden" name="bookFileId" id="bookFileId"/>
+            <div th:if="${#fields.hasErrors('bookFileId')}"
+                 class="error" th:errors="*{bookFileId}"></div>
         </div>
+
 
         <fieldset>
             <legend>Detail</legend>
@@ -140,5 +169,61 @@
     </form>
 
 </div>
+
+<script>
+    async function uploadFile(inputElem, hiddenFieldId, fileType) {
+        const file = inputElem.files[0];
+        if (!file) return;
+
+        // Show preview immediately
+        const previewContainer = document.getElementById(hiddenFieldId.replace('Id', 'Preview'));
+        const nameSpan = document.getElementById(hiddenFieldId.replace('Id', 'Name'));
+        const sizeSpan = document.getElementById(hiddenFieldId.replace('Id', 'Size'));
+        
+        if (previewContainer && nameSpan && sizeSpan) {
+            previewContainer.style.display = 'block';
+            nameSpan.textContent = file.name;
+            sizeSpan.textContent = formatFileSize(file.size);
+            if (previewContainer.querySelector('img')) {
+                previewContainer.querySelector('img').src = URL.createObjectURL(file);
+            }
+        }
+
+        // Create form data
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('fileType', fileType);
+
+        try {
+            // Upload to the correct endpoint
+            const response = await fetch('/attachments/upload', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            document.getElementById(hiddenFieldId).value = data.id;
+            
+            console.log('File uploaded successfully:', data);
+            
+        } catch (error) {
+            console.error('Upload error:', error);
+            alert('Failed to upload file: ' + error.message);
+        }
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+</script>
 </body>
 </html>

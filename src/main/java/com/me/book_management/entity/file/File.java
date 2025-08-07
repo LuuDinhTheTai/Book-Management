@@ -14,9 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString(exclude = {"account"})
 @Builder
-public class File extends EntityWithUpdater {
+public class File {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,8 +34,7 @@ public class File extends EntityWithUpdater {
     private Long fileSize;
 
     @Column(nullable = false)
-    @Builder.Default
-    private String bucketName = "data";
+    private String bucketName;
 
     @Column(nullable = false)
     private String objectKey;
@@ -54,14 +52,6 @@ public class File extends EntityWithUpdater {
     @Column(name = "is_public")
     @Builder.Default
     private Boolean isPublic = false;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private com.me.book_management.entity.book.Book book;
 
     public static class FileType {
         public static final String BookCover = "Book Cover";
