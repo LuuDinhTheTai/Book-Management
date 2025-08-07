@@ -63,17 +63,17 @@ public class BookDataSeeder implements CommandLineRunner {
                             "Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein", "MIT Press",
                             LocalDateTime.of(2009, 7, 31, 0, 0),
                             "A comprehensive guide to algorithms and data structures.",
-                            "1312", Constants.BOOK_LANGUAGE.EN, Constants.BOOK_FORMAT.HARDCOVER),
+                            "1312", Constants.BOOK_LANGUAGE.EN, Constants.BOOK_FORMAT.EBOOK),
 
                     createDetail("978-0321125217", "The Pragmatic Programmer", "Your Journey to Mastery",
                             "Andrew Hunt, David Thomas", "Addison-Wesley", LocalDateTime.of(1999, 10, 20, 0, 0),
                             "From Journeyman to Master.",
-                            "352", Constants.BOOK_LANGUAGE.EN, Constants.BOOK_FORMAT.PAPERBACK),
+                            "352", Constants.BOOK_LANGUAGE.EN, Constants.BOOK_FORMAT.EBOOK),
 
                     createDetail("978-0131103627", "The C Programming Language", "Second Edition",
                             "Brian W. Kernighan, Dennis M. Ritchie", "Prentice Hall", LocalDateTime.of(1988, 3, 22, 0, 0),
                             "The definitive guide to C programming.",
-                            "272", Constants.BOOK_LANGUAGE.EN, Constants.BOOK_FORMAT.PAPERBACK),
+                            "272", Constants.BOOK_LANGUAGE.EN, Constants.BOOK_FORMAT.EBOOK),
 
                     createDetail("978-0596007126", "Head First Design Patterns", "A Brain-Friendly Guide",
                             "Eric Freeman, Elisabeth Robson, Bert Bates, Kathy Sierra", "O'Reilly Media",
@@ -84,7 +84,7 @@ public class BookDataSeeder implements CommandLineRunner {
                     createDetail("978-0201485677", "Refactoring", "Improving the Design of Existing Code",
                             "Martin Fowler", "Addison-Wesley", LocalDateTime.of(1999, 7, 8, 0, 0),
                             "Improving the design of existing code.",
-                            "448", Constants.BOOK_LANGUAGE.EN, Constants.BOOK_FORMAT.PAPERBACK),
+                            "448", Constants.BOOK_LANGUAGE.EN, Constants.BOOK_FORMAT.EBOOK),
 
                     createDetail("978-0137081073", "The Clean Coder", "A Code of Conduct for Professional Programmers",
                             "Robert C. Martin", "Prentice Hall", LocalDateTime.of(2011, 5, 13, 0, 0),
@@ -94,7 +94,7 @@ public class BookDataSeeder implements CommandLineRunner {
                     createDetail("978-0135974445", "Agile Software Development", "Principles, Patterns, and Practices",
                             "Robert C. Martin", "Prentice Hall", LocalDateTime.of(2002, 10, 25, 0, 0),
                             "Principles, patterns, and practices of agile software development.",
-                            "552", Constants.BOOK_LANGUAGE.EN, Constants.BOOK_FORMAT.PAPERBACK)
+                            "552", Constants.BOOK_LANGUAGE.EN, Constants.BOOK_FORMAT.EBOOK)
             );
             detailRepository.saveAll(details);
             log.info("Created {} book details", details.size());

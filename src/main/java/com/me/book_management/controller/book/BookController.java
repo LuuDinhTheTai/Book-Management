@@ -89,7 +89,7 @@ public class BookController {
         return "book/detail";
     }
 
-    @GetMapping
+    @GetMapping("list")
     public String list(@ModelAttribute ListBookRequest request,
                        Model model) {
         model.addAttribute("bookPage", bookService.list(request));

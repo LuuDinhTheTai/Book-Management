@@ -118,7 +118,7 @@
             <div th:if="${cart.cartBooks.size() == 0}" class="empty-cart">
                 <div class="empty-icon">🛒</div>
                 <p class="empty-text">This cart is empty</p>
-                <a th:href="@{/books/}" class="btn btn-outline">Browse Books</a>
+                <a th:href="@{/books/list}" class="btn btn-outline">Browse Books</a>
             </div>
 
             <!-- Cart Summary -->
@@ -186,7 +186,7 @@
         <h3 class="empty-title">Your cart is empty</h3>
         <p class="empty-message">Start shopping to add books to your cart</p>
         <div class="empty-actions">
-            <a th:href="@{/books/}" class="btn btn-primary">
+            <a th:href="@{/books/list}" class="btn btn-primary">
                 <span class="btn-icon">📚</span>
                 Browse Books
             </a>
@@ -211,7 +211,7 @@
         </div>
 
         <div class="checkout-actions">
-            <a th:href="@{/books/}" class="btn btn-outline">
+            <a th:href="@{/books/list}" class="btn btn-outline">
                 <span class="btn-icon">📚</span>
                 Continue Shopping
             </a>

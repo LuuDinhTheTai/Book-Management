@@ -13,7 +13,7 @@
     <div class="container">
         <!-- Breadcrumb -->
         <div class="breadcrumb">
-                            <a th:href="@{/books/}" class="breadcrumb-link">Books</a>
+                            <a th:href="@{/books/list}" class="breadcrumb-link">Books</a>
             <span class="breadcrumb-separator">/</span>
             <span class="breadcrumb-current" th:text="${book.name}"></span>
         </div>
@@ -92,7 +92,7 @@
 
                         <!-- Book Actions -->
                         <div class="book-actions">
-                            <a th:href="@{/books/}" class="btn btn-outline">
+                            <a th:href="@{/books/list}" class="btn btn-outline">
                                 <span class="btn-icon">←</span>
                                 Continue Shopping
                             </a>

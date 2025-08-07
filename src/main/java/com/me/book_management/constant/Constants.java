@@ -101,22 +101,18 @@ public class Constants {
 
         public static final String AVAILABLE = "Available";
         public static final String SOLD_OUT = "Sold out";
-        public static final String ACTIVE = "ACTIVE";
 
         public static List<String> list() {
-            return List.of(AVAILABLE, SOLD_OUT, ACTIVE);
+            return List.of(AVAILABLE, SOLD_OUT);
         }
     }
 
     public static class BOOK_FORMAT {
 
         public static final String EBOOK = "eBook";
-        public static final String AUDIOBOOK = "AudioBook";
-        public static final String PAPERBACK = "Paperback";
-        public static final String HARDCOVER = "Hardcover";
 
         public static List<String> list() {
-            return List.of(EBOOK, AUDIOBOOK, PAPERBACK, HARDCOVER);
+            return List.of(EBOOK);
         }
     }
 

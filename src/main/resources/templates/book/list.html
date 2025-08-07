@@ -28,7 +28,7 @@
         <!-- Search and Filter Section -->
         <div class="search-filter-section">
             <div class="search-box">
-                <form th:action="@{/books/}" method="get" class="search-form">
+                <form th:action="@{/books/list}" method="get" class="search-form">
                     <div class="search-input-group">
                         <span class="search-icon">🔍</span>
                         <input type="text"
@@ -114,7 +114,7 @@
             <h3 class="empty-title">No books found</h3>
             <p class="empty-message">Try adjusting your search criteria or browse all categories</p>
             <div class="empty-actions">
-                <a th:href="@{/books/}" class="btn btn-outline">Browse All Books</a>
+                <a th:href="@{/books/list}" class="btn btn-outline">Browse All Books</a>
                 <a th:href="@{/categories/list}" class="btn btn-outline">Browse Categories</a>
             </div>
         </div>
