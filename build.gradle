@@ -33,6 +33,7 @@ dependencies {
     implementation 'com.jlefebure:spring-boot-starter-minio:1.1'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation("org.apache.poi:poi-ooxml:5.4.1")
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'

@@ -32,6 +32,7 @@ public class PERMISSION {
 
         public static final String Attachment = "/attachments/";
         public static final String Attachment_Upload = Attachment + "upload";
+        public static final String Attachment_Export = Attachment + "export";
 
         public static final String Auth = "/auth/";
         public static final String Auth_Signin = Auth + "signin";
@@ -61,7 +62,7 @@ public class PERMISSION {
         public static final String Cart_AddItem = Cart + "add-item";
         public static final String Cart_IncreaseItem = Cart + "increase-item/{id}";
         public static final String Cart_DecreaseItem = Cart + "decrease-item/{id}";
-        public static final String Cart_Buy = Cart + "buy";
+        public static final String Cart_Buy = Cart + "buy/{id}";
 
         public static final String Order = "/orders/";
         public static final String Order_List = Order + "list";
@@ -77,7 +78,7 @@ public class PERMISSION {
                     Account_Profile, Account_Update, Account_Delete,
                     Address_Create, Address_List, Address_Update, Address_Delete,
                     Admin_Dashboard,
-                    Attachment_Upload,
+                    Attachment_Upload, Attachment_Export,
                     Auth_Signin, Auth_Signup,
                     Book_Create, Book_Detail, Book_List, Book_Update, Book_Delete, Book_Search,
                     Category_Create, Category_List, Category_Update, Category_Delete,

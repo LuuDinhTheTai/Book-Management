@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -68,11 +69,15 @@ public class PermissionFilterImpl implements Filter {
             }
             Action action = actionRepository.findByName(httpMethod.toLowerCase())
                     .orElseThrow(() -> new ServletException("Invalid action" + httpMethod));
-            Resource resource = resourceRepository.findByName(path)
-                    .orElseThrow(() -> new ServletException("Invalid resource" + path));
+
+            AntPathMatcher matcher = new AntPathMatcher();
+            Resource resource = resourceRepository.findAll().stream()
+                    .filter(r -> matcher.match(r.getName(), path))
+                    .findFirst()
+                    .orElseThrow(() -> new ServletException("Invalid resource " + path));
 
             Permission permission = permissionRepository.findByResourceAndAction(resource, action)
-                    .orElseThrow(() -> new ServletException("Invalid permission" + httpMethod + " " + path));
+                    .orElseThrow(() -> new ServletException("Invalid permission " + httpMethod + " " + path));
 
             if (!scope.contains(permission.getName())) {
                 httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Permission denied");

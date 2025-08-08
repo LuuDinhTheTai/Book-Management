@@ -368,6 +368,51 @@
                     </div>
                 </div>
             </div>
+            <!-- Export Excel Card - chèn vào trong .dashboard-sections hoặc sau .quick-actions-grid -->
+            <div class="section-card" style="margin-top:16px;">
+                <div class="section-header">
+                    <h2 class="section-title">⬇️ Export Sales (Excel)</h2>
+                </div>
+                <div class="section-content">
+                    <form id="exportForm" onsubmit="return false;">
+                        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+                            <label>
+                                Period
+                                <select id="period" name="period" required>
+                                    <option value="Year">Year</option>
+                                    <option value="Quarter">Quarter</option>
+                                    <option value="Month">Month</option>
+                                </select>
+                            </label>
+
+                            <label>
+                                Year
+                                <input id="year" name="year" type="number" min="2000" max="2100" value="2025" required style="width:100px;">
+                            </label>
+
+                            <label id="monthLabel" style="display:none;">
+                                Month
+                                <input id="month" name="month" type="number" min="1" max="12" style="width:90px;">
+                            </label>
+
+                            <label id="quarterLabel" style="display:none;">
+                                Quarter
+                                <select id="quarter" name="quarter" style="width:110px;">
+                                    <option value="1">Q1</option>
+                                    <option value="2">Q2</option>
+                                    <option value="3">Q3</option>
+                                    <option value="4">Q4</option>
+                                </select>
+                            </label>
+
+                            <button id="exportBtn" class="action-card" style="padding:10px 16px;border-radius:8px;border:1px solid #667eea;cursor:pointer;">
+                                Export Excel
+                            </button>
+                        </div>
+                        <p id="exportMsg" style="margin-top:8px;color:#666;font-size:0.9rem;"></p>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <!-- Analytics Chart -->
@@ -478,6 +523,96 @@
                 }
             });
         });
+        (function(){
+            const periodEl = document.getElementById('period');
+            const monthLabel = document.getElementById('monthLabel');
+            const quarterLabel = document.getElementById('quarterLabel');
+            const exportBtn = document.getElementById('exportBtn');
+            const msg = document.getElementById('exportMsg');
+
+            function updateFields() {
+                const p = periodEl.value;
+                monthLabel.style.display = (p === 'Month') ? 'inline-block' : 'none';
+                quarterLabel.style.display = (p === 'Quarter') ? 'inline-block' : 'none';
+            }
+            periodEl.addEventListener('change', updateFields);
+            updateFields();
+
+            function getFilenameFromDisposition(header) {
+                if (!header) return null;
+                const match = /filename\*=UTF-8''([^;]+)|filename="([^"]+)"|filename=([^;]+)/i.exec(header);
+                return match ? decodeURIComponent((match[1]||match[2]||match[3]).trim()) : null;
+            }
+
+            exportBtn.addEventListener('click', async function () {
+                msg.textContent = '';
+                const period = periodEl.value;
+                const year = document.getElementById('year').value;
+                const month = document.getElementById('month').value;
+                const quarter = document.getElementById('quarter').value;
+
+                // Basic validation
+                if (!period || !year) {
+                    msg.textContent = 'Chọn period và year.';
+                    return;
+                }
+                if (period === 'Month' && (!month || month < 1 || month > 12)) {
+                    msg.textContent = 'Chọn month hợp lệ (1-12).';
+                    return;
+                }
+                if (period === 'Quarter' && (!quarter || quarter < 1 || quarter > 4)) {
+                    msg.textContent = 'Chọn quarter hợp lệ (1-4).';
+                    return;
+                }
+
+                // Build query string
+                const params = new URLSearchParams();
+                params.append('period', period);
+                params.append('year', year);
+                if (period === 'Month') params.append('month', month);
+                if (period === 'Quarter') params.append('quarter', quarter);
+
+                const url = `/attachments/export?${params.toString()}`;
+
+                try {
+                    exportBtn.disabled = true;
+                    exportBtn.textContent = 'Preparing...';
+                    const resp = await fetch(url, {
+                        method: 'GET',
+                        credentials: 'same-origin'
+                    });
+
+                    if (!resp.ok) {
+                        const txt = await resp.text().catch(()=>null);
+                        msg.textContent = 'Export failed' + (txt ? (': ' + txt) : '.');
+                        exportBtn.disabled = false;
+                        exportBtn.textContent = 'Export Excel';
+                        return;
+                    }
+
+                    const blob = await resp.blob();
+                    const disposition = resp.headers.get('Content-Disposition') || resp.headers.get('content-disposition');
+                    const filename = getFilenameFromDisposition(disposition) || `export_${Date.now()}.xlsx`;
+
+                    const urlBlob = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = urlBlob;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(urlBlob);
+
+                    msg.textContent = 'Download started: ' + filename;
+                } catch (err) {
+                    console.error(err);
+                    msg.textContent = 'Có lỗi xảy ra khi export.';
+                } finally {
+                    exportBtn.disabled = false;
+                    exportBtn.textContent = 'Export Excel';
+                }
+            });
+        })();
     </script>
 </body>
 </html> 

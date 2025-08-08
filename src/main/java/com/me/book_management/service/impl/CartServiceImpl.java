@@ -56,7 +56,7 @@ public class CartServiceImpl implements CartService {
         Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
                 .orElseThrow(() -> new NotFoundException("Account not found"));
 
-        return cartRepository.findByAccount(account);
+        return cartRepository.findByAccountAndStatus(account, Constants.CART_STATUS.PENDING);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class CartServiceImpl implements CartService {
         Account account = accountRepository.findByUsername(CommonUtil.getCurrentAccount())
                 .orElseThrow(() -> new NotFoundException("Account not found"));
 
-        return cartRepository.findByAccountAndStatusNot(account, Constants.CART_STATUS.PENDING, request.getPageable());
+        return cartRepository.findByAccountAndStatus(account, Constants.CART_STATUS.PENDING, request.getPageable());
     }
 
     @Override
@@ -168,6 +168,15 @@ public class CartServiceImpl implements CartService {
         Cart cart = cartRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Cart not found"));
         cart.setStatus(Constants.CART_STATUS.PROCESSING);
+
+        List<CartBook> cartBooks = cartBookRepository.findByCart(cart);
+
+        for (CartBook cartBook : cartBooks) {
+            Book book = cartBook.getBook();
+            book.setQty(book.getQty() - cartBook.getQty());
+            bookRepository.save(book);
+        }
+
         cartRepository.save(cart);
     }
 

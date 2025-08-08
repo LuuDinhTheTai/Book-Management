@@ -14,4 +14,6 @@ public interface AttachmentService {
     List<File> findByBookId(Long bookId);
     
     void delete(Long id);
+
+    byte[] export(String period, int year, Integer month, Integer quarter);
 } 
