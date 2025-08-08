@@ -1,7 +1,5 @@
 package com.me.book_management.controller.book;
 
-import com.me.book_management.annotation.hasPermission;
-import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.book.comment.CreateCommentRequest;
 import com.me.book_management.service.CommentService;
 import jakarta.validation.Valid;
@@ -21,7 +19,6 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("create")
-    @hasPermission(permission = Constants.PERMISSION.CREATE_COMMENT)
     public String createComment(@Valid @ModelAttribute("createCommentRequest")
                                 CreateCommentRequest request,
                                 BindingResult bindingResult,

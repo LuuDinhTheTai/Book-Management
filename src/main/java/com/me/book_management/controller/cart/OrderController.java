@@ -1,7 +1,5 @@
 package com.me.book_management.controller.cart;
 
-import com.me.book_management.annotation.hasPermission;
-import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.cart.ListOrdersRequest;
 import com.me.book_management.service.OrdersService;
 import jakarta.validation.Valid;
@@ -20,7 +18,6 @@ public class OrderController {
     private final OrdersService ordersService;
 
     @GetMapping("list")
-    @hasPermission(permission = Constants.PERMISSION.READ_CART)
     public String list(@Valid @ModelAttribute ListOrdersRequest request,
                        Model model) {
         model.addAttribute("orders", ordersService.list(request));

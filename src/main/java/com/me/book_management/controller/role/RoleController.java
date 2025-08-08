@@ -1,7 +1,5 @@
 package com.me.book_management.controller.role;
 
-import com.me.book_management.annotation.hasPermission;
-import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.role.CreateRoleRequest;
 import com.me.book_management.dto.request.role.UpdateRoleRequest;
 import com.me.book_management.exception.InputException;
@@ -28,7 +26,6 @@ public class RoleController {
     private final ActionService actionService;
 
     @GetMapping("create")
-    @hasPermission(permission = Constants.PERMISSION.CREATE_ROLE)
     public String create(Model model) {
         model.addAttribute("createRoleRequest", new CreateRoleRequest());
         model.addAttribute("resources", resourceService.list());
@@ -37,7 +34,6 @@ public class RoleController {
     }
 
     @PostMapping("create")
-    @hasPermission(permission = Constants.PERMISSION.CREATE_ROLE)
     public String create(@Valid @ModelAttribute("createRoleRequest") CreateRoleRequest request,
                          RedirectAttributes redirectAttributes) {
         try {
@@ -52,7 +48,6 @@ public class RoleController {
     }
 
     @GetMapping("list")
-    @hasPermission(permission = Constants.PERMISSION.READ_ROLE)
     public String list(Model model) {
         try {
             model.addAttribute("roles", roleService.list());
@@ -66,7 +61,6 @@ public class RoleController {
     }
 
     @GetMapping("update/{id}")
-    @hasPermission(permission = Constants.PERMISSION.UPDATE_ROLE)
     public String update(@PathVariable Long id,
                          Model model) {
         model.addAttribute("role", roleService.find(id));
@@ -77,7 +71,6 @@ public class RoleController {
     }
 
     @PostMapping("update/{id}")
-    @hasPermission(permission = Constants.PERMISSION.UPDATE_ROLE)
     public String update(@PathVariable Long id,
                          @Valid @ModelAttribute("updateRoleRequest") UpdateRoleRequest request,
                          BindingResult bindingResult,
@@ -104,7 +97,6 @@ public class RoleController {
     }
 
     @PostMapping("delete/{id}")
-    @hasPermission(permission = Constants.PERMISSION.DELETE_ROLE)
     public String delete(@PathVariable Long id,
                          RedirectAttributes redirectAttributes) {
         roleService.delete(id);

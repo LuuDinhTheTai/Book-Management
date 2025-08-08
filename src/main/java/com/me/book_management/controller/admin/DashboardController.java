@@ -1,7 +1,5 @@
 package com.me.book_management.controller.admin;
 
-import com.me.book_management.annotation.hasPermission;
-import com.me.book_management.constant.Constants;
 import com.me.book_management.service.AccountService;
 import com.me.book_management.service.BookService;
 import com.me.book_management.service.CartService;
@@ -29,7 +27,6 @@ public class DashboardController {
     private final RoleService roleService;
 
     @GetMapping("dashboard")
-    @hasPermission(permission = Constants.PERMISSION.READ_ACCOUNT)
     public String dashboard(Model model) {
         try {
             // Get statistics for the dashboard

@@ -1,6 +1,5 @@
 package com.me.book_management.controller.cart;
 
-import com.me.book_management.annotation.hasPermission;
 import com.me.book_management.annotation.resourceOwner;
 import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.cart.AddItemRequest;
@@ -28,7 +27,6 @@ public class CartController {
     private final AddressService addressService;
 
     @PostMapping("create")
-    @hasPermission(permission = Constants.PERMISSION.CREATE_CART)
     public String create(RedirectAttributes redirectAttributes) {
         try {
             Cart cart = cartService.create();
@@ -42,7 +40,6 @@ public class CartController {
     }
 
     @GetMapping("list")
-    @hasPermission(permission = Constants.PERMISSION.READ_CART)
     public String list(Model model) {
             List<Cart> carts = cartService.list();
             model.addAttribute("carts", carts);
@@ -54,7 +51,6 @@ public class CartController {
     }
 
     @PostMapping("delete/{id}")
-    @hasPermission(permission = Constants.PERMISSION.DELETE_CART)
     public String delete(@Valid @PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             cartService.delete(id);
@@ -67,7 +63,6 @@ public class CartController {
     }
 
     @PostMapping("add-item")
-    @hasPermission(permission = Constants.PERMISSION.UPDATE_CART)
     public String addItem(@ModelAttribute AddItemRequest request,
                           RedirectAttributes redirectAttributes) {
         try {
@@ -82,7 +77,6 @@ public class CartController {
     }
 
     @PostMapping("increase-item/{id}")
-    @hasPermission(permission = Constants.PERMISSION.UPDATE_CART)
     public String increaseItem(@PathVariable @resourceOwner(instance = Constants.CLASSNAME.CART) Long id,
                                @Valid @ModelAttribute IncreaseItemRequest request,
                                RedirectAttributes redirectAttributes) {
@@ -99,7 +93,6 @@ public class CartController {
     }
 
     @PostMapping("decrease-item/{id}")
-    @hasPermission(permission = Constants.PERMISSION.UPDATE_CART)
     public String decreaseItem(@PathVariable @resourceOwner(instance = Constants.CLASSNAME.CART) Long id,
                                @Valid @ModelAttribute DecreaseItemRequest request,
                                RedirectAttributes redirectAttributes) {

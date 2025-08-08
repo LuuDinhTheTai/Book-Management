@@ -34,7 +34,7 @@ public class OAuth2AuthenticationSuccessHandlerImpl extends SimpleUrlAuthenticat
                                                   RoleService roleService,
                                                   JwtUtil jwtUtil,
                                                   CookieUtil cookieUtil) {
-        super("/books/");
+        super("/books/list");
         this.accountRepository = accountRepository;
         this.roleService = roleService;
         this.jwtUtil = jwtUtil;

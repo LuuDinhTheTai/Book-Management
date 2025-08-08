@@ -1,6 +1,5 @@
 package com.me.book_management.controller.account;
 
-import com.me.book_management.annotation.hasPermission;
 import com.me.book_management.annotation.resourceOwner;
 import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.account.address.CreateAddressRequest;
@@ -25,14 +24,12 @@ public class AddressController {
     private final AddressService addressService;
 
     @GetMapping("create")
-    @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
     public String createForm(Model model) {
         model.addAttribute("address", new CreateAddressRequest());
         return "address/create-form";
     }
 
     @PostMapping("create")
-    @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
     public String create(@Valid @ModelAttribute("address") CreateAddressRequest request,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes) {
@@ -53,7 +50,6 @@ public class AddressController {
     }
 
     @GetMapping("list")
-    @hasPermission(permission = Constants.PERMISSION.READ_ACCOUNT)
     public String list(Model model) {
         List<Address> addresses = addressService.list();
         model.addAttribute("addresses", addresses);
@@ -61,7 +57,6 @@ public class AddressController {
     }
 
     @GetMapping("update/{id}")
-    @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
     public String updateForm(@resourceOwner(instance = Constants.CLASSNAME.ADDRESS) @PathVariable Long id,
                              Model model) {
         try {
@@ -76,7 +71,6 @@ public class AddressController {
     }
 
     @PostMapping("update/{id}")
-    @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
     public String update(@resourceOwner(instance = Constants.CLASSNAME.ADDRESS) @PathVariable Long id,
                          @Valid @ModelAttribute UpdateAddressRequest request,
                          BindingResult bindingResult,
@@ -97,7 +91,6 @@ public class AddressController {
     }
 
     @PostMapping("delete/{id}")
-    @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
     public String delete(@resourceOwner(instance = Constants.CLASSNAME.ADDRESS) @PathVariable Long id,
                          RedirectAttributes redirectAttributes) {
         try {

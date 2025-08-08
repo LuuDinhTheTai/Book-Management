@@ -1,6 +1,5 @@
 package com.me.book_management.controller.account;
 
-import com.me.book_management.annotation.hasPermission;
 import com.me.book_management.annotation.resourceOwner;
 import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.account.ProfileRequest;
@@ -32,7 +31,6 @@ public class AccountController {
     private final CommentService commentService;
 
     @GetMapping("profile")
-    @hasPermission(permission = Constants.PERMISSION.READ_ACCOUNT)
     public String profile(@ModelAttribute ProfileRequest request,
                           Model model) {
         String username = CommonUtil.getCurrentAccount();
@@ -61,7 +59,6 @@ public class AccountController {
     }
 
     @GetMapping("update/{id}")
-    @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
     public String update(@resourceOwner(instance = Constants.CLASSNAME.ACCOUNT) @PathVariable Long id,
                          Model model) {
         model.addAttribute("account", accountService.find(id));
@@ -69,7 +66,6 @@ public class AccountController {
     }
 
     @PostMapping("update/{id}")
-    @hasPermission(permission = Constants.PERMISSION.UPDATE_ACCOUNT)
     public String update(@resourceOwner(instance = Constants.CLASSNAME.ACCOUNT) @PathVariable Long id,
                          @Valid @ModelAttribute("account") UpdateAccountRequest request,
                          BindingResult bindingResult,
@@ -90,7 +86,6 @@ public class AccountController {
     }
 
     @PostMapping("delete/{id}")
-    @hasPermission(permission = Constants.PERMISSION.DELETE_ACCOUNT)
     public String delete(@resourceOwner(instance = Constants.CLASSNAME.ACCOUNT) @PathVariable Long id) {
         accountService.delete(id);
         return "redirect:/auth/signup";

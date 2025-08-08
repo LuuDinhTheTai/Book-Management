@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -47,7 +48,8 @@ public class RoleDataSeeder implements CommandLineRunner {
     }
 
     private void seedResources() {
-        for (String resourceName : PERMISSION.RESOURCE.list()) {
+        List<String> resourceNames = new ArrayList<>(PERMISSION.RESOURCE.list());
+        for (String resourceName : resourceNames) {
             if (resourceRepository.findByName(resourceName).isEmpty()) {
                 Resource resource = new Resource();
                 resource.setName(resourceName);

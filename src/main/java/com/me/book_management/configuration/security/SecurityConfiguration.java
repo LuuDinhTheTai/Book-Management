@@ -1,11 +1,6 @@
 package com.me.book_management.configuration.security;
 
-import com.me.book_management.configuration.security.impl.BearerTokenResolverImpl;
-import com.me.book_management.configuration.security.impl.JwtAuthenticationConverterImpl;
-import com.me.book_management.configuration.security.impl.JwtDecoderImpl;
-import com.me.book_management.configuration.security.impl.OAuth2AuthenticationSuccessHandlerImpl;
-import com.me.book_management.configuration.security.impl.OAuth2UserServiceImpl;
-import com.me.book_management.configuration.security.impl.UserDetailsServiceImpl;
+import com.me.book_management.configuration.security.impl.*;
 import com.me.book_management.constant.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +15,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
 @Configuration
 @EnableWebSecurity
@@ -28,11 +24,14 @@ public class SecurityConfiguration {
 
     private final OAuth2UserServiceImpl oAuth2UserService;
     private final OAuth2AuthenticationSuccessHandlerImpl oAuth2AuthenticationSuccessHandlerImpl;
+    private final PermissionFilterImpl permissionFilterImpl;
 
-    public SecurityConfiguration(OAuth2UserServiceImpl oAuth2UserService, 
-                              OAuth2AuthenticationSuccessHandlerImpl oAuth2AuthenticationSuccessHandlerImpl) {
+    public SecurityConfiguration(OAuth2UserServiceImpl oAuth2UserService,
+                                 OAuth2AuthenticationSuccessHandlerImpl oAuth2AuthenticationSuccessHandlerImpl,
+                                 PermissionFilterImpl permissionFilterImpl) {
         this.oAuth2UserService = oAuth2UserService;
         this.oAuth2AuthenticationSuccessHandlerImpl = oAuth2AuthenticationSuccessHandlerImpl;
+        this.permissionFilterImpl = permissionFilterImpl;
     }
 
     @Bean
@@ -57,13 +56,19 @@ public class SecurityConfiguration {
                                 "/accounts/forgot-password").permitAll()
                         .anyRequest().authenticated()
         );
-        http.logout(logout -> logout
+//        http.formLogin(
+//                login -> login
+//                        .loginPage("/auth/signin")
+//                        .successForwardUrl("/books/list")
+//        );
+        http.logout(
+                logout -> logout
                         .logoutUrl("/auth/signout")
                         .logoutSuccessUrl("/auth/signin")
                         .invalidateHttpSession(true)           // Hủy session
                         .deleteCookies("JSESSIONID", Constants.COOKIE.ACCESS_TOKEN)
                         .permitAll()
-                );
+        );
         http.oauth2ResourceServer(
                 oauth2 -> oauth2
                         .jwt(
@@ -72,15 +77,16 @@ public class SecurityConfiguration {
                                         .decoder(jwtDecoder())
                         )
                         .bearerTokenResolver(bearerTokenResolver())
-        )
-                                 .oauth2Login(
-                         oauth2 -> oauth2
-                                 .loginPage("/oauth2/authorization/google")
-                                 .successHandler(oAuth2AuthenticationSuccessHandlerImpl)
-                                 .userInfoEndpoint(userInfo -> userInfo
-                                         .userService(oAuth2UserService)
-                                 )
-                 );
+        );
+        http.oauth2Login(
+                oauth2 -> oauth2
+                        .loginPage("/oauth2/authorization/google")
+                        .successHandler(oAuth2AuthenticationSuccessHandlerImpl)
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(oAuth2UserService)
+                        )
+        );
+        http.addFilterBefore(permissionFilterImpl, FilterSecurityInterceptor.class);
         http.csrf(
                 c -> c.disable()
         );

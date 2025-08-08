@@ -1,6 +1,5 @@
 package com.me.book_management.controller.book;
 
-import com.me.book_management.annotation.hasPermission;
 import com.me.book_management.annotation.resourceOwner;
 import com.me.book_management.constant.Constants;
 import com.me.book_management.dto.request.book.CreateBookRequest;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -37,7 +35,6 @@ public class BookController {
     private final CategoryService categoryService;
 
     @GetMapping("create")
-    @hasPermission(permission = Constants.PERMISSION.CREATE_BOOK)
     public String create(Model model) {
         CreateBookRequest createBookRequest = new CreateBookRequest();
         model.addAttribute("createBookRequest", createBookRequest);
@@ -50,7 +47,6 @@ public class BookController {
     }
 
     @PostMapping("create")
-    @hasPermission(permission = Constants.PERMISSION.CREATE_BOOK)
     public String create(@Valid @ModelAttribute("createBookRequest")
                          CreateBookRequest request,
                          BindingResult bindingResult,
@@ -97,7 +93,6 @@ public class BookController {
     }
 
     @GetMapping("update/{id}")
-    @hasPermission(permission = Constants.PERMISSION.UPDATE_BOOK)
     public String update(@resourceOwner(instance = Constants.CLASSNAME.BOOK) @PathVariable Long id,
                          Model model) {
         Book book = bookService.find(id);
@@ -110,7 +105,6 @@ public class BookController {
     }
 
     @PostMapping("update/{id}")
-    @hasPermission(permission = Constants.PERMISSION.UPDATE_BOOK)
     public String update(@PathVariable @resourceOwner(instance = Constants.CLASSNAME.BOOK) Long id,
                          @Valid @ModelAttribute UpdateBookRequest request,
                          RedirectAttributes redirectAttributes) {
@@ -130,7 +124,6 @@ public class BookController {
     }
 
     @PostMapping("delete/{id}")
-    @hasPermission(permission = Constants.PERMISSION.DELETE_BOOK)
     public String delete(@resourceOwner(instance = Constants.CLASSNAME.BOOK) @PathVariable Long id) {
         bookService.delete(id);
         return "redirect:/accounts/profile";

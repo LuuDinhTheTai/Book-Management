@@ -48,7 +48,7 @@ public class SignInController {
 
             response.addCookie(authService.signIn(request));
 
-            return "redirect:/books/";
+            return "redirect:/books/list";
 
         } catch (InputException e) {
             model.addAttribute("errorMessage", e.getMessage());

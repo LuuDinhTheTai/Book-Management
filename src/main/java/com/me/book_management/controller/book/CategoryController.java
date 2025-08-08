@@ -1,8 +1,5 @@
 package com.me.book_management.controller.book;
 
-import com.me.book_management.annotation.hasPermission;
-import com.me.book_management.constant.Constants;
-import com.me.book_management.dto.request.book.ListBookRequest;
 import com.me.book_management.dto.request.book.category.CreateCategoryRequest;
 import com.me.book_management.dto.request.book.category.UpdateCategoryRequest;
 import com.me.book_management.entity.book.Category;
@@ -25,14 +22,12 @@ public class CategoryController {
     private final BookService bookService;
 
     @GetMapping("create")
-    @hasPermission(permission = Constants.PERMISSION.CREATE_CATEGORY)
     public String create(Model model) {
         model.addAttribute("createCategoryRequest", new CreateCategoryRequest());
         return "category/create-form";
     }
 
     @PostMapping("create")
-    @hasPermission(permission = Constants.PERMISSION.CREATE_CATEGORY)
     public String create(@Valid @ModelAttribute("createCategoryRequest") CreateCategoryRequest request,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes) {
@@ -58,7 +53,6 @@ public class CategoryController {
     }
 
     @GetMapping("update/{id}")
-    @hasPermission(permission = Constants.PERMISSION.UPDATE_CATEGORY)
     public String updateForm(@PathVariable Long id, Model model) {
         Category category = categoryService.find(id);
         model.addAttribute("category", category);
@@ -66,7 +60,6 @@ public class CategoryController {
     }
 
     @PostMapping("update/{id}")
-    @hasPermission(permission = Constants.PERMISSION.UPDATE_CATEGORY)
     public String update(@PathVariable Long id,
                          @Valid @ModelAttribute UpdateCategoryRequest request,
                          BindingResult bindingResult,
@@ -88,7 +81,6 @@ public class CategoryController {
     }
 
     @PostMapping("delete/{id}")
-    @hasPermission(permission = Constants.PERMISSION.DELETE_CATEGORY)
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             categoryService.delete(id);
