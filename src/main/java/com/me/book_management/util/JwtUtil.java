@@ -71,19 +71,11 @@ public class JwtUtil {
         return null;
     }
 
-    public Long extractUserId(String token) throws ParseException {
-        return Long.parseLong(JWSObject.parse(token).getPayload().toJSONObject().get("sub").toString());
-    }
-
     private String buildScope(Account account) {
         StringJoiner stringJoiner = new StringJoiner(" ");
 
         if (!CollectionUtils.isEmpty(account.getRoles()))
-            account.getRoles().forEach(role -> {
-                stringJoiner.add("ROLE_" + role.getName());
-                if (!CollectionUtils.isEmpty(role.getPermissions()))
-                    role.getPermissions().forEach(permission -> stringJoiner.add(permission.getName()));
-            });
+            account.getRoles().forEach(role -> stringJoiner.add("ROLE_" + role.getName()));
 
         return stringJoiner.toString();
     }
