@@ -58,7 +58,7 @@ public class PERMISSION {
         public static final String Cart = "/carts/";
         public static final String Cart_Create = Cart + "create";
         public static final String Cart_List = Cart + "list";
-        public static final String Cart_Delete = Cart + "delete";
+        public static final String Cart_Delete = Cart + "delete/{id}";
         public static final String Cart_AddItem = Cart + "add-item";
         public static final String Cart_IncreaseItem = Cart + "increase-item/{id}";
         public static final String Cart_DecreaseItem = Cart + "decrease-item/{id}";
